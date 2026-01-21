@@ -78,7 +78,7 @@ const Analytics = () => {
                 task: t.task_number
             }))
             .sort((a, b) => b.days - a.days)
-            .slice(0, 5);
+            .slice(0, 10);
         setOldestTasks(pendingWithAge);
 
         // --- 5. Avg Duration & Table Data ---
@@ -226,36 +226,26 @@ const Analytics = () => {
                     </div>
                 </div>
 
-                {/* 4. Oldest Tasks (New Graph) */}
-                <div className="bg-white dark:bg-dark-card p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm cursor-pointer hover:border-indigo-500 transition-colors">
-                    <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-4">Oldest Pending Tasks (Days Open)</h2>
-                    <div className="h-64 w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart
-                                data={oldestTasks}
-                                layout="vertical"
-                                margin={{ left: 40, right: 40 }}
+                {/* 4. Oldest Tasks (Text List) */}
+                <div className="bg-white dark:bg-dark-card p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
+                    <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-4">Top 10 Oldest Pending Tasks</h2>
+                    <div className="h-64 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
+                        {oldestTasks.map((task, idx) => (
+                            <div
+                                key={idx}
+                                onClick={() => goToDashboard({ search: task.task })}
+                                className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700 cursor-pointer hover:border-indigo-500 hover:shadow-md transition-all flex justify-between items-center group"
                             >
-                                <XAxis type="number" hide />
-                                <YAxis dataKey="name" type="category" width={100} tick={{ fill: '#94a3b8', fontSize: 11 }} />
-                                <Tooltip
-                                    cursor={{ fill: 'transparent' }}
-                                    contentStyle={{ backgroundColor: '#1e293b', borderRadius: '8px', color: '#fff' }}
-                                    formatter={(value, name, props) => [`${value} Days`, `Task #${props.payload.task}`]}
-                                />
-                                <Bar
-                                    dataKey="days"
-                                    fill="#ec4899"
-                                    radius={[0, 4, 4, 0]}
-                                    barSize={20}
-                                    onClick={(data) => {
-                                        goToDashboard({ filterAgency: data.name, filterStatus: 'Pending' });
-                                    }}
-                                >
-                                    <LabelList dataKey="days" position="right" fill="#64748b" fontSize={12} fontWeight="bold" />
-                                </Bar>
-                            </BarChart>
-                        </ResponsiveContainer>
+                                <div className="flex flex-col overflow-hidden">
+                                    <span className="text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-indigo-600 transition-colors truncate">#{task.task}</span>
+                                    <span className="text-xs text-slate-500 dark:text-slate-400 truncate">{task.name}</span>
+                                </div>
+                                <div className="text-right flex-shrink-0 ml-2">
+                                    <span className="block text-sm font-bold text-rose-500">{task.days} Days</span>
+                                </div>
+                            </div>
+                        ))}
+                        {oldestTasks.length === 0 && <div className="text-center text-slate-400 py-10">No pending tasks found.</div>}
                     </div>
                 </div>
             </div>
