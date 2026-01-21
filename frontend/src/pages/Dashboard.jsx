@@ -25,7 +25,7 @@ const Dashboard = () => {
     const location = useLocation();
 
     // Filters - Initialize from Navigation State if available
-    const [search, setSearch] = useState('');
+    const [search, setSearch] = useState(location.state?.search || '');
     const [selectedAgency, setSelectedAgency] = useState(location.state?.filterAgency ? [location.state.filterAgency] : []);
     const [selectedStatus, setSelectedStatus] = useState(location.state?.filterStatus ? [location.state.filterStatus] : []);
 
