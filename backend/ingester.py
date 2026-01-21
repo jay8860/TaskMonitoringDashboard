@@ -34,6 +34,7 @@ TAB_NAME = "To Do (After 01/01/2026)"
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import os
+import json
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CREDENTIALS_FILE = os.path.join(BASE_DIR, "../credentials.json") # Search in root or backend
@@ -43,6 +44,21 @@ if not os.path.exists(CREDENTIALS_FILE):
 SCOPE = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 
 def get_gspread_client():
+    # 1. Try Environment Variable (Best for Production/Hosting)
+    json_creds = os.environ.get("GOOGLE_CREDENTIALS_JSON")
+    if json_creds:
+        try:
+            creds_dict = json.loads(json_creds)
+            creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, SCOPE)
+            client = gspread.authorize(creds)
+            return client
+        except Exception as e:
+            print(f"Error authenticating from Env Var: {e}")
+            # Fallback to file if env var fails? No, better to fail or let file try. 
+            # If env var is present but bad, we probably want to know.
+            # But let's proceed to check file just in case.
+
+    # 2. Try Local File (Best for Localhost)
     if not os.path.exists(CREDENTIALS_FILE):
         return None
     try:

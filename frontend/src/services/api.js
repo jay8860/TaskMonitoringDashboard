@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8000/api/tasks';
+// In production (single service), use relative path. In dev, use localhost:8000.
+const BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://127.0.0.1:8000');
+const API_URL = `${BASE_URL}/api/tasks`;
 
 export const api = {
     getTasks: async (filters = {}) => {

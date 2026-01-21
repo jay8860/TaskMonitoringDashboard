@@ -6,3 +6,19 @@ INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     127.0.0.1:60961 - "GET /api/tasks/stats HTTP/1.1" 200 OK
 INFO:     127.0.0.1:60960 - "GET /api/tasks/ HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'ingester.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [32976]
+INFO:     Started server process [34218]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [34218]
+INFO:     Started server process [34503]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
