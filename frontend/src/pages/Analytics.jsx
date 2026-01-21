@@ -15,6 +15,7 @@ const Analytics = () => {
     const [statusData, setStatusData] = useState([]);
     const [overdueData, setOverdueData] = useState([]);
     const [workloadData, setWorkloadData] = useState([]);
+    const [oldestTasks, setOldestTasks] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -68,7 +69,19 @@ const Analytics = () => {
                 .slice(0, 5) // Top 5
         );
 
-        // --- 4. Avg Duration & Table Data ---
+        // --- 4. Oldest Pending Tasks (New Graph) ---
+        const pendingWithAge = data
+            .filter(t => t.status !== 'Completed' && t.allocated_date)
+            .map(t => ({
+                name: t.assigned_agency || 'Unknown',
+                days: differenceInDays(new Date(), new Date(t.allocated_date)),
+                task: t.task_number
+            }))
+            .sort((a, b) => b.days - a.days)
+            .slice(0, 5);
+        setOldestTasks(pendingWithAge);
+
+        // --- 5. Avg Duration & Table Data ---
         const agencies = [...new Set(data.map(t => t.assigned_agency).filter(Boolean))];
         const agencyStats = agencies.map(agency => {
             const agencyTasks = data.filter(t => t.assigned_agency === agency);
@@ -213,16 +226,34 @@ const Analytics = () => {
                     </div>
                 </div>
 
-                {/* 4. Efficiency (Avg Days) */}
-                <div className="bg-white dark:bg-dark-card p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                    <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-4">Avg Completion Speed (Days)</h2>
+                {/* 4. Oldest Tasks (New Graph) */}
+                <div className="bg-white dark:bg-dark-card p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm cursor-pointer hover:border-indigo-500 transition-colors">
+                    <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-4">Oldest Pending Tasks (Days Open)</h2>
                     <div className="h-64 w-full">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={avgDuration.slice(0, 5)} layout="vertical" margin={{ left: 40 }}>
+                            <BarChart
+                                data={oldestTasks}
+                                layout="vertical"
+                                margin={{ left: 40, right: 40 }}
+                            >
                                 <XAxis type="number" hide />
                                 <YAxis dataKey="name" type="category" width={100} tick={{ fill: '#94a3b8', fontSize: 11 }} />
-                                <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ backgroundColor: '#1e293b', borderRadius: '8px', color: '#fff' }} />
-                                <Bar dataKey="days" fill="#6366f1" radius={[0, 4, 4, 0]} barSize={20} />
+                                <Tooltip
+                                    cursor={{ fill: 'transparent' }}
+                                    contentStyle={{ backgroundColor: '#1e293b', borderRadius: '8px', color: '#fff' }}
+                                    formatter={(value, name, props) => [`${value} Days`, `Task #${props.payload.task}`]}
+                                />
+                                <Bar
+                                    dataKey="days"
+                                    fill="#ec4899"
+                                    radius={[0, 4, 4, 0]}
+                                    barSize={20}
+                                    onClick={(data) => {
+                                        goToDashboard({ filterAgency: data.name, filterStatus: 'Pending' });
+                                    }}
+                                >
+                                    <LabelList dataKey="days" position="right" fill="#64748b" fontSize={12} fontWeight="bold" />
+                                </Bar>
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
