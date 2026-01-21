@@ -152,13 +152,15 @@ const Dashboard = () => {
                         Export
                     </button>
 
-                    <button
-                        onClick={() => setIsAddModalOpen(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30"
-                    >
-                        <Plus size={18} />
-                        Add Task
-                    </button>
+                    {user.role === 'admin' && (
+                        <button
+                            onClick={() => setIsAddModalOpen(true)}
+                            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30"
+                        >
+                            <Plus size={18} />
+                            Add Task
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -246,6 +248,7 @@ const Dashboard = () => {
                 loading={loading}
                 fetchData={fetchData}
                 agencies={agencies}
+                user={user}
                 onEdit={(task) => console.log("Edit", task)}
             />
 

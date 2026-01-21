@@ -7,7 +7,7 @@ import {
 import { format } from 'date-fns';
 import { api } from '../services/api';
 
-const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies }) => {
+const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
     const [editingId, setEditingId] = useState(null);
     const [editForm, setEditForm] = useState({});
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
@@ -419,20 +419,24 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies }) => {
                                                 </div>
                                             ) : (
                                                 <div className="flex gap-2">
-                                                    <button
-                                                        onClick={() => startEdit(task)}
-                                                        title="Edit Task"
-                                                        className="p-2 rounded-lg hover:bg-indigo-50 dark:hover:bg-slate-700 text-slate-400 hover:text-indigo-600 transition-colors"
-                                                    >
-                                                        <Edit2 size={16} />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDelete(task)}
-                                                        title="Delete Task"
-                                                        className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-400 hover:text-red-500 transition-colors"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                    </button>
+                                                    {user?.role === 'admin' && (
+                                                        <>
+                                                            <button
+                                                                onClick={() => startEdit(task)}
+                                                                title="Edit Task"
+                                                                className="p-2 rounded-lg hover:bg-indigo-50 dark:hover:bg-slate-700 text-slate-400 hover:text-indigo-600 transition-colors"
+                                                            >
+                                                                <Edit2 size={16} />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDelete(task)}
+                                                                title="Delete Task"
+                                                                className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-400 hover:text-red-500 transition-colors"
+                                                            >
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                        </>
+                                                    )}
                                                 </div>
                                             )}
                                         </td>
