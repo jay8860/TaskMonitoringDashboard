@@ -8,6 +8,10 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
     role = Column(String, default="viewer") # admin, viewer
+    email = Column(String, unique=True, index=True, nullable=True)
+    password_hint = Column(String, nullable=True)
+    reset_token = Column(String, nullable=True)
+    reset_token_expiry = Column(DateTime, nullable=True)
 
 class Task(Base):
     __tablename__ = "tasks"

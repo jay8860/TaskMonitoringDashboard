@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Analytics';
+import ResetPassword from './pages/ResetPassword';
 
 // Protected Route Guard
 const ProtectedRoute = ({ children }) => {
@@ -18,6 +19,7 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/login" element={<Login onLogin={(u) => console.log(u)} />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route
           path="/"
           element={

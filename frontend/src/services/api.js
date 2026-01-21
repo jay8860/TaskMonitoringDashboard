@@ -3,8 +3,32 @@ import axios from 'axios';
 // In production (single service), use relative path. In dev, use localhost:8000.
 const BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://127.0.0.1:8000');
 const API_URL = `${BASE_URL}/api/tasks`;
+const AUTH_URL = `${BASE_URL}/api/auth`;
 
 export const api = {
+    // --- Auth ---
+    login: async (credentials) => {
+        const response = await axios.post(`${AUTH_URL}/login`, credentials);
+        return response.data;
+    },
+
+    getHint: async (username) => {
+        const response = await axios.get(`${AUTH_URL}/hint/${username}`);
+        return response.data;
+    },
+
+    forgotPassword: async (email) => {
+        const response = await axios.post(`${AUTH_URL}/forgot-password`, { email });
+        return response.data;
+    },
+
+    resetPassword: async (data) => {
+        // data: { token, new_password }
+        const response = await axios.post(`${AUTH_URL}/reset-password`, data);
+        return response.data;
+    },
+
+    // --- Tasks ---
     getTasks: async (filters = {}) => {
         const params = new URLSearchParams();
         if (filters.agency) params.append('agency', filters.agency);

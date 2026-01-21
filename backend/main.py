@@ -3,11 +3,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from database import engine, Base
-from routers import tasks
+from routers import tasks, auth
 import os
 
 # Create Tables
 Base.metadata.create_all(bind=engine)
+
+# Seed Admin User
+from seed_auth import seed_admin
+seed_admin()
 
 app = FastAPI(title="Task Dashboard API")
 
@@ -20,6 +24,7 @@ app.add_middleware(
 )
 
 app.include_router(tasks.router, prefix="/api/tasks", tags=["tasks"])
+app.include_router(auth.router, prefix="/api")
 
 # Serve React Frontend (Single Service Mode)
 frontend_dist = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../frontend/dist")
