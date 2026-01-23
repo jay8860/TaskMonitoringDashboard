@@ -145,8 +145,11 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
     const startEdit = (task) => {
         setEditingId(task.id);
         setEditForm({
+            task_number: task.task_number,
             description: task.description, // Task Name/Desc
             assigned_agency: task.assigned_agency,
+            allocated_date: task.allocated_date,
+            time_given: task.time_given,
             deadline_date: task.deadline_date,
             completion_date: task.completion_date || ''
         });
@@ -165,6 +168,24 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
         } catch (e) {
             alert("Failed to update task: " + e.message);
         }
+    };
+
+    const handleTimeChange = (e, task) => {
+        const newTime = e.target.value;
+        const updates = { ...editForm, time_given: newTime };
+
+        // Try to parse days and update deadline
+        const daysMatch = newTime.match(/(\d+)/);
+        if (daysMatch && task.allocated_date) {
+            const days = parseInt(daysMatch[1]);
+            const allocated = new Date(task.allocated_date);
+            if (!isNaN(allocated)) {
+                const deadline = new Date(allocated);
+                deadline.setDate(allocated.getDate() + days);
+                updates.deadline_date = deadline.toISOString().split('T')[0];
+            }
+        }
+        setEditForm(updates);
     };
 
     const handleDelete = async (task) => {
@@ -388,7 +409,7 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
                                                 <input
                                                     type="text"
                                                     value={editForm.time_given || ''}
-                                                    onChange={handleTimeChange}
+                                                    onChange={(e) => handleTimeChange(e, task)}
                                                     className="w-full p-2 rounded border border-indigo-300 focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-600 text-sm"
                                                 />
                                             ) : (
