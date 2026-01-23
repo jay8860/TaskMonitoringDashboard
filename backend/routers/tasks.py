@@ -129,6 +129,18 @@ def update_task(task_id: int, update: TaskUpdate, db: Session = Depends(get_db))
     for key, value in update_data.items():
         setattr(task, key, value)
     
+    # Auto-update status based on completion_date
+    if "completion_date" in update_data:
+        c_date = update_data["completion_date"]
+        if c_date and str(c_date).strip():
+            task.status = "Completed"
+        else:
+            # Reverting from Completed. Check if Overdue or Pending.
+            if task.deadline_date and task.deadline_date < date.today():
+                task.status = "Overdue"
+            else:
+                task.status = "Pending"
+                
     db.commit()
     
     # Trigger Two-Way Sync using Original Number
