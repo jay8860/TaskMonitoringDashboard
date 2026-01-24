@@ -295,7 +295,7 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
                                 className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group whitespace-nowrap"
                                 style={{ width: columnWidths.deadline_due_in }}
                             >
-                                <div className="flex items-center gap-1">Deadline {sortConfig.key === 'deadline_due_in' && <ArrowUpDown size={14} />}</div>
+                                <div className="flex items-center gap-1">Due In {sortConfig.key === 'deadline_due_in' && <ArrowUpDown size={14} />}</div>
                                 <Resizer colKey="deadline_due_in" />
                             </th>
 
