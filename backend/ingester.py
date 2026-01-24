@@ -312,12 +312,8 @@ def update_sheet_task(task_number: str, updates: dict):
                 updates.get('time_given', '')                                
             ]]
             
-            # Add Deadline to Row Data (Col 10 / J) if present
-            if 'deadline_date' in updates:
-                row_data[0].append(format_date_for_sheet(updates['deadline_date']))
-                range_name = f"D{next_row}:J{next_row}" # Extend to J
-            else:
-                range_name = f"D{next_row}:I{next_row}"
+            # User request: Do NOT write to Col 10 (Deadline). It updates automatically via formula based on Col 8 & 9.
+            range_name = f"D{next_row}:I{next_row}"
 
             sheet.update(range_name, row_data, value_input_option='USER_ENTERED')
             
@@ -335,8 +331,7 @@ def update_sheet_task(task_number: str, updates: dict):
         if 'priority' in updates:
             sheet.update_cell(row_idx, 7, updates['priority']) 
 
-        if 'deadline_date' in updates:
-            sheet.update_cell(row_idx, 10, str(updates['deadline_date']))
+        # Col 10 (Deadline) skipped as per user request (Auto-update formula)
             
         if 'completion_date' in updates:
              val_to_send = updates['completion_date'] if updates['completion_date'] is not None else ""
