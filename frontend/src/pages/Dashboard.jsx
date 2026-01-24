@@ -10,7 +10,7 @@ import {
     Search, Filter, Plus, FileDown, RefreshCw, XCircle, Calendar, Pin
 } from 'lucide-react';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import MultiSelect from '../components/MultiSelect';
 
@@ -148,7 +148,8 @@ const Dashboard = () => {
                 tableRows.push(rowData);
             });
 
-            doc.autoTable({
+            // Use autoTable directly
+            autoTable(doc, {
                 head: [tableColumn],
                 body: tableRows,
                 startY: 40,
