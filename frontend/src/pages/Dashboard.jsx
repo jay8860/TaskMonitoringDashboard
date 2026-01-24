@@ -9,8 +9,6 @@ import {
     ClipboardList, CheckSquare, Clock, AlertTriangle,
     Search, Filter, Plus, FileDown, RefreshCw, XCircle, Calendar, Pin
 } from 'lucide-react';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import MultiSelect from '../components/MultiSelect';
 
@@ -22,7 +20,6 @@ const Dashboard = () => {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('all'); // 'all' | 'today'
     const [allEmployees, setAllEmployees] = useState([]); // Full list for dropdowns
-    const [showExportMenu, setShowExportMenu] = useState(false); // Dropdown toggle
 
     // Filters
     const location = useLocation();
@@ -116,96 +113,8 @@ const Dashboard = () => {
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Tasks");
         XLSX.writeFile(wb, "dantewada_tasks.xlsx");
-        setShowExportMenu(false);
     };
 
-    const handleExportPDF = async () => {
-        try {
-            const doc = new jsPDF();
-
-            // Function to load Hindi Font
-            const addHindiFont = async () => {
-                try {
-                    // Using Local Font File from public/fonts with cache buster
-                    const response = await fetch('/fonts/NotoSansDevanagari-Regular.ttf?v=2');
-                    if (!response.ok) throw new Error("Check connection or font URL");
-
-                    const arrayBuffer = await response.arrayBuffer();
-                    // Convert ArrayBuffer to Base64
-                    let binary = '';
-                    const bytes = new Uint8Array(arrayBuffer);
-                    const len = bytes.byteLength;
-                    for (let i = 0; i < len; i++) {
-                        binary += String.fromCharCode(bytes[i]);
-                    }
-                    const base64data = btoa(binary);
-
-                    doc.addFileToVFS("NotoSansDevanagari-Regular.ttf", base64data);
-                    doc.addFont("NotoSansDevanagari-Regular.ttf", "NotoSansDevanagari", "normal");
-                    console.log("Hindi Font Loaded Successfully");
-                    return true;
-                } catch (err) {
-                    console.error("Could not load Hindi font:", err);
-                    return false;
-                }
-            };
-
-            // Wait for font
-            await addHindiFont();
-
-            // Apply Font Global
-            doc.setFont("NotoSansDevanagari");
-
-            // Title
-            doc.setFontSize(18);
-            doc.text("Task Monitoring Report", 14, 22);
-
-            // Timestamp
-            doc.setFontSize(10);
-            doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 30);
-
-            // Table Config
-            const tableColumn = ["S.No", "Task No", "Description", "Assigned To", "Priority", "Deadline", "Status"];
-            const tableRows = [];
-
-            tasks.forEach((task, index) => {
-                const rowData = [
-                    index + 1,
-                    task.task_number,
-                    task.description,
-                    task.assigned_agency,
-                    task.priority,
-                    task.deadline_date || '-',
-                    task.status
-                ];
-                tableRows.push(rowData);
-            });
-
-            // Use autoTable directly
-            autoTable(doc, {
-                head: [tableColumn],
-                body: tableRows,
-                startY: 40,
-                theme: 'grid',
-                headStyles: { fillColor: [79, 70, 229] }, // Indigo-600
-                styles: {
-                    fontSize: 8,
-                    cellPadding: 2,
-                    font: 'NotoSansDevanagari', // Use Hindi Font
-                    fontStyle: 'normal'
-                },
-                columnStyles: {
-                    2: { cellWidth: 60 } // Description wider
-                }
-            });
-
-            doc.save("dantewada_tasks.pdf");
-            setShowExportMenu(false);
-        } catch (error) {
-            console.error("PDF Export Error:", error);
-            alert("Failed to export PDF: " + error.message);
-        }
-    };
 
     const agencies = stats.by_agency ? stats.by_agency.map(a => a.name) : [];
 
@@ -261,39 +170,13 @@ const Dashboard = () => {
                         </button>
                     )}
 
-                    <div className="relative z-50">
-                        <button
-                            onClick={() => setShowExportMenu(!showExportMenu)}
-                            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-dark-card border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-                        >
-                            <FileDown size={18} />
-                            Export
-                        </button>
-
-                        {showExportMenu && (
-                            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-dark-card rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50 overflow-hidden">
-                                <button
-                                    onClick={handleExportExcel}
-                                    className="w-full text-left px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm text-slate-700 dark:text-slate-300 transition-colors border-b border-slate-100 dark:border-slate-800"
-                                >
-                                    Export as Excel
-                                </button>
-                                <button
-                                    onClick={handleExportPDF}
-                                    className="w-full text-left px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm text-slate-700 dark:text-slate-300 transition-colors"
-                                >
-                                    Export as PDF
-                                </button>
-                            </div>
-                        )}
-                        {/* Overlay to close */}
-                        {showExportMenu && (
-                            <div
-                                className="fixed inset-0 z-40"
-                                onClick={() => setShowExportMenu(false)}
-                            ></div>
-                        )}
-                    </div>
+                    <button
+                        onClick={handleExportExcel}
+                        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-dark-card border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    >
+                        <FileDown size={18} />
+                        Export
+                    </button>
 
                     {user.role === 'admin' && (
                         <button
@@ -402,7 +285,7 @@ const Dashboard = () => {
                 agencies={allEmployees.length > 0 ? allEmployees : agencies}
             />
 
-        </Layout>
+        </Layout >
     );
 };
 
