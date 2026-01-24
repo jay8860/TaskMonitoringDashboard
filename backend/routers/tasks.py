@@ -41,7 +41,8 @@ class TaskUpdate(BaseModel):
 def trigger_sync(db: Session = Depends(get_db)):
     print("--- SYNC ENDPOINT HIT ---")
     try:
-        result = ingester.sync_data(db)
+        # result = ingester.sync_data(db) # Deprecated
+        result = ingester.push_portal_to_sheet(db)
         print(f"--- SYNC RESULT: {result} ---")
         if "error" in result:
              raise HTTPException(status_code=500, detail=result["error"])

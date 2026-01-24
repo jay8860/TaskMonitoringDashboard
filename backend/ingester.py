@@ -408,10 +408,178 @@ def delete_sheet_task(task_number: str):
         print(f"Sheet Delete Failed: {e}")
         return {"error": str(e)}
 
+def push_portal_to_sheet(db: Session):
+    """
+    One-Way Sync: Pushes ALL data from Portal DB to Google Sheet.
+    - Matches tasks by Task Number.
+    - Updates existing rows.
+    - Appends new rows.
+    """
+    print("🚀 Starting One-Way Sync (Portal -> Sheet)...")
+    client = get_gspread_client()
+    if not client:
+        return {"error": "Authentication failed"}
+
+    try:
+        sheet = client.open_by_key(SHEET_ID).worksheet(TAB_NAME)
+        
+        # 1. Fetch ALL Tasks from DB
+        db_tasks = db.query(models.Task).all()
+        print(f"📦 Found {len(db_tasks)} tasks in Portal DB.")
+
+        # 2. Fetch Current Sheet Data (to safely update rows)
+        # We need a map of {Task_No: Row_Index}
+        try:
+            task_col_values = sheet.col_values(4) # Column D is Task No
+        except Exception as e:
+            print("Error reading sheet column:", e)
+            task_col_values = []
+            
+        sheet_map = {}
+        for idx, val in enumerate(task_col_values):
+            clean_val = str(val).strip()
+            if clean_val and clean_val.lower() != 'nan':
+                sheet_map[clean_val] = idx + 1 # 1-based index
+
+        # 3. SMART SYNC: Pull NEW tasks from Sheet first (e.g. Google Forms)
+        print("🔄 Checking for new tasks from Sheet...")
+        # Get all rows to check for new ones
+        all_sheet_rows = sheet.get_all_records()
+        
+        # We need to map DB tasks by Task Number for quick lookup
+        db_task_map = {str(t.task_number).strip(): t for t in db_tasks}
+        
+        new_tasks_count = 0
+        for row in all_sheet_rows:
+            # Note: gspread get_all_records uses header keys
+            # Keys might vary slightly, so be robust
+            row_task_no = str(row.get('Task/File No', row.get('Task/File No', ''))).strip().lstrip('#')
+            
+            if not row_task_no or row_task_no.lower() == 'nan':
+                 continue
+                 
+            if row_task_no not in db_task_map:
+                print(f"🆕 Found new task in Sheet: {row_task_no}. Importing...")
+                
+                # Parse Helper
+                def clean_val(k): return str(row.get(k, '')).strip()
+                def parse_sheet_date(v): return parse_date(v)
+
+                new_task_data = {
+                    "task_number": row_task_no,
+                    "description": clean_val('Notes/Comments by Steno'),
+                    "assigned_agency": clean_val('Assigned To'),
+                    "priority": clean_val('Priority'),
+                    "allocated_date": parse_sheet_date(row.get('Task Allocated Date')),
+                    "deadline_date": parse_sheet_date(row.get('Deadline for Completion')),
+                    "completion_date": clean_val('Task Completion Date'),
+                    "status": "Pending", # Default
+                    "deadline_due_in": clean_val('Deadline due in'),
+                    "time_given": clean_val('Time given for task'),
+                    "source": "Sheet"
+                }
+                
+                # Basic Status Logic
+                if new_task_data['completion_date']:
+                    new_task_data['status'] = "Completed"
+                elif new_task_data['deadline_date'] and new_task_data['deadline_date'] < datetime.now().date():
+                     new_task_data['status'] = "Overdue"
+
+                new_db_task = models.Task(**new_task_data)
+                db.add(new_db_task)
+                new_tasks_count += 1
+                
+        if new_tasks_count > 0:
+            db.commit()
+            print(f"✅ Imported {new_tasks_count} new tasks from Sheet.")
+            # Refresh DB list to include new ones for the push phase
+            db_tasks = db.query(models.Task).all() 
+
+        # 4. PUSH PHASE: Push ALL Portal Data to Sheet
+        count_updated = 0
+        count_appended = 0
+
+        # Batching updates is better, but for now we loop (same as current updater)
+        # Optimization: We can prepare a batch list for append
+        
+        for task in db_tasks:
+            t_no = str(task.task_number).strip()
+            
+            # Helper: Format Date
+            def fmt_date(d):
+                if not d: return ""
+                try:
+                    return d.strftime('%b %d, %Y')
+                except:
+                    return str(d)
+
+            # Row Data Structure (Cols D to I)
+            # Col 4(D): Task No
+            # Col 5(E): Description
+            # Col 6(F): Assigned To
+            # Col 7(G): Priority
+            # Col 8(H): Allocated Date
+            # Col 9(I): Time Given
+            
+            row_values = [
+                t_no,
+                task.description or "",
+                task.assigned_agency or "",
+                task.priority or "",
+                fmt_date(task.allocated_date),
+                task.time_given or ""
+            ]
+            
+            if t_no in sheet_map:
+                # UPDATE Existing Row
+                row_idx = sheet_map[t_no]
+                # Update Range D{row_idx}:I{row_idx}
+                range_name = f"D{row_idx}:I{row_idx}"
+                sheet.update(range_name, [row_values], value_input_option='USER_ENTERED')
+                
+                # Update Completion Date/Status separately (Col C)
+                # Col 3(C): Completion Date
+                comp_val = task.completion_date if task.completion_date else ""
+                sheet.update_cell(row_idx, 3, comp_val)
+                
+                count_updated += 1
+            else:
+                # APPEND New Row
+                # We need to append at the end. 
+                # Note: 'update_sheet_task' logic for append was slightly different, 
+                # but 'append_row' is cleaner for bulk.
+                # However, strict formatting: we need empty cols for A,B,C...
+                # Actually, simpler to just append [None, None, CompDate, TaskNo, Desc, Assign, Prio, Alloc, Time]
+                
+                full_row = [
+                    "", # A: S.No (Formula)
+                    "", # B: Due In (Formula)
+                    task.completion_date or "", # C: Comp Date
+                    t_no, # D
+                    task.description or "", # E
+                    task.assigned_agency or "", # F
+                    task.priority or "", # G
+                    fmt_date(task.allocated_date), # H
+                    task.time_given or "", # I
+                    "" # J: Deadline (Formula)
+                ]
+                
+                sheet.append_row(full_row, value_input_option='USER_ENTERED')
+                count_appended += 1
+                
+        print(f"✅ One-Way Sync Complete. Updated: {count_updated}, Appended: {count_appended}")
+        return {"status": "success", "updated": count_updated, "appended": count_appended}
+
+    except Exception as e:
+        print(f"❌ One-Way Sync Failed: {e}")
+        return {"error": str(e)}
+
+
 if __name__ == "__main__":
     # Test Run
     from database import SessionLocal
     db = SessionLocal()
     from database import engine, Base
     Base.metadata.create_all(bind=engine)
-    print(sync_data(db))
+    # print(sync_data(db)) # Deprecated
+    print(push_portal_to_sheet(db))

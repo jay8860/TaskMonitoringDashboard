@@ -46,9 +46,9 @@ def auto_sync_job():
     finally:
         db.close()
 
-scheduler = BackgroundScheduler()
-scheduler.add_job(auto_sync_job, 'interval', seconds=60)
-scheduler.start()
+# scheduler = BackgroundScheduler()
+# scheduler.add_job(auto_sync_job, 'interval', seconds=60)
+# scheduler.start()
 
 app = FastAPI(title="Task Dashboard API")
 
