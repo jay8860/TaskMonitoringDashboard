@@ -3,7 +3,7 @@ import requests
 import io
 from sqlalchemy.orm import Session
 import models
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 
 SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSoXCOsOpdPTE8ON_fTs8C2j-q_fUjbG2c3o3mG7BdZyRZxwugYPoz6R_fVRCSl1G4ApAhuCtoK-2lQ/pub?gid=241700266&single=true&output=csv"
@@ -155,6 +155,19 @@ def sync_data(db: Session):
             # Parse Dates
             alloc_date = parse_date(row.get('Task Allocated Date'))
             dead_date = parse_date(row.get('Deadline for Completion'))
+            
+            # Failsafe: Calculate Deadline if missing in Sheet (e.g. formula not extended)
+            if not dead_date and alloc_date:
+                time_given_str = str(row.get('Time given for task (by default 7 days)', '')).strip()
+                # Extract number (e.g. "7 days" -> 7)
+                match = re.search(r'(\d+)', time_given_str)
+                if match:
+                    try:
+                        days = int(match.group(1))
+                        dead_date = alloc_date + timedelta(days=days)
+                        print(f"DEBUG: Calculated missing deadline for {task_no}: {dead_date}")
+                    except:
+                        pass
             
             # Logic for Status
             comp_val = str(row.get('Task Completion Date', '')).strip().lower()
