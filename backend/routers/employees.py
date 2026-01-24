@@ -66,6 +66,12 @@ def update_employee(emp_id: int, update: EmployeeUpdate, db: Session = Depends(g
     db.refresh(emp)
     return emp
 
+@router.delete("/{emp_id}")
+def delete_employee(emp_id: int, db: Session = Depends(get_db)):
+    emp = db.query(models.Employee).filter(models.Employee.id == emp_id).first()
+    if not emp:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    
     db.delete(emp)
     db.commit()
     return {"message": "Deleted"}
