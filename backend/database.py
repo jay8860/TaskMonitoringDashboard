@@ -5,9 +5,16 @@ from sqlalchemy.orm import sessionmaker
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "data")
 
-# Priority: Environment Variable (for Railway/Prod) > Local SQLite (for Dev)
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{os.path.join(BASE_DIR, 'tasks.db')}")
+# Create data directory if it doesn't exist (Critical for Volume mounting or local dev)
+try:
+    os.makedirs(DATA_DIR, exist_ok=True)
+except Exception as e:
+    print(f"Warning: Could not create data directory: {e}")
+
+# Priority: Environment Variable (for Railway/Prod) > Local Persistent SQLite (in data folder)
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{os.path.join(DATA_DIR, 'tasks.db')}")
 
 # Handle Postgres URL format (SQLAlchemy requires postgresql://, Railway gives postgres://)
 if SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
