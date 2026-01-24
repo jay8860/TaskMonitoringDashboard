@@ -126,22 +126,24 @@ const Dashboard = () => {
             // Function to load Hindi Font
             const addHindiFont = async () => {
                 try {
-                    // Using Local Font File from public/fonts
-                    // Ensure the file exists at: public/fonts/NotoSansDevanagari-Regular.ttf
-                    const response = await fetch('/fonts/NotoSansDevanagari-Regular.ttf');
+                    // Using Local Font File from public/fonts with cache buster
+                    const response = await fetch('/fonts/NotoSansDevanagari-Regular.ttf?v=2');
                     if (!response.ok) throw new Error("Check connection or font URL");
-                    const blob = await response.blob();
-                    const reader = new FileReader();
-                    return new Promise((resolve) => {
-                        reader.onloadend = () => {
-                            const base64data = reader.result.split(',')[1];
-                            doc.addFileToVFS("NotoSansDevanagari-Regular.ttf", base64data);
-                            doc.addFont("NotoSansDevanagari-Regular.ttf", "NotoSansDevanagari", "normal");
-                            console.log("Hindi Font Loaded Successfully");
-                            resolve(true);
-                        };
-                        reader.readAsDataURL(blob);
-                    });
+
+                    const arrayBuffer = await response.arrayBuffer();
+                    // Convert ArrayBuffer to Base64
+                    let binary = '';
+                    const bytes = new Uint8Array(arrayBuffer);
+                    const len = bytes.byteLength;
+                    for (let i = 0; i < len; i++) {
+                        binary += String.fromCharCode(bytes[i]);
+                    }
+                    const base64data = btoa(binary);
+
+                    doc.addFileToVFS("NotoSansDevanagari-Regular.ttf", base64data);
+                    doc.addFont("NotoSansDevanagari-Regular.ttf", "NotoSansDevanagari", "normal");
+                    console.log("Hindi Font Loaded Successfully");
+                    return true;
                 } catch (err) {
                     console.error("Could not load Hindi font:", err);
                     return false;
