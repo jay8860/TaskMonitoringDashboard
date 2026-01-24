@@ -1,0 +1,482 @@
+[
+    {
+        "name": "D R Urwasha",
+        "mobile": "9406355503",
+        "display_name": "CSEB",
+        "id": 1
+    },
+    {
+        "name": "Aditya",
+        "mobile": "8600277944",
+        "display_name": "Aditya DMF",
+        "id": 2
+    },
+    {
+        "name": "Alka",
+        "mobile": "9407799442",
+        "display_name": "Alka Mahobia DMF",
+        "id": 3
+    },
+    {
+        "name": "Sanket",
+        "mobile": "9763132744",
+        "display_name": "Sanket Joshi DMF",
+        "id": 4
+    },
+    {
+        "name": "Divya PPIA",
+        "mobile": null,
+        "display_name": "PPIA",
+        "id": 5
+    },
+    {
+        "name": "Surendra Netam",
+        "mobile": null,
+        "display_name": "APO Nirman",
+        "id": 6
+    },
+    {
+        "name": "Pramodh Durgam",
+        "mobile": "9340587624",
+        "display_name": "AO",
+        "id": 7
+    },
+    {
+        "name": "Mamta Rana",
+        "mobile": "9407774544",
+        "display_name": "DCSBM",
+        "id": 8
+    },
+    {
+        "name": "Devendra Sahu",
+        "mobile": "9171232611",
+        "display_name": "DPM MIS",
+        "id": 9
+    },
+    {
+        "name": "Umesh Pal",
+        "mobile": "9753958068",
+        "display_name": "DPM SMIB",
+        "id": 10
+    },
+    {
+        "name": "Balnaresh Rao",
+        "mobile": "9131312622",
+        "display_name": "DPM Fin.",
+        "id": 11
+    },
+    {
+        "name": "Nitesh Dewangan",
+        "mobile": "8109733137",
+        "display_name": "DPM Livelihood",
+        "id": 12
+    },
+    {
+        "name": "Shivram Baghel",
+        "mobile": "942559525",
+        "display_name": "LDM",
+        "id": 13
+    },
+    {
+        "name": "Rakesh Beck",
+        "mobile": "9425596951",
+        "display_name": "EE WRD",
+        "id": 14
+    },
+    {
+        "name": "Pradeep Patel",
+        "mobile": "8871672472",
+        "display_name": "CEO JP Dantewada",
+        "id": 15
+    },
+    {
+        "name": "Balram Dhruw",
+        "mobile": "8305925185",
+        "display_name": "CEO JP Geedam",
+        "id": 16
+    },
+    {
+        "name": "M R Kahyap",
+        "mobile": "9425501759",
+        "display_name": "CEO JP Kuakonda",
+        "id": 17
+    },
+    {
+        "name": "Ashish Dey",
+        "mobile": "9244249975",
+        "display_name": "CEO JP Katekalyan",
+        "id": 18
+    },
+    {
+        "name": "VK Paldas",
+        "mobile": "9340755336",
+        "display_name": "CMO Dantewada",
+        "id": 19
+    },
+    {
+        "name": "SHIV LAL THAKUR",
+        "mobile": "9425562936",
+        "display_name": "EE PWD",
+        "id": 20
+    },
+    {
+        "name": "NIKHIL KANWAR",
+        "mobile": "8839664758",
+        "display_name": "EE PHE",
+        "id": 21
+    },
+    {
+        "name": "A R Khare",
+        "mobile": "7489948542",
+        "display_name": "EE RES",
+        "id": 22
+    },
+    {
+        "name": "Raja Ram Pal",
+        "mobile": "9926170543",
+        "display_name": "LABOUR OFFICER",
+        "id": 23
+    },
+    {
+        "name": "M.R. BHUARYA",
+        "mobile": "9424154594",
+        "display_name": "DISTRICT REGISTRAR",
+        "id": 24
+    },
+    {
+        "name": "MITHLESH KISHAN",
+        "mobile": "6260297046",
+        "display_name": "DDP",
+        "id": 25
+    },
+    {
+        "name": "DDP",
+        "mobile": null,
+        "display_name": "DDSW",
+        "id": 26
+    },
+    {
+        "name": "SURAJ PANSARI",
+        "mobile": "9406484101",
+        "display_name": "DD AGRICULTURE",
+        "id": 27
+    },
+    {
+        "name": "Meena Mandavi",
+        "mobile": null,
+        "display_name": "DD/AD Horti",
+        "id": 28
+    },
+    {
+        "name": "Dr. Shyama Malviya",
+        "mobile": "9406470178",
+        "display_name": "DD VET",
+        "id": 29
+    },
+    {
+        "name": "VARUN NAGESH",
+        "mobile": "7000750918",
+        "display_name": "DPO WCD",
+        "id": 30
+    },
+    {
+        "name": "Deepak Baghel",
+        "mobile": "9589929815",
+        "display_name": "AD FISHRIES",
+        "id": 31
+    },
+    {
+        "name": "Yogendra Singh",
+        "mobile": "9516209072",
+        "display_name": "MINING OFFICER",
+        "id": 32
+    },
+    {
+        "name": "GAURAV PATLE",
+        "mobile": "9399646779",
+        "display_name": "RTO",
+        "id": 33
+    },
+    {
+        "name": "Deepak Baghel",
+        "mobile": "9685134048",
+        "display_name": "EXCISE OFFICER",
+        "id": 34
+    },
+    {
+        "name": "KIRTI KUMAR KAUSIK",
+        "mobile": "8319900854",
+        "display_name": "FOOD OFFICER",
+        "id": 35
+    },
+    {
+        "name": "RANJIT PUJARI",
+        "mobile": "8839216016",
+        "display_name": "PRO",
+        "id": 36
+    },
+    {
+        "name": "FILIP TIGGA",
+        "mobile": "9424180536",
+        "display_name": "GM DIC",
+        "id": 37
+    },
+    {
+        "name": "Rajiv Nag",
+        "mobile": "87702324709",
+        "display_name": "AC Tribal",
+        "id": 38
+    },
+    {
+        "name": "Pramod Thkaur",
+        "mobile": "9425216666",
+        "display_name": "DEO",
+        "id": 39
+    },
+    {
+        "name": "Harish Gautam",
+        "mobile": "9399141481",
+        "display_name": "DMC",
+        "id": 40
+    },
+    {
+        "name": "Vaibhav Dewangan",
+        "mobile": "8839581541",
+        "display_name": "EE PMGSY",
+        "id": 41
+    },
+    {
+        "name": "Lavkush Chouhan",
+        "mobile": "8887004727",
+        "display_name": "DIO NIC",
+        "id": 42
+    },
+    {
+        "name": "ASHISH VERMA",
+        "mobile": "9179586858",
+        "display_name": "EDM",
+        "id": 43
+    },
+    {
+        "name": "Chaman Joshi",
+        "mobile": "8357977990",
+        "display_name": "TO",
+        "id": 44
+    },
+    {
+        "name": "Meena Mandavi",
+        "mobile": "9425290122",
+        "display_name": "AD HORTICULTURE",
+        "id": 45
+    },
+    {
+        "name": "RAMSURAT BEK",
+        "mobile": "9669282636",
+        "display_name": "AD SERICULTURE",
+        "id": 46
+    },
+    {
+        "name": "Dr. Ajay Ramteke",
+        "mobile": "6268245 010",
+        "display_name": "CMHO",
+        "id": 47
+    },
+    {
+        "name": "Abhay tomar",
+        "mobile": "9131627968",
+        "display_name": "Civil Surgeon",
+        "id": 48
+    },
+    {
+        "name": "C LAKRA",
+        "mobile": "9617477819",
+        "display_name": "DPSO",
+        "id": 49
+    },
+    {
+        "name": "AMIT VERMA",
+        "mobile": "6268727142",
+        "display_name": "AD CSSDA",
+        "id": 50
+    },
+    {
+        "name": "JITENDRA KUMAR BAGHEL",
+        "mobile": "9406266165",
+        "display_name": "CEO ANTYAVYASAI",
+        "id": 51
+    },
+    {
+        "name": "Pradeep ASO",
+        "mobile": "9424279086",
+        "display_name": "Pradeep",
+        "id": 52
+    },
+    {
+        "name": "AMIT VERMA",
+        "mobile": "6268727142",
+        "display_name": "Employment officer",
+        "id": 53
+    },
+    {
+        "name": "Ravikant Bhardwaj",
+        "mobile": "9926140186",
+        "display_name": "EE CREDA",
+        "id": 54
+    },
+    {
+        "name": "Gajendra Duwasa",
+        "mobile": "8839425778",
+        "display_name": "SDO EnM",
+        "id": 55
+    },
+    {
+        "name": "Kamlesh",
+        "mobile": "9411103788",
+        "display_name": "SDO BSNL",
+        "id": 56
+    },
+    {
+        "name": "Tarun",
+        "mobile": "9479275877",
+        "display_name": "APO NREGA",
+        "id": 57
+    },
+    {
+        "name": "Harish Sinha",
+        "mobile": "9406334109",
+        "display_name": "Principal livelihood",
+        "id": 58
+    },
+    {
+        "name": "Commandant",
+        "mobile": null,
+        "display_name": "Commandant",
+        "id": 59
+    },
+    {
+        "name": "Ramlal Korram",
+        "mobile": "8770238156",
+        "display_name": "Korram Steno",
+        "id": 60
+    },
+    {
+        "name": "Priyanka",
+        "mobile": null,
+        "display_name": "Steno1",
+        "id": 61
+    },
+    {
+        "name": "VK Paldas",
+        "mobile": "9340755336",
+        "display_name": "CMO Dnt",
+        "id": 62
+    },
+    {
+        "name": "Bhushan Mahapatra",
+        "mobile": "9179016767",
+        "display_name": "CMO Kirandul",
+        "id": 63
+    },
+    {
+        "name": "Krishna Rao",
+        "mobile": "7694078740",
+        "display_name": "CMO Bacheli",
+        "id": 64
+    },
+    {
+        "name": "Hulsi Pradhan",
+        "mobile": "8629906274",
+        "display_name": "CMO Geedam",
+        "id": 65
+    },
+    {
+        "name": "Girish tiwari",
+        "mobile": "7222904422",
+        "display_name": "CMO Barsoor",
+        "id": 66
+    },
+    {
+        "name": "Dharmendra Thakur",
+        "mobile": "7000528307",
+        "display_name": "BPM DNT",
+        "id": 67
+    },
+    {
+        "name": "Vaibhav Shesh",
+        "mobile": "8839056869",
+        "display_name": "BPM GDM",
+        "id": 68
+    },
+    {
+        "name": "Bhajan Yadav",
+        "mobile": "9407910349",
+        "display_name": "BPM KUA",
+        "id": 69
+    },
+    {
+        "name": "Sushil Bara",
+        "mobile": "7587377255",
+        "display_name": "BPM KTK",
+        "id": 70
+    },
+    {
+        "name": "Gajendra",
+        "mobile": null,
+        "display_name": "PONREGA DNT",
+        "id": 71
+    },
+    {
+        "name": "Bhupendar Telami",
+        "mobile": "9111457557",
+        "display_name": "PONREGA GDM",
+        "id": 72
+    },
+    {
+        "name": "Manoj Sinha",
+        "mobile": "9406071141",
+        "display_name": "PONREGA KUA",
+        "id": 73
+    },
+    {
+        "name": "Tulesh Netam",
+        "mobile": "9479065216",
+        "display_name": "PONREGA KTK",
+        "id": 74
+    },
+    {
+        "name": "Raj kishor Rathore",
+        "mobile": "9425272475",
+        "display_name": "APO Rathore",
+        "id": 75
+    },
+    {
+        "name": "Me",
+        "mobile": "",
+        "display_name": "Me",
+        "id": 76
+    },
+    {
+        "name": "Pradeep",
+        "mobile": "",
+        "display_name": "ADSO",
+        "id": 77
+    },
+    {
+        "name": "All CEOs",
+        "mobile": "",
+        "display_name": "All CEOs",
+        "id": 78
+    },
+    {
+        "name": "Tarun",
+        "mobile": "",
+        "display_name": "DC PMAY",
+        "id": 79
+    },
+    {
+        "name": "Sachivs",
+        "mobile": "",
+        "display_name": "Sachivs",
+        "id": 80
+    }
+]
