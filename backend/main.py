@@ -26,6 +26,10 @@ app.add_middleware(
 app.include_router(tasks.router, prefix="/api/tasks", tags=["tasks"])
 app.include_router(auth.router, prefix="/api")
 
+# Register Employees Router
+from routers import employees
+app.include_router(employees.router, prefix="/api/employees", tags=["employees"])
+
 # Serve React Frontend (Single Service Mode)
 frontend_dist = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../frontend/dist")
 

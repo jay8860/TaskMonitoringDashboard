@@ -3,6 +3,7 @@ import axios from 'axios';
 // In production (single service), use relative path. In dev, use localhost:8000.
 const BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://127.0.0.1:8000');
 const API_URL = `${BASE_URL}/api/tasks`;
+const EMP_URL = `${BASE_URL}/api/employees`;
 const AUTH_URL = `${BASE_URL}/api/auth`;
 
 export const api = {
@@ -62,6 +63,27 @@ export const api = {
 
     syncSheet: async () => {
         const response = await axios.post(`${API_URL}/sync`, null, { timeout: 20000 });
+        return response.data;
+    },
+
+    // --- Employees ---
+    getEmployees: async () => {
+        const response = await axios.get(`${EMP_URL}/`);
+        return response.data;
+    },
+
+    createEmployee: async (data) => {
+        const response = await axios.post(`${EMP_URL}/`, data);
+        return response.data;
+    },
+
+    updateEmployee: async (id, data) => {
+        const response = await axios.put(`${EMP_URL}/${id}`, data);
+        return response.data;
+    },
+
+    deleteEmployee: async (id) => {
+        const response = await axios.delete(`${EMP_URL}/${id}`);
         return response.data;
     }
 };

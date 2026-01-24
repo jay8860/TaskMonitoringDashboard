@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, FileText, Settings, LogOut, Sun, Moon, Menu, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, FileText, Settings, LogOut, Sun, Moon, Menu, BarChart3, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Layout = ({ children, user, onLogout }) => {
@@ -15,6 +15,7 @@ const Layout = ({ children, user, onLogout }) => {
 
     const menuItems = [
         { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+        { icon: Users, label: 'Employees', path: '/employees' },
         { icon: BarChart3, label: 'Analytics', path: '/analytics' },
     ];
 

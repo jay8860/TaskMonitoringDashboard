@@ -37,3 +37,12 @@ class Task(Base):
     source = Column(String, default="Sheet") # Sheet, Manual
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
+class Employee(Base):
+    __tablename__ = "employees"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True, nullable=False) # e.g. "Aditya"
+    mobile = Column(String, nullable=True)
+    display_name = Column(String, unique=True, index=True, nullable=False) # e.g. "Aditya DMF"
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
