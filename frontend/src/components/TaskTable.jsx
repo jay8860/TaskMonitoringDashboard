@@ -172,26 +172,27 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
     const formatDeadlineDisplay = (task) => {
         if (task.completion_date) return 'Completed';
 
-        // Priority to 'deadline_due_in' from Backend if reasonable
-        if (task.deadline_due_in && task.deadline_due_in !== 'null') {
-            const val = parseInt(task.deadline_due_in);
-            // If it's a crazy negative number (e.g. < -1000 days aka > 3 years ago), assume invalid/junk
-            if (!isNaN(val)) {
-                if (val < -2000) return '-';
-                return String(task.deadline_due_in).includes('days') ? task.deadline_due_in : val + ' days';
-            }
-        }
-
-        // Fallback to calculation
+        // FORCE DYNAMIC CALCULATION (Ignore stale DB 'deadline_due_in')
         if (task.deadline_date) {
             const d = new Date(task.deadline_date);
             if (d.toString() === 'Invalid Date' || d.getFullYear() < 2000) return '-';
 
-            // Double check sanity of diff
-            const diff = Math.ceil((d - new Date()) / (1000 * 60 * 60 * 24));
+            // Reset times to compare dates only
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+            d.setHours(0, 0, 0, 0);
+
+            // Diff in days
+            const diff = Math.ceil((d - now) / (1000 * 60 * 60 * 24));
+
+            // Sanity check for extremely old dates
             if (diff < -2000) return '-';
 
-            return diff + ' days';
+            if (diff === 0) return 'Today';
+            if (diff === 1) return 'Tomorrow';
+            if (diff === -1) return 'Yesterday';
+
+            return diff > 0 ? `${diff} days` : `${diff} days`;
         }
 
         return '-';
