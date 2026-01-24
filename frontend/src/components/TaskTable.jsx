@@ -10,7 +10,7 @@ import { api } from '../services/api';
 const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
     const [editingId, setEditingId] = useState(null);
     const [editForm, setEditForm] = useState({});
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+    const [sortConfig, setSortConfig] = useState({ key: 'deadline_due_in', direction: 'asc' });
 
     // Column Resizing Logic
     const [columnWidths, setColumnWidths] = useState({
@@ -77,20 +77,38 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
         let sortableTasks = [...tasks];
         if (sortConfig.key) {
             sortableTasks.sort((a, b) => {
-                let aVal = a[sortConfig.key] || '';
-                let bVal = b[sortConfig.key] || '';
+                let aVal = a[sortConfig.key];
+                let bVal = b[sortConfig.key];
+
+                // Numeric sorting for Deadline Due In
+                if (sortConfig.key === 'deadline_due_in') {
+                    // Extract number from string (e.g., "-10 days" -> -10, or "-5" -> -5)
+                    const parseDeadline = (val) => {
+                        if (!val && val !== 0) return 999999; // Push undefined/null to end
+                        const strVal = String(val).toLowerCase();
+                        if (strVal.includes('completed')) return 999999; // Completed last
+                        const match = strVal.match(/-?\d+/);
+                        return match ? parseInt(match[0], 10) : 999999;
+                    };
+
+                    const numA = parseDeadline(aVal);
+                    const numB = parseDeadline(bVal);
+
+                    return sortConfig.direction === 'asc' ? numA - numB : numB - numA;
+                }
 
                 // Date specific sorting
                 if (sortConfig.key.includes('date')) {
+                    const dateA = aVal ? new Date(aVal) : new Date(8640000000000000); // Max date if null
+                    const dateB = bVal ? new Date(bVal) : new Date(8640000000000000);
                     return sortConfig.direction === 'asc'
-                        ? new Date(aVal) - new Date(bVal)
-                        : new Date(bVal) - new Date(aVal);
+                        ? dateA - dateB
+                        : dateB - dateA;
                 }
 
-                if (typeof aVal === 'string') {
-                    aVal = aVal.toLowerCase();
-                    bVal = bVal.toLowerCase();
-                }
+                // Default String sorting
+                aVal = (aVal || '').toString().toLowerCase();
+                bVal = (bVal || '').toString().toLowerCase();
 
                 if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
                 if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
