@@ -30,6 +30,7 @@ class Task(Base):
     # New Columns
     deadline_due_in = Column(String, nullable=True) # "Deadline due in"
     time_given = Column(String, nullable=True) # "Time given for task"
+    is_pinned = Column(Integer, default=0, index=True) # 0=False, 1=True (Boolean in SQLite)
 
     status = Column(String, index=True, default="Pending") # Derived or Explicit
     remarks = Column(Text, nullable=True)

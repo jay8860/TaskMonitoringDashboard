@@ -7,7 +7,7 @@ import AddTaskModal from '../components/AddTaskModal';
 import { api } from '../services/api';
 import {
     ClipboardList, CheckSquare, Clock, AlertTriangle,
-    Search, Filter, Plus, FileDown, RefreshCw, XCircle
+    Search, Filter, Plus, FileDown, RefreshCw, XCircle, Calendar, Pin
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -20,6 +20,8 @@ const Dashboard = () => {
     const [stats, setStats] = useState({ total: 0, completed: 0, pending: 0, overdue: 0, by_agency: [] });
     const [loading, setLoading] = useState(true);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState('all'); // 'all' | 'today'
+    const [allEmployees, setAllEmployees] = useState([]); // Full list for dropdowns
 
     // Filters
     const location = useLocation();
@@ -43,13 +45,15 @@ const Dashboard = () => {
             if (selectedAgency.length > 0) filters.agency = selectedAgency.join(',');
             if (selectedStatus.length > 0) filters.status = selectedStatus.join(',');
 
-            const [tasksData, statsData] = await Promise.all([
+            const [tasksData, statsData, employeesData] = await Promise.all([
                 api.getTasks(filters),
-                api.getStats()
+                api.getStats(),
+                api.getEmployees()
             ]);
 
             setTasks(tasksData);
             setStats(statsData);
+            setAllEmployees(employeesData.map(e => e.display_name).sort());
         } catch (error) {
             console.error("Failed to fetch data:", error);
             // Don't alert on silent polling errors to avoid spamming user
@@ -138,6 +142,23 @@ const Dashboard = () => {
                 </div>
 
                 <div className="flex gap-2">
+                    {/* Tab Switcher */}
+                    <div className="bg-slate-100 dark:bg-slate-800 p-1 rounded-xl flex items-center mr-4">
+                        <button
+                            onClick={() => setActiveTab('all')}
+                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'all' ? 'bg-white dark:bg-dark-card shadow text-indigo-600 dark:text-indigo-400' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}`}
+                        >
+                            All Tasks
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('today')}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'today' ? 'bg-white dark:bg-dark-card shadow text-indigo-600 dark:text-indigo-400' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}`}
+                        >
+                            <Pin size={14} className={activeTab === 'today' ? 'fill-indigo-600 dark:fill-indigo-400' : ''} />
+                            Today's Tasks
+                        </button>
+                    </div>
+
                     {/* Only Admin can Sync */}
                     {user.role === 'admin' && (
                         <button
@@ -250,10 +271,10 @@ const Dashboard = () => {
 
             {/* Tasks Table */}
             <TaskTable
-                tasks={tasks}
+                tasks={activeTab === 'today' ? tasks.filter(t => t.is_pinned) : tasks}
                 loading={loading}
                 fetchData={fetchData}
-                agencies={agencies}
+                agencies={allEmployees.length > 0 ? allEmployees : agencies} // Use full list for editing dropdowns too
                 user={user}
                 onEdit={(task) => console.log("Edit", task)}
             />
@@ -262,7 +283,7 @@ const Dashboard = () => {
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
                 onAdd={handleAddTask}
-                agencies={agencies}
+                agencies={allEmployees.length > 0 ? allEmployees : agencies}
             />
 
         </Layout>

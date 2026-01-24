@@ -11,6 +11,25 @@ import ingester
 # Create Tables
 Base.metadata.create_all(bind=engine)
 
+# --- Auto-Migration: Add is_pinned column if missing ---
+from sqlalchemy import text
+def run_migrations():
+    try:
+        with engine.connect() as connection:
+            result = connection.execute(text("PRAGMA table_info(tasks)"))
+            columns = [row[1] for row in result.fetchall()]
+            if "is_pinned" not in columns:
+                print("🔄 Migration: Adding 'is_pinned' column to tasks table...")
+                connection.execute(text("ALTER TABLE tasks ADD COLUMN is_pinned INTEGER DEFAULT 0"))
+                connection.commit()
+                print("✅ Migration: 'is_pinned' column added.")
+            else:
+                print("✅ Migration: 'is_pinned' column already exists.")
+    except Exception as e:
+        print(f"❌ Migration Error: {e}")
+
+run_migrations()
+
 # Seed Admin User
 from seed_auth import seed_admin
 seed_admin()

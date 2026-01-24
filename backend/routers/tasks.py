@@ -21,6 +21,7 @@ class TaskCreate(BaseModel):
     remarks: Optional[str] = None
     deadline_due_in: Optional[str] = None
     time_given: Optional[str] = None
+    is_pinned: Optional[bool] = False
 
 class TaskUpdate(BaseModel):
     task_number: Optional[str] = None
@@ -32,6 +33,7 @@ class TaskUpdate(BaseModel):
     deadline_due_in: Optional[str] = None
     time_given: Optional[str] = None
     deadline_date: Optional[date] = None
+    is_pinned: Optional[bool] = None
 
 # --- Routes ---
 

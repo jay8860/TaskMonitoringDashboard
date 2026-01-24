@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
     MoreVertical, FileText, CheckCircle, Clock, AlertCircle,
-    Search, Filter, Download, Edit2, Check, X, Trash2, ArrowUpDown, CheckSquare
+    Search, Filter, Download, Edit2, Check, X, Trash2, ArrowUpDown, CheckSquare, Pin
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { api } from '../services/api';
@@ -24,7 +24,10 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
         allocated_date: 110,
         time_given: 90,
         deadline_date: 110,
-        action: 90
+        allocated_date: 110,
+        time_given: 90,
+        deadline_date: 110,
+        action: 130
     });
     const [resizing, setResizing] = useState(null); // { key: 'task_number', startX: 100, startWidth: 200 }
 
@@ -259,6 +262,16 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
             } catch (e) {
                 alert("Failed to delete task: " + e.message);
             }
+        }
+    };
+
+    const handlePin = async (task) => {
+        try {
+            // Optimistic Update (optional, but good for UI)
+            await api.updateTask(task.id, { is_pinned: !task.is_pinned });
+            fetchData();
+        } catch (e) {
+            console.error("Failed to toggle pin", e);
         }
     };
 
@@ -526,6 +539,13 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
                                                                 className="p-2 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-slate-400 hover:text-emerald-600 transition-colors"
                                                             >
                                                                 <CheckSquare size={16} />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handlePin(task)}
+                                                                title={task.is_pinned ? "Remove from Today's Tasks" : "Mark for Today"}
+                                                                className={`p-2 rounded-lg transition-colors ${task.is_pinned ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400' : 'hover:bg-indigo-50 dark:hover:bg-slate-700 text-slate-400 hover:text-indigo-600'}`}
+                                                            >
+                                                                <Pin size={16} className={task.is_pinned ? "fill-indigo-600 dark:fill-indigo-400" : ""} />
                                                             </button>
                                                             <button
                                                                 onClick={() => handleDelete(task)}
