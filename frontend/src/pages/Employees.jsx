@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { api } from '../services/api';
-import { Plus, Search, Edit2, Trash2, Phone, User as UserIcon } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, Phone, User as UserIcon, ArrowUpDown } from 'lucide-react';
 import AddEmployeeModal from '../components/AddEmployeeModal';
 
 const Employees = () => {
@@ -9,6 +9,9 @@ const Employees = () => {
     const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
+
+    // Sort State (Default: Display Name Asc)
+    const [sortConfig, setSortConfig] = useState({ key: 'display_name', direction: 'ascending' });
 
     // Modal State
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,10 +63,33 @@ const Employees = () => {
         setIsModalOpen(true);
     };
 
+    const handleSort = (key) => {
+        let direction = 'ascending';
+        if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+            direction = 'descending';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    // Filter & Sort
     const filteredEmployees = employees.filter(e =>
         e.name.toLowerCase().includes(search.toLowerCase()) ||
         e.display_name.toLowerCase().includes(search.toLowerCase())
     );
+
+    const sortedEmployees = [...filteredEmployees].sort((a, b) => {
+        if (!sortConfig.key) return 0;
+
+        let aVal = a[sortConfig.key] || '';
+        let bVal = b[sortConfig.key] || '';
+
+        if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+        if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+
+        if (aVal < bVal) return sortConfig.direction === 'ascending' ? -1 : 1;
+        if (aVal > bVal) return sortConfig.direction === 'ascending' ? 1 : -1;
+        return 0;
+    });
 
     return (
         <Layout user={user} onLogout={() => { localStorage.removeItem('user'); window.location.href = '/login'; }}>
@@ -103,9 +129,29 @@ const Employees = () => {
                         <thead>
                             <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
                                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">#</th>
-                                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Name</th>
+
+                                <th
+                                    className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider cursor-pointer hover:text-indigo-600 transition-colors group"
+                                    onClick={() => handleSort('name')}
+                                >
+                                    <div className="flex items-center gap-1">
+                                        Name
+                                        <ArrowUpDown size={14} className={`text-slate-400 group-hover:text-indigo-500 ${sortConfig.key === 'name' ? 'text-indigo-600' : ''}`} />
+                                    </div>
+                                </th>
+
                                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Mobile</th>
-                                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Display Username</th>
+
+                                <th
+                                    className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider cursor-pointer hover:text-indigo-600 transition-colors group"
+                                    onClick={() => handleSort('display_name')}
+                                >
+                                    <div className="flex items-center gap-1">
+                                        Display Username
+                                        <ArrowUpDown size={14} className={`text-slate-400 group-hover:text-indigo-500 ${sortConfig.key === 'display_name' ? 'text-indigo-600' : ''}`} />
+                                    </div>
+                                </th>
+
                                 {user.role === 'admin' && (
                                     <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
                                 )}
@@ -116,12 +162,12 @@ const Employees = () => {
                                 <tr>
                                     <td colSpan="5" className="px-6 py-12 text-center text-slate-500">Loading employees...</td>
                                 </tr>
-                            ) : filteredEmployees.length === 0 ? (
+                            ) : sortedEmployees.length === 0 ? (
                                 <tr>
                                     <td colSpan="5" className="px-6 py-12 text-center text-slate-500">No employees found.</td>
                                 </tr>
                             ) : (
-                                filteredEmployees.map((emp, index) => (
+                                sortedEmployees.map((emp, index) => (
                                     <tr key={emp.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                                         <td className="px-6 py-4 text-sm text-slate-500">{index + 1}</td>
                                         <td className="px-6 py-4 text-sm font-medium text-slate-800 dark:text-white">
