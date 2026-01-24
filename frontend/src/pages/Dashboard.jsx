@@ -119,9 +119,39 @@ const Dashboard = () => {
         setShowExportMenu(false);
     };
 
-    const handleExportPDF = () => {
+    const handleExportPDF = async () => {
         try {
             const doc = new jsPDF();
+
+            // Function to load Hindi Font
+            const addHindiFont = async () => {
+                try {
+                    // Using a reliable CDN for Noto Sans Devanagari (GitHub Raw)
+                    const response = await fetch('https://raw.githubusercontent.com/google/fonts/main/ofl/notosansdevanagari/NotoSansDevanagari-Regular.ttf');
+                    if (!response.ok) throw new Error("Check connection or font URL");
+                    const blob = await response.blob();
+                    const reader = new FileReader();
+                    return new Promise((resolve) => {
+                        reader.onloadend = () => {
+                            const base64data = reader.result.split(',')[1];
+                            doc.addFileToVFS("NotoSansDevanagari-Regular.ttf", base64data);
+                            doc.addFont("NotoSansDevanagari-Regular.ttf", "NotoSansDevanagari", "normal");
+                            console.log("Hindi Font Loaded Successfully");
+                            resolve(true);
+                        };
+                        reader.readAsDataURL(blob);
+                    });
+                } catch (err) {
+                    console.error("Could not load Hindi font:", err);
+                    return false;
+                }
+            };
+
+            // Wait for font
+            await addHindiFont();
+
+            // Apply Font Global
+            doc.setFont("NotoSansDevanagari");
 
             // Title
             doc.setFontSize(18);
@@ -155,7 +185,12 @@ const Dashboard = () => {
                 startY: 40,
                 theme: 'grid',
                 headStyles: { fillColor: [79, 70, 229] }, // Indigo-600
-                styles: { fontSize: 8, cellPadding: 2 },
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 2,
+                    font: 'NotoSansDevanagari', // Use Hindi Font
+                    fontStyle: 'normal'
+                },
                 columnStyles: {
                     2: { cellWidth: 60 } // Description wider
                 }
