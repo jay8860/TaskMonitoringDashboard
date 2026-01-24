@@ -533,7 +533,8 @@ def push_portal_to_sheet(db: Session):
             ]
             
             # Completion Date separate logic (Col C)
-            comp_val = task.completion_date if task.completion_date else ""
+            # Use None (null) instead of "" to ensure ISBLANK() works in Google Sheet
+            comp_val = task.completion_date if task.completion_date else None
 
             if t_no in sheet_map:
                 # UPDATE Existing Row (Prepare Batch Request)
