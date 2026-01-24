@@ -85,37 +85,33 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
 
                 // Numeric sorting for Deadline Due In
                 if (sortConfig.key === 'deadline_due_in') {
-                    // Extract number from string (e.g., "-10 days" -> -10, or "-5" -> -5)
                     const parseDeadline = (val) => {
-                        if (!val && val !== 0) return 999999; // Push undefined/null to end
+                        if (!val && val !== 0) return 999999;
                         const strVal = String(val).toLowerCase();
-                        if (strVal.includes('completed')) return 999999; // Completed last
+                        if (strVal.includes('completed')) return 999999;
                         const match = strVal.match(/-?\d+/);
                         return match ? parseInt(match[0], 10) : 999999;
                     };
-
                     const numA = parseDeadline(aVal);
                     const numB = parseDeadline(bVal);
-
-                    return sortConfig.direction === 'asc' ? numA - numB : numB - numA;
-                }
-
-                // Date specific sorting
-                if (sortConfig.key.includes('date')) {
-                    const dateA = aVal ? new Date(aVal) : new Date(8640000000000000); // Max date if null
+                    if (numA !== numB) return sortConfig.direction === 'asc' ? numA - numB : numB - numA;
+                } else if (sortConfig.key.includes('date')) {
+                    const dateA = aVal ? new Date(aVal) : new Date(8640000000000000);
                     const dateB = bVal ? new Date(bVal) : new Date(8640000000000000);
-                    return sortConfig.direction === 'asc'
-                        ? dateA - dateB
-                        : dateB - dateA;
+                    if (dateA - dateB !== 0) {
+                        return sortConfig.direction === 'asc' ? dateA - dateB : dateB - dateA;
+                    }
+                } else {
+                    aVal = (aVal || '').toString().toLowerCase();
+                    bVal = (bVal || '').toString().toLowerCase();
+                    if (aVal !== bVal) {
+                        if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+                        if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+                    }
                 }
 
-                // Default String sorting
-                aVal = (aVal || '').toString().toLowerCase();
-                bVal = (bVal || '').toString().toLowerCase();
-
-                if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
-                if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
-                return 0;
+                // TIE-BREAKER: If primary values are equal, show newest (Highest ID) first
+                return b.id - a.id;
             });
         }
         return sortableTasks;
