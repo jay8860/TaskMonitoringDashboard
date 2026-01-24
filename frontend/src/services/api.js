@@ -85,5 +85,10 @@ export const api = {
     deleteEmployee: async (id) => {
         const response = await axios.delete(`${EMP_URL}/${id}`);
         return response.data;
+    },
+
+    syncDropdowns: async () => {
+        const response = await axios.post(`${EMP_URL}/sync-dropdowns`, null, { timeout: 30000 });
+        return response.data;
     }
 };

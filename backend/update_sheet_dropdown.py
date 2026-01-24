@@ -2,7 +2,7 @@ from ingester import get_gspread_client, SHEET_ID, TAB_NAME
 from database import SessionLocal
 import models
 
-def update_sheet_dropdown():
+def update_sheet_dropdown(officers_list=None):
     client = get_gspread_client()
     if not client:
         print("Failed to authenticate with Google Sheets.")
@@ -19,17 +19,21 @@ def update_sheet_dropdown():
         sheet_id = worksheet.id
         print(f"Target Sheet ID (GID): {sheet_id}")
 
-        # Fetch Employees from DB
-        db = SessionLocal()
-        employees = db.query(models.Employee).all()
-        # Sort Alphabetically, ignore case
-        officers = sorted([e.display_name for e in employees], key=lambda x: x.lower())
-        db.close()
+        # Fetch Employees
+        if officers_list:
+            print(f"Using provided list of {len(officers_list)} officers.")
+            officers = sorted(officers_list, key=lambda x: x.lower())
+        else:
+            db = SessionLocal()
+            employees = db.query(models.Employee).all()
+            # Sort Alphabetically, ignore case
+            officers = sorted([e.display_name for e in employees], key=lambda x: x.lower())
+            db.close()
         
         print(f"Found {len(officers)} officers.")
         
         if not officers:
-            print("No officers found in DB. Aborting.")
+            print("No officers found. Aborting.")
             return
 
         # Constuct Validation Rule

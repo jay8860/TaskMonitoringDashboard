@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { api } from '../services/api';
-import { Plus, Search, Edit2, Trash2, Phone, User as UserIcon, ArrowUpDown } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, Phone, User as UserIcon, ArrowUpDown, RefreshCw } from 'lucide-react';
 import AddEmployeeModal from '../components/AddEmployeeModal';
 
 const Employees = () => {
     const [user] = useState(JSON.parse(localStorage.getItem('user')) || { role: 'viewer' });
     const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [syncing, setSyncing] = useState(false);
     const [search, setSearch] = useState('');
 
     // Sort State (Default: Display Name Asc)
@@ -63,6 +64,19 @@ const Employees = () => {
         setIsModalOpen(true);
     };
 
+    const handleSync = async () => {
+        if (!confirm("Sync Google Sheet & Form Dropdowns with Production Data (79 Officers)?")) return;
+        setSyncing(true);
+        try {
+            await api.syncDropdowns();
+            alert("Sync Completed Successfully!");
+        } catch (e) {
+            alert("Sync Failed: " + (e.response?.data?.detail || e.message));
+        } finally {
+            setSyncing(false);
+        }
+    };
+
     const handleSort = (key) => {
         let direction = 'ascending';
         if (sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -100,13 +114,23 @@ const Employees = () => {
                 </div>
 
                 {user.role === 'admin' && (
-                    <button
-                        onClick={openAdd}
-                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30"
-                    >
-                        <Plus size={18} />
-                        Add Employee
-                    </button>
+                    <div className="flex gap-3">
+                        <button
+                            onClick={handleSync}
+                            disabled={syncing}
+                            className={`flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-500/30 ${syncing ? 'opacity-75 cursor-not-allowed' : ''}`}
+                        >
+                            <RefreshCw size={18} className={syncing ? "animate-spin" : ""} />
+                            {syncing ? "Syncing..." : "Sync Dropdowns"}
+                        </button>
+                        <button
+                            onClick={openAdd}
+                            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30"
+                        >
+                            <Plus size={18} />
+                            Add Employee
+                        </button>
+                    </div>
                 )}
             </div>
 

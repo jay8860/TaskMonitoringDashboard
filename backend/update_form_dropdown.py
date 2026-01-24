@@ -16,7 +16,7 @@ CREDENTIALS_FILE = os.path.join(BASE_DIR, "../credentials.json")
 if not os.path.exists(CREDENTIALS_FILE):
      CREDENTIALS_FILE = os.path.join(BASE_DIR, "credentials.json")
 
-def update_form_dropdown():
+def update_form_dropdown(officers_list=None):
     print(f"Using credentials at: {CREDENTIALS_FILE}")
     creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, SCOPES)
     
@@ -43,14 +43,17 @@ def update_form_dropdown():
             print(f"ERROR: Could not find question with title '{QUESTION_TITLE}'")
             return
 
-        # 2. Fetch Employees from DB
-        db = SessionLocal()
-        employees = db.query(models.Employee).all()
-        # Sort Alphabetically, ignore case
-        officers = sorted([e.display_name for e in employees], key=lambda x: x.lower())
-        db.close()
+        # 2. Fetch Employees
+        if officers_list:
+            print(f"Using provided list of {len(officers_list)} officers.")
+            officers = sorted(officers_list, key=lambda x: x.lower())
+        else:
+            db = SessionLocal()
+            employees = db.query(models.Employee).all()
+            officers = sorted([e.display_name for e in employees], key=lambda x: x.lower())
+            db.close()
         
-        print(f"Found {len(officers)} officers in DB.")
+        print(f"Found {len(officers)} officers.")
         if not officers:
             print("No officers found. Aborting.")
             return
