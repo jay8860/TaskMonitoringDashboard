@@ -22,6 +22,7 @@ const Dashboard = () => {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('all'); // 'all' | 'today'
     const [allEmployees, setAllEmployees] = useState([]); // Full list for dropdowns
+    const [showExportMenu, setShowExportMenu] = useState(false); // Dropdown toggle
 
     // Filters
     const location = useLocation();
@@ -115,6 +116,51 @@ const Dashboard = () => {
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Tasks");
         XLSX.writeFile(wb, "dantewada_tasks.xlsx");
+        setShowExportMenu(false);
+    };
+
+    const handleExportPDF = () => {
+        const doc = new jsPDF();
+
+        // Title
+        doc.setFontSize(18);
+        doc.text("Task Monitoring Report", 14, 22);
+
+        // Timestamp
+        doc.setFontSize(10);
+        doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 30);
+
+        // Table Config
+        const tableColumn = ["S.No", "Task No", "Description", "Assigned To", "Priority", "Deadline", "Status"];
+        const tableRows = [];
+
+        tasks.forEach((task, index) => {
+            const rowData = [
+                index + 1,
+                task.task_number,
+                task.description,
+                task.assigned_agency,
+                task.priority,
+                task.deadline_date || '-',
+                task.status
+            ];
+            tableRows.push(rowData);
+        });
+
+        doc.autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 40,
+            theme: 'grid',
+            headStyles: { fillColor: [79, 70, 229] }, // Indigo-600
+            styles: { fontSize: 8, cellPadding: 2 },
+            columnStyles: {
+                2: { cellWidth: 60 } // Description wider
+            }
+        });
+
+        doc.save("dantewada_tasks.pdf");
+        setShowExportMenu(false);
     };
 
     const agencies = stats.by_agency ? stats.by_agency.map(a => a.name) : [];
@@ -171,13 +217,39 @@ const Dashboard = () => {
                         </button>
                     )}
 
-                    <button
-                        onClick={handleExportExcel}
-                        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-dark-card border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-                    >
-                        <FileDown size={18} />
-                        Export
-                    </button>
+                    <div className="relative">
+                        <button
+                            onClick={() => setShowExportMenu(!showExportMenu)}
+                            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-dark-card border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                        >
+                            <FileDown size={18} />
+                            Export
+                        </button>
+
+                        {showExportMenu && (
+                            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-dark-card rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50 overflow-hidden">
+                                <button
+                                    onClick={handleExportExcel}
+                                    className="w-full text-left px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm text-slate-700 dark:text-slate-300 transition-colors border-b border-slate-100 dark:border-slate-800"
+                                >
+                                    Export as Excel
+                                </button>
+                                <button
+                                    onClick={handleExportPDF}
+                                    className="w-full text-left px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm text-slate-700 dark:text-slate-300 transition-colors"
+                                >
+                                    Export as PDF
+                                </button>
+                            </div>
+                        )}
+                        {/* Overlay to close */}
+                        {showExportMenu && (
+                            <div
+                                className="fixed inset-0 z-40"
+                                onClick={() => setShowExportMenu(false)}
+                            ></div>
+                        )}
+                    </div>
 
                     {user.role === 'admin' && (
                         <button
