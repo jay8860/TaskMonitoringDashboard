@@ -344,6 +344,19 @@ def update_sheet_task(task_number: str, updates: dict):
         if 'priority' in updates:
             sheet.update_cell(row_idx, 7, updates['priority']) 
 
+        if 'allocated_date' in updates:
+             # Format date before sending
+             val = updates['allocated_date']
+             try:
+                 d = datetime.strptime(str(val), '%Y-%m-%d')
+                 val = d.strftime('%b %d, %Y')
+             except:
+                 pass
+             sheet.update_cell(row_idx, 8, val)
+
+        if 'time_given' in updates:
+             sheet.update_cell(row_idx, 9, updates['time_given']) 
+
         # Col 10 (Deadline) skipped as per user request (Auto-update formula)
             
         if 'completion_date' in updates:
