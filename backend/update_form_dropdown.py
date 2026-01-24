@@ -28,20 +28,19 @@ def update_form_dropdown():
         form = service.forms().get(formId=FORM_ID).execute()
         
         target_item_id = None
-        for item in form.get('items', []):
+        target_index = None
+        
+        for idx, item in enumerate(form.get('items', [])):
             title = item.get('title', '').strip()
             # Simple match
             if title.lower() == QUESTION_TITLE.lower():
                 target_item_id = item.get('itemId')
-                print(f"Found '{QUESTION_TITLE}' (ID: {target_item_id})")
+                target_index = idx
+                print(f"Found '{QUESTION_TITLE}' (ID: {target_item_id}) at Index: {target_index}")
                 break
         
         if not target_item_id:
             print(f"ERROR: Could not find question with title '{QUESTION_TITLE}'")
-            # List available just in case
-            print("Available questions:")
-            for item in form.get('items', []):
-                print(f"- {item.get('title')} ({item.get('itemId')})")
             return
 
         # 2. Fetch Employees from DB
@@ -63,7 +62,7 @@ def update_form_dropdown():
         update_request = {
             "updateItem": {
                 "item": {
-                    "itemId": target_item_id,
+                    "itemId": target_item_id, # Keep as is, retrieved from API
                     "questionItem": {
                         "question": {
                             "choiceQuestion": {
@@ -75,11 +74,7 @@ def update_form_dropdown():
                     }
                 },
                 "location": {
-                    "index": 0 # Index is required but creating a new item? No, updateItem updates existing.
-                    # Wait, 'location' field behavior in updateItem?
-                    # "location: The location of the item in the form..." 
-                    # Actually, if we provide the full item structure with ID, we might not need location if we use proper field mask.
-                    # BUT the API says: "UpdateItemRequest... item: The item to update... updateMask: ... location: ..."
+                    "index": target_index
                 },
                 "updateMask": "questionItem.question.choiceQuestion.options"
             }
