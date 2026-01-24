@@ -44,6 +44,7 @@ if not os.path.exists(CREDENTIALS_FILE):
 SCOPE = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 
 def get_gspread_client():
+    print(f"DEBUG: Attempting to authenticate with Google Sheets...")
     # 1. Try Environment Variable (Best for Production/Hosting)
     json_creds = os.environ.get("GOOGLE_CREDENTIALS_JSON")
     if json_creds:
@@ -51,19 +52,20 @@ def get_gspread_client():
             creds_dict = json.loads(json_creds)
             creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, SCOPE)
             client = gspread.authorize(creds)
+            print("DEBUG: Authenticated via GOOGLE_CREDENTIALS_JSON env var.")
             return client
         except Exception as e:
             print(f"Error authenticating from Env Var: {e}")
-            # Fallback to file if env var fails? No, better to fail or let file try. 
-            # If env var is present but bad, we probably want to know.
-            # But let's proceed to check file just in case.
 
     # 2. Try Local File (Best for Localhost)
+    print(f"DEBUG: Looking for credentials at: {CREDENTIALS_FILE}")
     if not os.path.exists(CREDENTIALS_FILE):
+        print(f"ERROR: Credentials file not found at {CREDENTIALS_FILE}")
         return None
     try:
         creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, SCOPE)
         client = gspread.authorize(creds)
+        print("DEBUG: Authenticated via local credentials.json file.")
         return client
     except Exception as e:
         print(f"Error authenticating with Google Sheets: {e}")
@@ -73,6 +75,7 @@ def fetch_data_from_api():
     """Fetches data directly from Google Sheets API to avoid CSV publishing delay."""
     client = get_gspread_client()
     if not client:
+        print("DEBUG: API Client is None, skipping API fetch.")
         return None # Fallback to CSV
     
     try:
@@ -80,12 +83,14 @@ def fetch_data_from_api():
         # Get all values
         data = sheet.get_all_values()
         if not data:
+            print("DEBUG: Sheet returned no data.")
             return None
             
         # Convert to DataFrame
         headers = data[0]
         rows = data[1:]
         df = pd.DataFrame(rows, columns=headers)
+        print(f"DEBUG: Successfully fetched {len(df)} rows from API.")
         return df
     except Exception as e:
         print(f"API Fetch Failed: {e}")
@@ -103,7 +108,9 @@ def sync_data(db: Session):
             response = requests.get(SHEET_URL, timeout=10)
             response.raise_for_status()
             df = pd.read_csv(io.BytesIO(response.content), encoding='utf-8')
+            print("DEBUG: Successfully fetched data from CSV.")
         except Exception as e:
+            print(f"ERROR: Both API and CSV sync failed: {e}")
             return {"error": f"Both API and CSV sync failed: {e}"}
 
     try:
@@ -302,11 +309,16 @@ def update_sheet_task(task_number: str, updates: dict):
                 updates.get('assigned_agency', ''),      
                 updates.get('priority', ''),             
                 format_date_for_sheet(updates.get('allocated_date', datetime.now().strftime('%Y-%m-%d'))), 
-                7                                
+                updates.get('time_given', '')                                
             ]]
             
-            # Update range D{row}:I{row}
-            range_name = f"D{next_row}:I{next_row}"
+            # Add Deadline to Row Data (Col 10 / J) if present
+            if 'deadline_date' in updates:
+                row_data[0].append(format_date_for_sheet(updates['deadline_date']))
+                range_name = f"D{next_row}:J{next_row}" # Extend to J
+            else:
+                range_name = f"D{next_row}:I{next_row}"
+
             sheet.update(range_name, row_data, value_input_option='USER_ENTERED')
             
             print(f"Successfully appended new Task {task_number} to Sheet at row {next_row}")
