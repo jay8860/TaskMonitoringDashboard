@@ -496,11 +496,13 @@ def push_portal_to_sheet(db: Session):
             db_tasks = db.query(models.Task).all() 
 
         # 4. PUSH PHASE: Push ALL Portal Data to Sheet
+        print("📤 Pushing data to Sheet (Batch Mode)...")
+        
+        updates_batch = []
+        rows_to_append = []
+        
         count_updated = 0
         count_appended = 0
-
-        # Batching updates is better, but for now we loop (same as current updater)
-        # Optimization: We can prepare a batch list for append
         
         for task in db_tasks:
             t_no = str(task.task_number).strip()
@@ -530,31 +532,30 @@ def push_portal_to_sheet(db: Session):
                 task.time_given or ""
             ]
             
+            # Completion Date separate logic (Col C)
+            comp_val = task.completion_date if task.completion_date else ""
+
             if t_no in sheet_map:
-                # UPDATE Existing Row
+                # UPDATE Existing Row (Prepare Batch Request)
                 row_idx = sheet_map[t_no]
-                # Update Range D{row_idx}:I{row_idx}
-                range_name = f"D{row_idx}:I{row_idx}"
-                sheet.update(range_name, [row_values], value_input_option='USER_ENTERED')
                 
-                # Update Completion Date/Status separately (Col C)
-                # Col 3(C): Completion Date
-                comp_val = task.completion_date if task.completion_date else ""
-                sheet.update_cell(row_idx, 3, comp_val)
-                
+                # Range D..I
+                updates_batch.append({
+                    'range': f'D{row_idx}:I{row_idx}',
+                    'values': [row_values]
+                })
+                # Range C (Completion Date)
+                updates_batch.append({
+                    'range': f'C{row_idx}',
+                    'values': [[comp_val]]
+                })
                 count_updated += 1
             else:
                 # APPEND New Row
-                # We need to append at the end. 
-                # Note: 'update_sheet_task' logic for append was slightly different, 
-                # but 'append_row' is cleaner for bulk.
-                # However, strict formatting: we need empty cols for A,B,C...
-                # Actually, simpler to just append [None, None, CompDate, TaskNo, Desc, Assign, Prio, Alloc, Time]
-                
                 full_row = [
                     "", # A: S.No (Formula)
                     "", # B: Due In (Formula)
-                    task.completion_date or "", # C: Comp Date
+                    comp_val, # C: Comp Date
                     t_no, # D
                     task.description or "", # E
                     task.assigned_agency or "", # F
@@ -563,15 +564,27 @@ def push_portal_to_sheet(db: Session):
                     task.time_given or "", # I
                     "" # J: Deadline (Formula)
                 ]
-                
-                sheet.append_row(full_row, value_input_option='USER_ENTERED')
+                rows_to_append.append(full_row)
                 count_appended += 1
-                
+        
+        # EXECUTE BATCH UPDATE (Existing Rows)
+        if updates_batch:
+            print(f"⚡ Batch Updating {len(updates_batch)} ranges...")
+            sheet.batch_update(updates_batch)
+        
+        # EXECUTE APPEND (New Rows)
+        if rows_to_append:
+             print(f"➕ Appending {len(rows_to_append)} new rows...")
+             sheet.append_rows(rows_to_append, value_input_option='USER_ENTERED')
+
         print(f"✅ One-Way Sync Complete. Updated: {count_updated}, Appended: {count_appended}")
         return {"status": "success", "updated": count_updated, "appended": count_appended}
 
     except Exception as e:
         print(f"❌ One-Way Sync Failed: {e}")
+        # Print full stack trace for debugging
+        import traceback
+        traceback.print_exc()
         return {"error": str(e)}
 
 
