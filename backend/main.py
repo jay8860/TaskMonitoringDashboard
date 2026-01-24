@@ -2,9 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from database import engine, Base
+from database import engine, Base, SessionLocal
 from routers import tasks, auth
 import os
+from apscheduler.schedulers.background import BackgroundScheduler
+import ingester
 
 # Create Tables
 Base.metadata.create_all(bind=engine)
@@ -12,6 +14,22 @@ Base.metadata.create_all(bind=engine)
 # Seed Admin User
 from seed_auth import seed_admin
 seed_admin()
+
+# --- Auto-Sync Scheduler ---
+def auto_sync_job():
+    print("⏰ Auto-Sync: Starting scheduled sync...")
+    db = SessionLocal()
+    try:
+        result = ingester.sync_data(db)
+        print(f"⏰ Auto-Sync Result: {result}")
+    except Exception as e:
+        print(f"❌ Auto-Sync Failed: {e}")
+    finally:
+        db.close()
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(auto_sync_job, 'interval', seconds=60)
+scheduler.start()
 
 app = FastAPI(title="Task Dashboard API")
 

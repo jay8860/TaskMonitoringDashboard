@@ -30,6 +30,17 @@ def update_form_dropdown(officers_list=None):
         target_item_id = None
         target_index = None
         
+        # Debug: list all items
+        print("--- Form Items ---")
+        for idx, item in enumerate(form.get('items', [])):
+             title = item.get('title', 'Untitled')
+             iid = item.get('itemId')
+             print(f"Index {idx}: '{title}' (ID: {iid})")
+        print("------------------")
+
+        target_item_id = None
+        target_index = None
+        
         for idx, item in enumerate(form.get('items', [])):
             title = item.get('title', '').strip()
             # Simple match

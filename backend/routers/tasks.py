@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, BackgroundTasks
 from sqlalchemy.orm import Session
 from database import get_db
 import models
@@ -101,16 +101,15 @@ def get_stats(db: Session = Depends(get_db)):
     }
 
 @router.post("/")
-def create_task(task: TaskCreate, db: Session = Depends(get_db)):
+def create_task(task: TaskCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     db_task = models.Task(**task.dict(), source="Manual")
     try:
         db.add(db_task)
         db.commit()
         db.refresh(db_task)
         
-        # Trigger Two-Way Sync (Fire and Forget or Log Error)
-        sync_result = ingester.update_sheet_task(db_task.task_number, task.dict(exclude_unset=True))
-        print(f"DEBUG: Sync Result on Create: {sync_result}")
+        # Trigger Two-Way Sync in Background (Fast UI Response)
+        background_tasks.add_task(ingester.update_sheet_task, db_task.task_number, task.dict(exclude_unset=True))
         
         return db_task
     except Exception as e:
@@ -118,12 +117,12 @@ def create_task(task: TaskCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=f"Error creating task: {str(e)}")
 
 @router.put("/{task_id}")
-def update_task(task_id: int, update: TaskUpdate, db: Session = Depends(get_db)):
+def update_task(task_id: int, update: TaskUpdate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     task = db.query(models.Task).filter(models.Task.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Not Found")
     
-    # Capture original task number to find the row in Sheet
+    # Capture original task number
     original_task_number = task.task_number
 
     update_data = update.dict(exclude_unset=True)
@@ -144,15 +143,14 @@ def update_task(task_id: int, update: TaskUpdate, db: Session = Depends(get_db))
                 
     db.commit()
     
-    # Trigger Two-Way Sync using Original Number
-    print(f"DEBUG: Triggering sync for update task {original_task_number}...")
-    sync_result = ingester.update_sheet_task(original_task_number, update_data)
-    print(f"DEBUG: Sync Result on Update: {sync_result}")
+    # Trigger Two-Way Sync in Background
+    print(f"DEBUG: Scheduling sync for update task {original_task_number}...")
+    background_tasks.add_task(ingester.update_sheet_task, original_task_number, update_data)
     
     return task
 
 @router.delete("/{task_id}")
-def delete_task(task_id: int, db: Session = Depends(get_db)):
+def delete_task(task_id: int, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     task = db.query(models.Task).filter(models.Task.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Not Found")
@@ -163,7 +161,7 @@ def delete_task(task_id: int, db: Session = Depends(get_db)):
     db.delete(task)
     db.commit()
     
-    # Trigger Two-Way Sync Delete
-    ingester.delete_sheet_task(task_number)
+    # Trigger Two-Way Sync Delete in Background
+    background_tasks.add_task(ingester.delete_sheet_task, task_number)
     
     return {"message": "Task Deleted"}

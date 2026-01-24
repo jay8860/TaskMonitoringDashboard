@@ -36,8 +36,8 @@ const Dashboard = () => {
         }
     }, []);
 
-    const fetchData = async () => {
-        setLoading(true);
+    const fetchData = async (silent = false) => {
+        if (!silent) setLoading(true);
         try {
             const filters = { search };
             if (selectedAgency.length > 0) filters.agency = selectedAgency.join(',');
@@ -52,14 +52,20 @@ const Dashboard = () => {
             setStats(statsData);
         } catch (error) {
             console.error("Failed to fetch data:", error);
-            alert("Failed to load data. Please check if backend is running. Error: " + error.message);
+            // Don't alert on silent polling errors to avoid spamming user
+            if (!silent) alert("Failed to load data: " + error.message);
         } finally {
-            setLoading(false);
+            if (!silent) setLoading(false);
         }
     };
 
     useEffect(() => {
         fetchData();
+        // Auto-Refresh every 10 seconds (Silent)
+        const interval = setInterval(() => {
+            fetchData(true);
+        }, 10000);
+        return () => clearInterval(interval);
     }, [search, selectedAgency, selectedStatus]);
 
     const handleLogout = () => {
