@@ -96,46 +96,77 @@ const Employees = () => {
                 />
             </div>
 
-            {/* Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {loading ? (
-                    <p className="text-slate-500">Loading employees...</p>
-                ) : filteredEmployees.length === 0 ? (
-                    <p className="text-slate-500">No employees found.</p>
-                ) : (
-                    filteredEmployees.map(emp => (
-                        <div key={emp.id} className="bg-white dark:bg-dark-card p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-xl">
-                                    {emp.name.charAt(0)}
-                                </div>
+            {/* Table View */}
+            <div className="bg-white dark:bg-dark-card rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+                                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">#</th>
+                                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Name</th>
+                                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Mobile</th>
+                                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Display Username</th>
                                 {user.role === 'admin' && (
-                                    <div className="flex gap-2">
-                                        <button onClick={() => openEdit(emp)} className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
-                                            <Edit2 size={16} />
-                                        </button>
-                                        <button onClick={() => handleDelete(emp.id)} className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
+                                    <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
                                 )}
-                            </div>
-
-                            <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-1">{emp.name}</h3>
-                            <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-2 mb-4">
-                                <UserIcon size={14} /> {emp.display_name}
-                            </p>
-
-                            {emp.mobile && (
-                                <div className="pt-4 border-t border-slate-50 dark:border-slate-700">
-                                    <a href={`tel:${emp.mobile}`} className="text-sm font-medium text-slate-600 dark:text-slate-300 flex items-center gap-2 hover:text-indigo-600 transition-colors">
-                                        <Phone size={14} /> {emp.mobile}
-                                    </a>
-                                </div>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="5" className="px-6 py-12 text-center text-slate-500">Loading employees...</td>
+                                </tr>
+                            ) : filteredEmployees.length === 0 ? (
+                                <tr>
+                                    <td colSpan="5" className="px-6 py-12 text-center text-slate-500">No employees found.</td>
+                                </tr>
+                            ) : (
+                                filteredEmployees.map((emp, index) => (
+                                    <tr key={emp.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                        <td className="px-6 py-4 text-sm text-slate-500">{index + 1}</td>
+                                        <td className="px-6 py-4 text-sm font-medium text-slate-800 dark:text-white">
+                                            {emp.name}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">
+                                            {emp.mobile ? (
+                                                <div className="flex items-center gap-2">
+                                                    <Phone size={14} className="text-slate-400" />
+                                                    {emp.mobile}
+                                                </div>
+                                            ) : '-'}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">
+                                            <div className="flex items-center gap-2 px-2 py-1 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 rounded-lg w-fit">
+                                                <UserIcon size={14} />
+                                                {emp.display_name}
+                                            </div>
+                                        </td>
+                                        {user.role === 'admin' && (
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex items-center justify-end gap-2">
+                                                    <button
+                                                        onClick={() => openEdit(emp)}
+                                                        className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition-colors"
+                                                        title="Edit"
+                                                    >
+                                                        <Edit2 size={16} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(emp.id)}
+                                                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                                                        title="Delete"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        )}
+                                    </tr>
+                                ))
                             )}
-                        </div>
-                    ))
-                )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <AddEmployeeModal
