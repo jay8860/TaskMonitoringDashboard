@@ -120,47 +120,52 @@ const Dashboard = () => {
     };
 
     const handleExportPDF = () => {
-        const doc = new jsPDF();
+        try {
+            const doc = new jsPDF();
 
-        // Title
-        doc.setFontSize(18);
-        doc.text("Task Monitoring Report", 14, 22);
+            // Title
+            doc.setFontSize(18);
+            doc.text("Task Monitoring Report", 14, 22);
 
-        // Timestamp
-        doc.setFontSize(10);
-        doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 30);
+            // Timestamp
+            doc.setFontSize(10);
+            doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 30);
 
-        // Table Config
-        const tableColumn = ["S.No", "Task No", "Description", "Assigned To", "Priority", "Deadline", "Status"];
-        const tableRows = [];
+            // Table Config
+            const tableColumn = ["S.No", "Task No", "Description", "Assigned To", "Priority", "Deadline", "Status"];
+            const tableRows = [];
 
-        tasks.forEach((task, index) => {
-            const rowData = [
-                index + 1,
-                task.task_number,
-                task.description,
-                task.assigned_agency,
-                task.priority,
-                task.deadline_date || '-',
-                task.status
-            ];
-            tableRows.push(rowData);
-        });
+            tasks.forEach((task, index) => {
+                const rowData = [
+                    index + 1,
+                    task.task_number,
+                    task.description,
+                    task.assigned_agency,
+                    task.priority,
+                    task.deadline_date || '-',
+                    task.status
+                ];
+                tableRows.push(rowData);
+            });
 
-        doc.autoTable({
-            head: [tableColumn],
-            body: tableRows,
-            startY: 40,
-            theme: 'grid',
-            headStyles: { fillColor: [79, 70, 229] }, // Indigo-600
-            styles: { fontSize: 8, cellPadding: 2 },
-            columnStyles: {
-                2: { cellWidth: 60 } // Description wider
-            }
-        });
+            doc.autoTable({
+                head: [tableColumn],
+                body: tableRows,
+                startY: 40,
+                theme: 'grid',
+                headStyles: { fillColor: [79, 70, 229] }, // Indigo-600
+                styles: { fontSize: 8, cellPadding: 2 },
+                columnStyles: {
+                    2: { cellWidth: 60 } // Description wider
+                }
+            });
 
-        doc.save("dantewada_tasks.pdf");
-        setShowExportMenu(false);
+            doc.save("dantewada_tasks.pdf");
+            setShowExportMenu(false);
+        } catch (error) {
+            console.error("PDF Export Error:", error);
+            alert("Failed to export PDF: " + error.message);
+        }
     };
 
     const agencies = stats.by_agency ? stats.by_agency.map(a => a.name) : [];
@@ -217,7 +222,7 @@ const Dashboard = () => {
                         </button>
                     )}
 
-                    <div className="relative">
+                    <div className="relative z-50">
                         <button
                             onClick={() => setShowExportMenu(!showExportMenu)}
                             className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-dark-card border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
