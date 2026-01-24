@@ -149,6 +149,9 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
         const now = new Date();
         const deadline = new Date(task.deadline_date);
 
+        // Handle invalid/1900 dates (e.g. from Excel defaults)
+        if (deadline.getFullYear() < 2000) return "text-slate-500";
+
         now.setHours(0, 0, 0, 0);
         deadline.setHours(0, 0, 0, 0);
 
@@ -158,6 +161,28 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
         if (diffDays < 0) return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 font-bold";
         if (diffDays <= 3) return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 font-medium";
         return "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400";
+    };
+
+    const formatDeadlineDisplay = (task) => {
+        if (task.completion_date) return 'Completed';
+
+        // Check deadline_due_in first
+        if (task.deadline_due_in) {
+            const val = parseInt(task.deadline_due_in);
+            // If it's a crazy negative number (e.g. < -10000 days aka > 27 years ago), assume invalid
+            if (!isNaN(val) && val < -10000) return '-';
+            return String(task.deadline_due_in).includes('days') ? task.deadline_due_in : val + ' days';
+        }
+
+        // Fallback to calculation
+        if (task.deadline_date) {
+            const d = new Date(task.deadline_date);
+            if (d.toString() === 'Invalid Date' || d.getFullYear() < 2000) return '-';
+            const diff = Math.ceil((d - new Date()) / (1000 * 60 * 60 * 24));
+            return diff + ' days';
+        }
+
+        return '-';
     };
 
     const startEdit = (task) => {
@@ -359,7 +384,7 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
                                         {/* Deadline due in */}
                                         <td className="px-6 py-4 text-[17px] font-medium" style={{ width: columnWidths.deadline_due_in }}>
                                             <span className={`px-2 py-1 rounded text-sm font-medium ${getDeadlineStyle(task)}`}>
-                                                {task.completion_date ? 'Completed' : (task.deadline_due_in || ((task.deadline_date && new Date(task.deadline_date).toString() !== 'Invalid Date') ? ((new Date(task.deadline_date) - new Date()) / (1000 * 60 * 60 * 24)).toFixed(0) + ' days' : '-'))}
+                                                {formatDeadlineDisplay(task)}
                                             </span>
                                         </td>
 
