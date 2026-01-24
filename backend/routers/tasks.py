@@ -109,7 +109,8 @@ def create_task(task: TaskCreate, db: Session = Depends(get_db)):
         db.refresh(db_task)
         
         # Trigger Two-Way Sync (Fire and Forget or Log Error)
-        ingester.update_sheet_task(db_task.task_number, task.dict(exclude_unset=True))
+        sync_result = ingester.update_sheet_task(db_task.task_number, task.dict(exclude_unset=True))
+        print(f"DEBUG: Sync Result on Create: {sync_result}")
         
         return db_task
     except Exception as e:
@@ -144,7 +145,9 @@ def update_task(task_id: int, update: TaskUpdate, db: Session = Depends(get_db))
     db.commit()
     
     # Trigger Two-Way Sync using Original Number
-    ingester.update_sheet_task(original_task_number, update_data)
+    print(f"DEBUG: Triggering sync for update task {original_task_number}...")
+    sync_result = ingester.update_sheet_task(original_task_number, update_data)
+    print(f"DEBUG: Sync Result on Update: {sync_result}")
     
     return task
 

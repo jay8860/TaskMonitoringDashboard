@@ -1,54 +1,36 @@
 INFO:     Will watch for changes in these directories: ['/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/backend']
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [32907] using StatReload
-INFO:     Started server process [32976]
+INFO:     Started reloader process [8483] using StatReload
+INFO:     Started server process [8560]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     127.0.0.1:60961 - "GET /api/tasks/stats HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60960 - "GET /api/tasks/ HTTP/1.1" 200 OK
-WARNING:  StatReload detected changes in 'ingester.py'. Reloading...
+Migration step error (ignorable if columns exist): (sqlite3.OperationalError) near "EXISTS": syntax error
+[SQL: ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR;]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Error seeding admin: (sqlite3.OperationalError) no such column: users.email
+[SQL: SELECT users.id AS users_id, users.username AS users_username, users.hashed_password AS users_hashed_password, users.role AS users_role, users.email AS users_email, users.password_hint AS users_password_hint, users.reset_token AS users_reset_token, users.reset_token_expiry AS users_reset_token_expiry 
+FROM users 
+WHERE users.username = ?
+ LIMIT ? OFFSET ?]
+[parameters: ('admin', 1, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+INFO:     127.0.0.1:50505 - "POST /tasks/ HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50513 - "GET / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50513 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+DEBUG: Attempting to authenticate with Google Sheets...
+DEBUG: Looking for credentials at: /Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/backend/../credentials.json
+DEBUG: Authenticated via local credentials.json file.
+Task 'TEXT-1769247293' not found in Sheet. Appending new row...
+Successfully appended new Task TEXT-1769247293 to Sheet at row 85
+DEBUG: Sync Result on Create: {'status': 'success'}
+INFO:     127.0.0.1:50538 - "POST /api/tasks/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50547 - "GET / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50547 - "GET / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50551 - "GET /tasks/ HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50551 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50558 - "GET /api/tasks/ HTTP/1.1" 200 OK
 INFO:     Shutting down
 INFO:     Waiting for application shutdown.
 INFO:     Application shutdown complete.
-INFO:     Finished server process [32976]
-INFO:     Started server process [34218]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  StatReload detected changes in 'main.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [34218]
-INFO:     Started server process [34503]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     127.0.0.1:61482 - "GET /api/tasks/stats HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61481 - "GET /api/tasks/ HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61482 - "GET /api/tasks/stats HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61481 - "GET /api/tasks/ HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61482 - "GET /api/tasks/stats HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61481 - "GET /api/tasks/ HTTP/1.1" 200 OK
-WARNING:  StatReload detected changes in 'models.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [34503]
-INFO:     Started server process [37508]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  StatReload detected changes in 'main.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [37508]
-INFO:     Started server process [37524]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  StatReload detected changes in 'main.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [37524]
-INFO:     Started server process [37599]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
+INFO:     Finished server process [8560]
+INFO:     Stopping reloader process [8483]

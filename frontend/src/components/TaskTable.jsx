@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
     MoreVertical, FileText, CheckCircle, Clock, AlertCircle,
-    Search, Filter, Download, Edit2, Check, X, Trash2, ArrowUpDown
+    Search, Filter, Download, Edit2, Check, X, Trash2, ArrowUpDown, CheckSquare
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { api } from '../services/api';
@@ -170,6 +170,17 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
         }
     };
 
+    const handleQuickComplete = async (task) => {
+        if (window.confirm(`Mark Task "${task.task_number}" as Completed?`)) {
+            try {
+                await api.updateTask(task.id, { completion_date: "Close" });
+                fetchData();
+            } catch (e) {
+                alert("Failed to mark as completed: " + e.message);
+            }
+        }
+    };
+
     const handleTimeChange = (e, task) => {
         const newTime = e.target.value;
         const updates = { ...editForm, time_given: newTime };
@@ -199,13 +210,16 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
         }
     };
 
+    // Helper: Any row editing?
+    const isAnyRowEditing = editingId !== null;
+
     return (
         <div className="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
             <div className="overflow-x-auto">
                 <table className="min-w-full text-left border-collapse table-fixed">
                     <thead>
                         <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
-                            <th className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider relative group whitespace-nowrap" style={{ width: columnWidths.sno }}>
+                            <th className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-wider relative group whitespace-nowrap" style={{ width: columnWidths.sno }}>
                                 S.No
                                 <Resizer colKey="sno" />
                             </th>
@@ -219,14 +233,17 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
                                 <Resizer colKey="deadline_due_in" />
                             </th>
 
-                            <th
-                                onClick={() => handleSort('completion_date')}
-                                className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group whitespace-nowrap"
-                                style={{ width: columnWidths.completion_date }}
-                            >
-                                <div className="flex items-center gap-1">Completion Date {sortConfig.key === 'completion_date' && <ArrowUpDown size={14} />}</div>
-                                <Resizer colKey="completion_date" />
-                            </th>
+                            {/* Conditionally Render Completion Date Header */}
+                            {isAnyRowEditing && (
+                                <th
+                                    onClick={() => handleSort('completion_date')}
+                                    className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group whitespace-nowrap"
+                                    style={{ width: columnWidths.completion_date }}
+                                >
+                                    <div className="flex items-center gap-1">Completion Date {sortConfig.key === 'completion_date' && <ArrowUpDown size={14} />}</div>
+                                    <Resizer colKey="completion_date" />
+                                </th>
+                            )}
 
                             <th
                                 onClick={() => handleSort('task_number')}
@@ -300,7 +317,7 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                         {tasks.length === 0 ? (
                             <tr>
-                                <td colSpan="11" className="px-6 py-12 text-center text-slate-400">
+                                <td colSpan={isAnyRowEditing ? "11" : "10"} className="px-6 py-12 text-center text-slate-400">
                                     {loading ? 'Loading tasks...' : 'No tasks found matching filters.'}
                                 </td>
                             </tr>
@@ -328,22 +345,24 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
                                             </span>
                                         </td>
 
-                                        {/* Task Completion Date */}
-                                        <td className="px-6 py-4 text-[17px] font-medium text-slate-700 dark:text-slate-200" style={{ width: columnWidths.completion_date }}>
-                                            {isEditing ? (
-                                                <input
-                                                    type="text"
-                                                    placeholder="Date/Remark"
-                                                    value={editForm.completion_date || ''}
-                                                    onChange={(e) => setEditForm({ ...editForm, completion_date: e.target.value })}
-                                                    className="w-full p-2 rounded border border-indigo-300 focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-600 text-sm"
-                                                />
-                                            ) : (
-                                                <div className="truncate" title={task.completion_date}>
-                                                    {task.completion_date || '-'}
-                                                </div>
-                                            )}
-                                        </td>
+                                        {/* Conditionally Render Task Completion Date */}
+                                        {isAnyRowEditing && (
+                                            <td className="px-6 py-4 text-[17px] font-medium text-slate-700 dark:text-slate-200" style={{ width: columnWidths.completion_date }}>
+                                                {isEditing ? (
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Date/Remark"
+                                                        value={editForm.completion_date || ''}
+                                                        onChange={(e) => setEditForm({ ...editForm, completion_date: e.target.value })}
+                                                        className="w-full p-2 rounded border border-indigo-300 focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-600 text-sm"
+                                                    />
+                                                ) : (
+                                                    <div className="truncate" title={task.completion_date}>
+                                                        {task.completion_date || '-'}
+                                                    </div>
+                                                )}
+                                            </td>
+                                        )}
 
                                         {/* Task Number (Editable) */}
                                         <td className="px-6 py-4 text-[17px] font-medium text-slate-900 dark:text-white whitespace-normal break-words leading-relaxed" style={{ width: columnWidths.task_number }}>
@@ -448,6 +467,13 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
                                                                 className="p-2 rounded-lg hover:bg-indigo-50 dark:hover:bg-slate-700 text-slate-400 hover:text-indigo-600 transition-colors"
                                                             >
                                                                 <Edit2 size={16} />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleQuickComplete(task)}
+                                                                title="Mark as Completed"
+                                                                className="p-2 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-slate-400 hover:text-emerald-600 transition-colors"
+                                                            >
+                                                                <CheckSquare size={16} />
                                                             </button>
                                                             <button
                                                                 onClick={() => handleDelete(task)}
