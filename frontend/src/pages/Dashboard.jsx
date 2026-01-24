@@ -126,8 +126,9 @@ const Dashboard = () => {
             // Function to load Hindi Font
             const addHindiFont = async () => {
                 try {
-                    // Using a reliable CDN for Noto Sans Devanagari (GitHub Raw)
-                    const response = await fetch('https://raw.githubusercontent.com/google/fonts/main/ofl/notosansdevanagari/NotoSansDevanagari-Regular.ttf');
+                    // Using Local Font File from public/fonts
+                    // Ensure the file exists at: public/fonts/NotoSansDevanagari-Regular.ttf
+                    const response = await fetch('/fonts/NotoSansDevanagari-Regular.ttf');
                     if (!response.ok) throw new Error("Check connection or font URL");
                     const blob = await response.blob();
                     const reader = new FileReader();
