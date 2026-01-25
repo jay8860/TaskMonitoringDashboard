@@ -339,7 +339,21 @@ const Dashboard = () => {
                                 <div className="prose dark:prose-invert max-w-none">
                                     <div className="whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed font-sans text-lg">
                                         {summary.split('\n').map((line, i) => {
-                                            // 1. Highlight Task Names (Simple bolding)
+                                            const trimmedLine = line.trim();
+
+                                            // 1. Detect Standard Headers (### HEADER ###)
+                                            if (trimmedLine.startsWith('###') && trimmedLine.endsWith('###')) {
+                                                const headerText = trimmedLine.replace(/###/g, '').trim();
+                                                return (
+                                                    <div key={i} className="text-center my-8 py-3 border-y border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 rounded-lg">
+                                                        <h4 className="text-xl font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">
+                                                            {headerText}
+                                                        </h4>
+                                                    </div>
+                                                );
+                                            }
+
+                                            // 2. Highlight Task Names (Simple bolding)
                                             let parts = line.split(/(\*\*.*?\*\*)/g);
                                             let renderedLine = parts.map((part, index) => {
                                                 if (part.startsWith('**') && part.endsWith('**')) {
@@ -348,7 +362,7 @@ const Dashboard = () => {
                                                 return part;
                                             });
 
-                                            // 2. Highlight [OVERDUE] tag in Red
+                                            // 3. Highlight [OVERDUE] tag in Red
                                             return (
                                                 <div key={i} className="mb-2">
                                                     {renderedLine.map((p, j) => {
