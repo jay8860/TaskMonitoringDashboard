@@ -7,6 +7,10 @@ from routers import tasks, auth
 import os
 from apscheduler.schedulers.background import BackgroundScheduler
 import ingester
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Create Tables
 Base.metadata.create_all(bind=engine)
