@@ -338,7 +338,33 @@ const Dashboard = () => {
                             ) : (
                                 <div className="prose dark:prose-invert max-w-none">
                                     <div className="whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed font-sans text-lg">
-                                        {summary}
+                                        {summary.split('\n').map((line, i) => {
+                                            // 1. Highlight Task Names (Simple bolding)
+                                            let parts = line.split(/(\*\*.*?\*\*)/g);
+                                            let renderedLine = parts.map((part, index) => {
+                                                if (part.startsWith('**') && part.endsWith('**')) {
+                                                    return <strong key={index} className="text-slate-900 dark:text-white font-bold">{part.slice(2, -2)}</strong>;
+                                                }
+                                                return part;
+                                            });
+
+                                            // 2. Highlight [OVERDUE] tag in Red
+                                            return (
+                                                <div key={i} className="mb-2">
+                                                    {renderedLine.map((p, j) => {
+                                                        if (typeof p === 'string' && p.includes('[OVERDUE]')) {
+                                                            const subParts = p.split(/(\[OVERDUE\])/g);
+                                                            return subParts.map((sp, k) =>
+                                                                sp === '[OVERDUE]' ?
+                                                                    <span key={k} className="text-red-500 font-bold bg-red-50 dark:bg-red-900/20 px-1.5 py-0.5 rounded-md border border-red-200 dark:border-red-800 ml-1 text-sm animate-pulse">OVERDUE</span> :
+                                                                    sp
+                                                            );
+                                                        }
+                                                        return p;
+                                                    })}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             )}
