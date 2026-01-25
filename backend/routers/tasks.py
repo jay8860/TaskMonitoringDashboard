@@ -210,15 +210,16 @@ def get_executive_summary(db: Session = Depends(get_db)):
 
     INSTRUCTION:
     Create a POINT-WISE Executive Summary for high-level review.
+    - Use the EXACT section headers: ### PROGRESS ###, ### INTERVENTION NEEDED ###, and ### OFFICER HIGHLIGHTS ###.
     - DO NOT use excessive bolding (**). Only bold the Task Names.
     - For any task that is "Overdue", append the tag [OVERDUE] in the text.
     - Format:
       * Task Name: Summary of progress or bottleneck. [Status Tag if Overdue]
     
     SECTIONS:
-    1. PROGRESS: Mention tasks where there are notes indicating progress.
-    2. INTERVENTION NEEDED: Highlight tasks that are stuck or [OVERDUE].
-    3. OFFICER HIGHLIGHTS: Briefly mention workload highlights.
+    ### PROGRESS ###: Mention tasks where there are notes indicating progress.
+    ### INTERVENTION NEEDED ###: Highlight tasks that are stuck or [OVERDUE].
+    ### OFFICER HIGHLIGHTS ###: Briefly mention workload highlights.
     
     Keep it clean, professional, and concise. Use a simple bulleted list.
     """
