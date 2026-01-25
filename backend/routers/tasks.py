@@ -6,6 +6,9 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import date
 import ingester
+import google.generativeai as genai
+import os
+import json
 
 router = APIRouter()
 
@@ -168,3 +171,54 @@ def delete_task(task_id: int, background_tasks: BackgroundTasks, db: Session = D
     background_tasks.add_task(ingester.delete_sheet_task, task_number)
     
     return {"message": "Task Deleted"}
+@router.get("/executive-summary")
+def get_executive_summary(db: Session = Depends(get_db)):
+    """
+    Uses Gemini to generate a pointwise summary of all active (Pending/Overdue) tasks.
+    Focuses on highlights and intervention needs.
+    """
+    # 1. Fetch Active Tasks
+    active_tasks = db.query(models.Task).filter(models.Task.status.in_(["Pending", "Overdue"])).all()
+    
+    if not active_tasks:
+        return {"summary": "No active tasks found."}
+
+    # 2. Prepare Data for Gemini (Limit description length to avoid token overflow)
+    simplified_tasks = []
+    for t in active_tasks:
+        simplified_tasks.append({
+            "task": t.task_number,
+            "assigned": t.assigned_agency or "Unassigned",
+            "notes": (t.description[:300] + "...") if t.description and len(t.description) > 300 else t.description,
+            "status": t.status,
+            "deadline": str(t.deadline_date) if t.deadline_date else "No Deadline"
+        })
+
+    # 3. Configure Gemini
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="Gemini API Key missing in backend environment.")
+    
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel('gemini-2.0-flash')
+
+    prompt = f"""
+    You are an Executive Assistant. Here is a list of active tasks from the Dashboard.
+    
+    TASK LIST:
+    {json.dumps(simplified_tasks)}
+
+    INSTRUCTION:
+    Create a POINT-WISE Executive Summary for high-level review.
+    1. PROGRESS: Mention tasks where there are notes indicating progress.
+    2. INTERVENTION NEEDED: Highlight tasks that are OVERDUE or have notes indicating they are stuck.
+    3. OFFICER HIGHLIGHTS: Briefly mention which officers (assigned_agency) are handling critical tasks.
+    
+    Keep it professional, concise, and helpful. Use Markdown.
+    """
+
+    try:
+        response = model.generate_content(prompt)
+        return {"summary": response.text}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Gemini Summary Error: {str(e)}")
