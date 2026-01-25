@@ -7,7 +7,7 @@ import AddTaskModal from '../components/AddTaskModal';
 import { api } from '../services/api';
 import {
     ClipboardList, CheckSquare, Clock, AlertTriangle,
-    Search, Filter, Plus, FileDown, RefreshCw, XCircle, Calendar, Pin
+    Search, Filter, Plus, FileDown, RefreshCw, XCircle, Calendar, Pin, Sparkles, FileText
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import MultiSelect from '../components/MultiSelect';
@@ -20,6 +20,9 @@ const Dashboard = () => {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('all'); // 'all' | 'today'
     const [allEmployees, setAllEmployees] = useState([]); // Full list for dropdowns
+    const [summary, setSummary] = useState('');
+    const [summaryLoading, setSummaryLoading] = useState(false);
+    const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
 
     // Filters
     const location = useLocation();
@@ -115,6 +118,20 @@ const Dashboard = () => {
         XLSX.writeFile(wb, "dantewada_tasks.xlsx");
     };
 
+    const handleGenerateSummary = async () => {
+        setSummaryLoading(true);
+        setIsSummaryModalOpen(true);
+        setSummary(''); // Clear old
+        try {
+            const data = await api.getExecutiveSummary();
+            setSummary(data.summary);
+        } catch (e) {
+            setSummary("Failed to generate summary. Please ensure the backend is running and Gemini API key is configured.");
+        } finally {
+            setSummaryLoading(false);
+        }
+    };
+
 
     const agencies = stats.by_agency ? stats.by_agency.map(a => a.name) : [];
 
@@ -157,6 +174,14 @@ const Dashboard = () => {
                             Today's Tasks
                         </button>
                     </div>
+
+                    <button
+                        onClick={handleGenerateSummary}
+                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all shadow-lg shadow-indigo-500/20"
+                    >
+                        <Sparkles size={18} className={summaryLoading ? 'animate-pulse' : ''} />
+                        AI Summary
+                    </button>
 
                     {/* Only Admin can Sync */}
                     {user.role === 'admin' && (
@@ -284,6 +309,52 @@ const Dashboard = () => {
                 onAdd={handleAddTask}
                 agencies={allEmployees.length > 0 ? allEmployees : agencies}
             />
+
+            {/* AI Summary Modal */}
+            {isSummaryModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-dark-card w-full max-w-3xl max-h-[80vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-slate-200 dark:border-slate-700">
+                        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl text-indigo-600 dark:text-indigo-400">
+                                    <Sparkles size={24} />
+                                </div>
+                                <h3 className="text-xl font-bold dark:text-white">Executive AI Summary</h3>
+                            </div>
+                            <button onClick={() => setIsSummaryModalOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                                <XCircle size={24} />
+                            </button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-8">
+                            {summaryLoading ? (
+                                <div className="space-y-4 animate-pulse">
+                                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4"></div>
+                                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
+                                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-5/6"></div>
+                                    <div className="pt-8 h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2"></div>
+                                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
+                                </div>
+                            ) : (
+                                <div className="prose dark:prose-invert max-w-none">
+                                    <div className="whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed font-sans text-lg">
+                                        {summary}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                            <button
+                                onClick={() => setIsSummaryModalOpen(false)}
+                                className="px-6 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors font-medium"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
         </Layout >
     );

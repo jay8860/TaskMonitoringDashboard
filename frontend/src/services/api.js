@@ -66,6 +66,11 @@ export const api = {
         return response.data;
     },
 
+    getExecutiveSummary: async () => {
+        const response = await axios.get(`${API_URL}/executive-summary`);
+        return response.data;
+    },
+
     // --- Employees ---
     getEmployees: async () => {
         const response = await axios.get(`${EMP_URL}/`);
