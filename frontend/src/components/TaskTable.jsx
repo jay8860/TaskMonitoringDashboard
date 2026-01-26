@@ -543,14 +543,26 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
                                                                 </button>
                                                                 <input
                                                                     id={`date-picker-${task.id}`}
-                                                                    type="date"
+                                                                    type="datetime-local"
                                                                     className="absolute top-0 left-0 opacity-0 w-0 h-0"
-                                                                    defaultValue={task.scheduled_date || ''}
+                                                                    defaultValue={
+                                                                        task.scheduled_date
+                                                                            ? `${task.scheduled_date}T${task.scheduled_time || '09:00'}`
+                                                                            : ''
+                                                                    }
                                                                     onChange={async (e) => {
                                                                         try {
-                                                                            await api.updateTask(task.id, { scheduled_date: e.target.value });
+                                                                            const val = e.target.value; // "YYYY-MM-DDTHH:MM"
+                                                                            if (!val) return;
+
+                                                                            const [date, time] = val.split('T');
+
+                                                                            await api.updateTask(task.id, {
+                                                                                scheduled_date: date,
+                                                                                scheduled_time: time
+                                                                            });
                                                                             fetchData();
-                                                                            alert("Task Scheduled!");
+                                                                            alert(`Scheduled for ${date} at ${time}`);
                                                                         } catch (err) {
                                                                             alert("Failed to schedule: " + err.message);
                                                                         }

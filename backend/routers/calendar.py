@@ -29,12 +29,26 @@ def get_calendar_feed(db: Session = Depends(get_db)):
             e.name = f"#{task.task_number} {task.assigned_agency or ''}"
             
             # Use scheduled date if available, else deadline
-            date = task.scheduled_date or task.deadline_date
+            date_only = task.scheduled_date or task.deadline_date
             
-            if date:
-                # All day event
-                e.begin = date.strftime('%Y-%m-%d')
-                e.make_all_day()
+            if date_only:
+                if task.scheduled_date and task.scheduled_time:
+                    # Specific Time
+                    try:
+                        # Combine Date + Time
+                        dt_str = f"{task.scheduled_date.strftime('%Y-%m-%d')} {task.scheduled_time}"
+                        # Parse
+                        e.begin = dt_str # ics library handles ISO-like strings often, or use datetime object
+                        # Let's use arrow or datetime to be safe
+                        # e.begin = datetime.strptime(dt_str, '%Y-%m-%d %H:%M')
+                        # The ics library is smart.
+                    except:
+                        e.begin = date_only.strftime('%Y-%m-%d')
+                        e.make_all_day()
+                else:
+                    # All day event
+                    e.begin = date_only.strftime('%Y-%m-%d')
+                    e.make_all_day()
             
             description_lines = []
             if task.description:

@@ -32,6 +32,7 @@ class Task(Base):
     time_given = Column(String, nullable=True) # "Time given for task"
     is_pinned = Column(Integer, default=0, index=True) # 0=False, 1=True
     scheduled_date = Column(Date, nullable=True, index=True) # For Weekly Planner (Soft Schedule)
+    scheduled_time = Column(String, nullable=True) # "HH:MM" 24hr format
     position = Column(Float, default=0.0, index=True) # For manual ordering
 
     status = Column(String, index=True, default="Pending") # Derived or Explicit
