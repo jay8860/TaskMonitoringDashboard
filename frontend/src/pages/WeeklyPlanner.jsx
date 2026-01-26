@@ -10,6 +10,7 @@ import AddTaskModal from '../components/AddTaskModal';
 
 // --- Sortable Task Item Component ---
 const SortableTaskItem = ({ task, onSchedule }) => {
+    // Note: 'task.id' here is the UI ID (e.g. 123-sched). 'task.db_id' is the real ID.
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: task.id });
 
     const style = {
@@ -18,17 +19,23 @@ const SortableTaskItem = ({ task, onSchedule }) => {
         opacity: isDragging ? 0.3 : 1,
     };
 
+    // Derived Visuals
+    const isDeadline = task.ui_type === 'deadline';
+    const borderColor = isDeadline ? 'border-amber-200 dark:border-amber-900/50' : 'border-slate-100 dark:border-slate-700';
+    const badgeColor = isDeadline ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400';
+    const badgeText = isDeadline ? 'Due' : (task.priority || 'Normal');
+
     return (
         <div
             ref={setNodeRef}
             style={style}
             {...attributes}
             {...listeners}
-            className={`bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 mb-3 cursor-grab hover:shadow-md transition-shadow group relative ${task.status === 'Completed' ? 'opacity-60' : ''}`}
+            className={`bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm border ${borderColor} mb-3 cursor-grab hover:shadow-md transition-shadow group relative ${task.status === 'Completed' ? 'opacity-60' : ''}`}
         >
             <div className="flex justify-between items-start mb-2">
-                <span className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded ${task.priority === 'High' ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'}`}>
-                    {task.priority || 'Normal'}
+                <span className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded ${badgeText === 'High' ? 'bg-red-100 text-red-600' : badgeColor}`}>
+                    {badgeText}
                 </span>
                 <div className="flex gap-1">
                     <div className="relative group/date">
@@ -42,8 +49,8 @@ const SortableTaskItem = ({ task, onSchedule }) => {
                             id={`card-date-${task.id}`}
                             type="date"
                             className="absolute top-0 right-0 opacity-0 w-0 h-0"
-                            defaultValue={task.scheduled_date || ''}
-                            onChange={(e) => onSchedule(task.id, e.target.value)}
+                            defaultValue={isDeadline ? (task.deadline_date || '') : (task.scheduled_date || '')}
+                            onChange={(e) => onSchedule(task.db_id, e.target.value, task.ui_type)}
                         />
                     </div>
                     <button className="text-slate-300 dark:text-slate-600 cursor-grab active:cursor-grabbing hover:text-slate-500 transition-colors">
@@ -73,9 +80,13 @@ const SortableTaskItem = ({ task, onSchedule }) => {
 };
 
 // --- Droppable Column Component ---
+// --- Droppable Column Component ---
 const DayColumn = ({ date, tasks, onSchedule }) => {
-    // Sort tasks by Position (ASC) for consistent view
+    // Sort tasks by Position (ASC) for consistent view if possible, else just map
+    // Note: derived items might not have 'position' fully synced if they are duplicates.
+    // For now, simple sort.
     const sortedTasks = [...tasks].sort((a, b) => (a.position || 0) - (b.position || 0));
+
     const dayName = format(date, 'EEEE');
     const dateDisplay = format(date, 'MMM d');
     const isToday = isSameDay(date, new Date());
@@ -120,6 +131,7 @@ const WeeklyPlanner = () => {
     const [activeId, setActiveId] = useState(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [viewMode, setViewMode] = useState('both'); // 'scheduled', 'deadline', 'both'
 
     // Sensors
     const sensors = useSensors(
@@ -165,18 +177,35 @@ const WeeklyPlanner = () => {
     // Calculate Week Days
     const weekDays = Array.from({ length: 7 }).map((_, i) => addDays(weekStart, i));
 
-    // Group Tasks by Date (SCHEDULED DATE)
+    // Group Tasks by Date based on View Mode
     const getTasksForDate = (date) => {
-        return tasks.filter(task => {
-            if (!task.scheduled_date) return false;
-            try {
-                // Parse standard YYYY-MM-DD
-                const d = parseISO(task.scheduled_date);
-                return isSameDay(d, date);
-            } catch {
-                return false;
+        const items = [];
+        tasks.forEach(task => {
+            // Scheduled
+            if (['scheduled', 'both'].includes(viewMode) && task.scheduled_date) {
+                if (isSameDay(parseISO(task.scheduled_date), date)) {
+                    // IMPORTANT: derived ID for DND
+                    items.push({
+                        ...task,
+                        id: `${task.id}-sched`, // Override ID for UI
+                        db_id: task.id,
+                        ui_type: 'scheduled'
+                    });
+                }
+            }
+            // Deadline
+            if (['deadline', 'both'].includes(viewMode) && task.deadline_date) {
+                if (isSameDay(parseISO(task.deadline_date), date)) {
+                    items.push({
+                        ...task,
+                        id: `${task.id}-dead`, // Override ID for UI
+                        db_id: task.id,
+                        ui_type: 'deadline'
+                    });
+                }
             }
         });
+        return items;
     };
 
     // Drag End Handler
@@ -186,30 +215,83 @@ const WeeklyPlanner = () => {
 
         if (!over) return;
 
-        // Find the task
-        const taskId = active.id;
+        // Active item isn't raw class, it's our Derived item.
+        // But active.id is the UI ID.
+        // We can't easily find the item in 'tasks' list by UI ID directly.
+        // We need to look it up in the *derived items for that day* or parse the ID.
+        // Parsing ID '123-sched' is safest.
+
+        const activeUiId = active.id;
+        const [dbId, type] = activeUiId.toString().split('-'); // '123', 'sched'
+        const taskId = parseInt(dbId);
         const task = tasks.find(t => t.id === taskId);
 
         if (!task) return;
 
         const overId = over.id;
-        const overTask = tasks.find(t => t.id === overId);
-
         let newDate = null;
 
-        if (overTask && overTask.scheduled_date) {
-            // Dropped over another task -> Take that task's scheduled_date
-            newDate = overTask.scheduled_date;
+        // Check drop target
+        if (overId.toString().startsWith('day-')) {
+            newDate = overId.replace('day-', '');
         } else {
-            // If dropped on a column container
-            if (overId.toString().startsWith('day-')) {
-                newDate = overId.replace('day-', '');
+            // Dropped on another task
+            // Find that task's date.
+            // But 'overId' is also a UI ID (e.g. 456-dead).
+            // We need to find *which* date column it belongs to.
+            // Since we don't have a quick lookup map, let's find the derived item in the current View.
+            // This is slightly expensive loop but okay for drag end.
+
+            // Easier: just parse the 'overId' if it's a task? 
+            // No, knowing the task ID doesn't tell us which *column* (date) it is in, 
+            // because a task might be in multiple columns in 'both' view.
+
+            // We need to know the *container* of `over`. 
+            // dnd-kit `active.data.current.sortable.containerId` usually holds it if we set it up.
+            // But here we rely on the component structure.
+
+            // Fallback: Check collision rect center? No.
+
+            // Let's use `active` data? We defined `getTasksForDate`. 
+            // We can search our generated lists?
+
+            // New Plan: Store 'date' in the SortableTaskItem's data attribute or ID?
+            // No.
+
+            // Simplest: Iterate all days displayed (weekDays) and see which one contains `overId`.
+            for (const day of weekDays) {
+                const dayItems = getTasksForDate(day); // Re-gen
+                if (dayItems.find(i => i.id === overId)) {
+                    newDate = format(day, 'yyyy-MM-dd');
+                    break;
+                }
             }
         }
 
-        if (newDate && task.scheduled_date !== newDate) {
-            await updateTaskDate(task, newDate);
+        if (!newDate) return; // Couldn't find drop target date
+
+        // Now Apply Update based on Type
+        // type might be 'sched' or 'dead' from split, OR 'scheduled'/'deadline' if we mapped.
+        // From split: 'sched' (scheduled) or 'dead' (deadline)
+
+        // Map back to full type
+        const uiType = type === 'sched' ? 'scheduled' : 'deadline';
+
+        if (uiType === 'scheduled') {
+            if (task.scheduled_date !== newDate) {
+                await updateTaskDate(task, newDate, 'scheduled');
+            }
+        } else if (uiType === 'deadline') {
+            if (task.deadline_date !== newDate) {
+                await updateTaskDate(task, newDate, 'deadline');
+            }
         }
+
+        // Handle Reorder (Vertical sort)
+        // If date didn't change, we might be reordering?
+        // With 'Both' view, reordering is tricky because mixed types in one list.
+        // For now, let's DISABLE reordering in 'Both' view or View modes, 
+        // to simplify. We only support Date Change via Drag for now in this new mode.
     };
 
     const handleReorder = async (activeId, overId) => {
@@ -261,18 +343,19 @@ const WeeklyPlanner = () => {
         alert(`Calendar Feed URL Copied!\n\n${link}\n\nPaste this into Apple Calendar (File > New Calendar Subscription).`);
     };
 
-    const updateTaskDate = async (task, newDate) => {
+    const updateTaskDate = async (task, newDate, type = 'scheduled') => {
         // Optimistic UI Update
+        const field = type === 'scheduled' ? 'scheduled_date' : 'deadline_date';
+
         const updatedTasks = tasks.map(t =>
-            t.id === task.id ? { ...t, scheduled_date: newDate } : t
+            t.id === task.id ? { ...t, [field]: newDate } : t
         );
         setTasks(updatedTasks);
 
         try {
-            await api.updateTask(task.id, { scheduled_date: newDate });
+            await api.updateTask(task.id, { [field]: newDate });
         } catch (e) {
-            console.error("Failed to update schedule", e);
-            // Revert on fail
+            console.error("Failed to update " + field, e);
             fetchData();
         }
     };
@@ -298,12 +381,25 @@ const WeeklyPlanner = () => {
                             </h1>
                             <p className="text-slate-500 text-sm">Drag tasks to reschedule them.</p>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 items-center">
+                            {/* View Mode Toggle */}
+                            <div className="bg-slate-100 dark:bg-slate-800 p-1 rounded-lg flex gap-1 mr-4">
+                                {['scheduled', 'both', 'deadline'].map(mode => (
+                                    <button
+                                        key={mode}
+                                        onClick={() => setViewMode(mode)}
+                                        className={`px-3 py-1.5 text-xs font-bold rounded-md capitalize transition-all ${viewMode === mode ? 'bg-white dark:bg-slate-600 text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                    >
+                                        {mode}
+                                    </button>
+                                ))}
+                            </div>
+
                             <button
                                 onClick={() => setWeekStart(addDays(weekStart, -7))}
                                 className="p-2 hover:bg-slate-100 rounded-lg"
                             >
-                                ← Prev Week
+                                ←
                             </button>
                             <span className="py-2 font-medium text-slate-700 dark:text-slate-300">
                                 {format(weekStart, 'MMM d')} - {format(addDays(weekStart, 6), 'MMM d')}
@@ -349,15 +445,12 @@ const WeeklyPlanner = () => {
                                         id={`day-${dateStr}`}
                                         date={date}
                                         tasks={dayTasks}
-                                        onSchedule={async (taskId, newDate) => {
-                                            try {
-                                                // Optimistic update
-                                                setTasks(prev => prev.map(t => t.id === taskId ? { ...t, scheduled_date: newDate } : t));
-                                                await api.updateTask(taskId, { scheduled_date: newDate });
-                                            } catch (e) {
-                                                console.error("Schedule failed", e);
-                                                fetchData();
-                                            }
+                                        onSchedule={async (taskId, newDate, type = 'scheduled') => {
+                                            await updateTaskDate(
+                                                tasks.find(t => t.id === taskId),
+                                                newDate,
+                                                type
+                                            );
                                         }}
                                     />
                                 );
