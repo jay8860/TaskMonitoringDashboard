@@ -252,9 +252,13 @@ const WeeklyPlanner = () => {
     };
 
     const copyCalendarLink = () => {
-        const link = `${window.location.protocol}//${window.location.hostname}:8000/api/calendar/feed`;
+        // In production, backend is same origin. In dev, it's localhost:8000
+        const isProd = import.meta.env.PROD;
+        const baseUrl = isProd ? window.location.origin : 'http://127.0.0.1:8000';
+        const link = `${baseUrl}/api/calendar/feed`;
+
         navigator.clipboard.writeText(link);
-        alert("Calendar Feed URL Copied! Paste this into Apple Calendar (File > New Calendar Subscription).");
+        alert(`Calendar Feed URL Copied!\n\n${link}\n\nPaste this into Apple Calendar (File > New Calendar Subscription).`);
     };
 
     const updateTaskDate = async (task, newDate) => {
