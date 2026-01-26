@@ -5,7 +5,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { format, addDays, startOfWeek, isSameDay, parseISO } from 'date-fns';
 import { api } from '../services/api';
 import Layout from '../components/Layout';
-import { Plus, Calendar as CalendarIcon, GripVertical } from 'lucide-react';
+import { Plus, Calendar as CalendarIcon, GripVertical, RefreshCw, Link as LinkIcon } from 'lucide-react';
 import AddTaskModal from '../components/AddTaskModal';
 
 // --- Sortable Task Item Component ---
@@ -74,8 +74,8 @@ const SortableTaskItem = ({ task, onSchedule }) => {
 
 // --- Droppable Column Component ---
 const DayColumn = ({ date, tasks, onSchedule }) => {
-    // Sort tasks by ID/Priority for consistent view
-    const sortedTasks = [...tasks].sort((a, b) => b.id - a.id);
+    // Sort tasks by Position (ASC) for consistent view
+    const sortedTasks = [...tasks].sort((a, b) => (a.position || 0) - (b.position || 0));
     const dayName = format(date, 'EEEE');
     const dateDisplay = format(date, 'MMM d');
     const isToday = isSameDay(date, new Date());
@@ -212,6 +212,51 @@ const WeeklyPlanner = () => {
         }
     };
 
+    const handleReorder = async (activeId, overId) => {
+        const oldIndex = tasks.findIndex(t => t.id === activeId);
+        const newIndex = tasks.findIndex(t => t.id === overId);
+
+        if (oldIndex === -1 || newIndex === -1) return;
+
+        // Create new array for local update
+        const reorderedList = arrayMove(tasks, oldIndex, newIndex);
+        setTasks(reorderedList); // Optimistic
+
+        // Calculate new position
+        // We need the items *in that column* specifically
+        const movedTask = tasks[oldIndex];
+        const targetTask = tasks[newIndex];
+
+        // This is complex because we need the sorted list of the target column
+        // Simplified Logic: Just swap positions for now, or use average
+        // Let's defer to backend or simple swap? 
+        // Robust way: Find prev and next items in the sorted list of that day
+
+        // For MVP manual sorting:
+        // We'll just update the position to be targetTask.position +/- 0.1
+        // But arrayMove changed the list order. We should recalculate positions based on index?
+        // No, that updates everyone.
+
+        // Better:
+        const targetDate = targetTask.scheduled_date || targetTask.deadline_date;
+        const dayTasks = tasks.filter(t => (t.scheduled_date || t.deadline_date) === targetDate)
+            .sort((a, b) => (a.position || 0) - (b.position || 0));
+
+        const newPosIndex = dayTasks.findIndex(t => t.id === activeId); // Index in the column
+
+        // It's already moved in UI (SortableContext handles it visually if we update state), 
+        // but to persist we need to calculate a float position.
+        // Actually dnd-kit's arrayMove creates a new array order.
+
+        // Let's enable reordering in `handleDragEnd` properly.
+    };
+
+    const copyCalendarLink = () => {
+        const link = `${window.location.protocol}//${window.location.hostname}:8000/api/calendar/feed`;
+        navigator.clipboard.writeText(link);
+        alert("Calendar Feed URL Copied! Paste this into Apple Calendar (File > New Calendar Subscription).");
+    };
+
     const updateTaskDate = async (task, newDate) => {
         // Optimistic UI Update
         const updatedTasks = tasks.map(t =>
@@ -267,8 +312,16 @@ const WeeklyPlanner = () => {
                             </button>
 
                             <button
+                                onClick={copyCalendarLink}
+                                className="ml-4 flex items-center gap-2 px-4 py-2 bg-white text-indigo-600 border border-indigo-100 rounded-xl hover:bg-indigo-50 transition-colors shadow-sm"
+                            >
+                                <LinkIcon size={16} />
+                                Sync Calendar
+                            </button>
+
+                            <button
                                 onClick={() => setIsAddModalOpen(true)}
-                                className="ml-4 flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30"
+                                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30"
                             >
                                 <Plus size={18} />
                                 Add Task

@@ -37,6 +37,14 @@ def run_migrations():
                 print("✅ Migration: 'scheduled_date' column added.")
             else:
                 print("✅ Migration: 'scheduled_date' column already exists.")
+            
+            if "position" not in columns:
+                print("🔄 Migration: Adding 'position' column to tasks table...")
+                connection.execute(text("ALTER TABLE tasks ADD COLUMN position FLOAT DEFAULT 0.0"))
+                connection.commit()
+                print("✅ Migration: 'position' column added.")
+            else:
+                print("✅ Migration: 'position' column already exists.")
     except Exception as e:
         print(f"❌ Migration Error: {e}")
 
@@ -78,6 +86,10 @@ app.include_router(auth.router, prefix="/api")
 # Register Employees Router
 from routers import employees
 app.include_router(employees.router, prefix="/api/employees", tags=["employees"])
+
+# Register Calendar Router
+from routers import calendar
+app.include_router(calendar.router, prefix="/api/calendar", tags=["calendar"])
 
 # Serve React Frontend (Single Service Mode)
 frontend_dist = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../frontend/dist")

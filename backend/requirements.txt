@@ -17,5 +17,6 @@ google-auth-httplib2
 google-auth-oauthlib
 google-generativeai
 python-dotenv
+ics
 
 
