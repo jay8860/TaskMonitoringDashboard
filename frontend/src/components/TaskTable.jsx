@@ -545,11 +545,12 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
                                                                     id={`date-picker-${task.id}`}
                                                                     type="date"
                                                                     className="absolute top-0 left-0 opacity-0 w-0 h-0"
-                                                                    defaultValue={task.deadline_date || ''}
+                                                                    defaultValue={task.scheduled_date || ''}
                                                                     onChange={async (e) => {
                                                                         try {
-                                                                            await api.updateTask(task.id, { deadline_date: e.target.value });
+                                                                            await api.updateTask(task.id, { scheduled_date: e.target.value });
                                                                             fetchData();
+                                                                            alert("Task Scheduled!");
                                                                         } catch (err) {
                                                                             alert("Failed to schedule: " + err.message);
                                                                         }

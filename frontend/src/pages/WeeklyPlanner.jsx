@@ -148,13 +148,13 @@ const WeeklyPlanner = () => {
     // Calculate Week Days
     const weekDays = Array.from({ length: 7 }).map((_, i) => addDays(weekStart, i));
 
-    // Group Tasks by Date
+    // Group Tasks by Date (SCHEDULED DATE)
     const getTasksForDate = (date) => {
         return tasks.filter(task => {
-            if (!task.deadline_date) return false;
+            if (!task.scheduled_date) return false;
             try {
                 // Parse standard YYYY-MM-DD
-                const d = parseISO(task.deadline_date);
+                const d = parseISO(task.scheduled_date);
                 return isSameDay(d, date);
             } catch {
                 return false;
