@@ -15,8 +15,10 @@ const Layout = ({ children, user, onLogout }) => {
 
     const menuItems = [
         { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-        { icon: CalendarIcon, label: 'Weekly Planner', path: '/planner' },
-        { icon: Users, label: 'Employees', path: '/employees' },
+        ...(user.role === 'admin' ? [
+            { icon: CalendarIcon, label: 'Weekly Planner', path: '/planner' },
+            { icon: Users, label: 'Employees', path: '/employees' }
+        ] : []),
         { icon: BarChart3, label: 'Analytics', path: '/analytics' },
     ];
 

@@ -158,30 +158,34 @@ const Dashboard = () => {
                 </div>
 
                 <div className="flex gap-2">
-                    {/* Tab Switcher */}
-                    <div className="bg-slate-100 dark:bg-slate-800 p-1 rounded-xl flex items-center mr-4">
-                        <button
-                            onClick={() => setActiveTab('all')}
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'all' ? 'bg-white dark:bg-dark-card shadow text-indigo-600 dark:text-indigo-400' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}`}
-                        >
-                            All Tasks
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('today')}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'today' ? 'bg-white dark:bg-dark-card shadow text-indigo-600 dark:text-indigo-400' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}`}
-                        >
-                            <Pin size={14} className={activeTab === 'today' ? 'fill-indigo-600 dark:fill-indigo-400' : ''} />
-                            Today's Tasks
-                        </button>
-                    </div>
+                    {/* Tab Switcher - Hide for Viewer */}
+                    {user.role === 'admin' && (
+                        <div className="bg-slate-100 dark:bg-slate-800 p-1 rounded-xl flex items-center mr-4">
+                            <button
+                                onClick={() => setActiveTab('all')}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'all' ? 'bg-white dark:bg-dark-card shadow text-indigo-600 dark:text-indigo-400' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}`}
+                            >
+                                All Tasks
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('today')}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'today' ? 'bg-white dark:bg-dark-card shadow text-indigo-600 dark:text-indigo-400' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}`}
+                            >
+                                <Pin size={14} className={activeTab === 'today' ? 'fill-indigo-600 dark:fill-indigo-400' : ''} />
+                                Today's Tasks
+                            </button>
+                        </div>
+                    )}
 
-                    <button
-                        onClick={handleGenerateSummary}
-                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all shadow-lg shadow-indigo-500/20"
-                    >
-                        <Sparkles size={18} className={summaryLoading ? 'animate-pulse' : ''} />
-                        AI Summary
-                    </button>
+                    {user.role === 'admin' && (
+                        <button
+                            onClick={handleGenerateSummary}
+                            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all shadow-lg shadow-indigo-500/20"
+                        >
+                            <Sparkles size={18} className={summaryLoading ? 'animate-pulse' : ''} />
+                            AI Summary
+                        </button>
+                    )}
 
                     {/* Only Admin can Sync */}
                     {user.role === 'admin' && (
