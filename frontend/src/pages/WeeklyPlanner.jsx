@@ -9,7 +9,7 @@ import { Plus, Calendar as CalendarIcon, GripVertical } from 'lucide-react';
 import AddTaskModal from '../components/AddTaskModal';
 
 // --- Sortable Task Item Component ---
-const SortableTaskItem = ({ task }) => {
+const SortableTaskItem = ({ task, onSchedule }) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: task.id });
 
     const style = {
@@ -30,9 +30,26 @@ const SortableTaskItem = ({ task }) => {
                 <span className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded ${task.priority === 'High' ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'}`}>
                     {task.priority || 'Normal'}
                 </span>
-                <button className="text-slate-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <GripVertical size={14} />
-                </button>
+                <div className="flex gap-1">
+                    <div className="relative group/date">
+                        <button
+                            className="text-slate-400 hover:text-indigo-600 transition-colors p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700"
+                            onClick={() => document.getElementById(`card-date-${task.id}`).showPicker()}
+                        >
+                            <CalendarIcon size={14} />
+                        </button>
+                        <input
+                            id={`card-date-${task.id}`}
+                            type="date"
+                            className="absolute top-0 right-0 opacity-0 w-0 h-0"
+                            defaultValue={task.scheduled_date || ''}
+                            onChange={(e) => onSchedule(task.id, e.target.value)}
+                        />
+                    </div>
+                    <button className="text-slate-300 dark:text-slate-600 cursor-grab active:cursor-grabbing hover:text-slate-500 transition-colors">
+                        <GripVertical size={14} />
+                    </button>
+                </div>
             </div>
 
             <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1 line-clamp-2 leading-snug">
@@ -56,7 +73,7 @@ const SortableTaskItem = ({ task }) => {
 };
 
 // --- Droppable Column Component ---
-const DayColumn = ({ date, tasks }) => {
+const DayColumn = ({ date, tasks, onSchedule }) => {
     // Sort tasks by ID/Priority for consistent view
     const sortedTasks = [...tasks].sort((a, b) => b.id - a.id);
     const dayName = format(date, 'EEEE');
@@ -82,7 +99,7 @@ const DayColumn = ({ date, tasks }) => {
             <div className="flex-1 bg-slate-50/50 dark:bg-slate-900/20 p-2 overflow-y-auto scrollbar-hide border-x border-b border-slate-200 dark:border-slate-800 rounded-b-xl">
                 <SortableContext items={sortedTasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
                     {sortedTasks.map(task => (
-                        <SortableTaskItem key={task.id} task={task} />
+                        <SortableTaskItem key={task.id} task={task} onSchedule={onSchedule} />
                     ))}
                     {sortedTasks.length === 0 && (
                         <div className="h-24 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-center text-slate-300 dark:text-slate-600 text-xs">
@@ -302,6 +319,16 @@ const WeeklyPlanner = () => {
                                         id={`day-${dateStr}`}
                                         date={date}
                                         tasks={dayTasks}
+                                        onSchedule={async (taskId, newDate) => {
+                                            try {
+                                                // Optimistic update
+                                                setTasks(prev => prev.map(t => t.id === taskId ? { ...t, scheduled_date: newDate } : t));
+                                                await api.updateTask(taskId, { scheduled_date: newDate });
+                                            } catch (e) {
+                                                console.error("Schedule failed", e);
+                                                fetchData();
+                                            }
+                                        }}
                                     />
                                 );
                             })}
