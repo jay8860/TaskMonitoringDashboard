@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
     MoreVertical, FileText, CheckCircle, Clock, AlertCircle,
-    Search, Filter, Download, Edit2, Check, X, Trash2, ArrowUpDown, CheckSquare, Pin
+    Search, Filter, Download, Edit2, Check, X, Trash2, ArrowUpDown, CheckSquare, Pin, Calendar
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { api } from '../services/api';
+import { useRef } from 'react';
 
 const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
     const [editingId, setEditingId] = useState(null);
@@ -530,6 +531,32 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
                                                             >
                                                                 <Edit2 size={16} />
                                                             </button>
+
+                                                            {/* Schedule Button */}
+                                                            <div className="relative">
+                                                                <button
+                                                                    onClick={() => document.getElementById(`date-picker-${task.id}`).showPicker()}
+                                                                    title="Schedule to Date"
+                                                                    className="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-slate-400 hover:text-blue-600 transition-colors"
+                                                                >
+                                                                    <Calendar size={16} />
+                                                                </button>
+                                                                <input
+                                                                    id={`date-picker-${task.id}`}
+                                                                    type="date"
+                                                                    className="absolute top-0 left-0 opacity-0 w-0 h-0"
+                                                                    defaultValue={task.deadline_date || ''}
+                                                                    onChange={async (e) => {
+                                                                        try {
+                                                                            await api.updateTask(task.id, { deadline_date: e.target.value });
+                                                                            fetchData();
+                                                                        } catch (err) {
+                                                                            alert("Failed to schedule: " + err.message);
+                                                                        }
+                                                                    }}
+                                                                />
+                                                            </div>
+
                                                             <button
                                                                 onClick={() => handleQuickComplete(task)}
                                                                 title="Mark as Completed"

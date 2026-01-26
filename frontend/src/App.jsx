@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Analytics';
 import Employees from './pages/Employees';
 import ResetPassword from './pages/ResetPassword';
+import WeeklyPlanner from './pages/WeeklyPlanner';
 
 // Protected Route Guard
 const ProtectedRoute = ({ children }) => {
@@ -34,6 +35,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Employees />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/planner"
+          element={
+            <ProtectedRoute>
+              <WeeklyPlanner />
             </ProtectedRoute>
           }
         />
