@@ -29,6 +29,14 @@ def run_migrations():
                 print("✅ Migration: 'is_pinned' column added.")
             else:
                 print("✅ Migration: 'is_pinned' column already exists.")
+
+            if "scheduled_date" not in columns:
+                print("🔄 Migration: Adding 'scheduled_date' column to tasks table...")
+                connection.execute(text("ALTER TABLE tasks ADD COLUMN scheduled_date DATE"))
+                connection.commit()
+                print("✅ Migration: 'scheduled_date' column added.")
+            else:
+                print("✅ Migration: 'scheduled_date' column already exists.")
     except Exception as e:
         print(f"❌ Migration Error: {e}")
 
