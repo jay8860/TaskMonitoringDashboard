@@ -192,64 +192,37 @@ const WeeklyPlanner = () => {
 
         if (!task) return;
 
-        // Identify Target Column (Date)
-        // If sorting within same column, we might dropped on another task
-        // If dropped on a container/column directly (if we made columns droppable, but here we used SortableContext)
-        // SortableContext items are droppable.
-
-        let targetDate = null;
-
-        // Check if we dropped on a Day Column Container (we need to make columns droppable containers explicitly if empty)
-        // Currently SortableContext handles items. If empty, we need a way to drop.
-        // Actually, for this board view, it's easier to make the *Task* drag change the date based on which column the *Over* target belongs to.
-
-        // ISSUE: SortableContext expects items. To drop into an empty column, the column itself must be a Droppable.
-        // Or we just check X coordinate? No, dnd-kit uses collision detection.
-
-        // Let's rely on collision with other tasks in that column OR the column itself.
-        // Since I didn't enable droppable columns explicitly in the code above (just SortableContext), 
-        // dropping into an empty column might fail. 
-        // FIX: I will add `useDroppable` to the DayColumn component in a future iteration if needed, 
-        // but for now let's assume users drop "near" tasks.
-        // Use standard dnd-kit collision detection.
-
-        // Wait, for a robust board, I need `useDroppable` on the column.
-        // Let's add it now virtually by checking collision coordinates in `closestCorners`.
-
-        // SIMPLIFICATION: I'll map the *dropped over item* to its date.
-        // If dropped over a task, get that task's date.
-
         const overId = over.id;
         const overTask = tasks.find(t => t.id === overId);
 
-        if (overTask && overTask.deadline_date) {
-            // Dropped over another task -> Take that task's date
-            const newDate = overTask.deadline_date;
-            if (task.deadline_date !== newDate) {
-                await updateTaskDate(task, newDate);
-            }
+        let newDate = null;
+
+        if (overTask && overTask.scheduled_date) {
+            // Dropped over another task -> Take that task's scheduled_date
+            newDate = overTask.scheduled_date;
         } else {
-            // If dropped on a column container (we need to ID columns as 'day-YYYY-MM-DD')
+            // If dropped on a column container
             if (overId.toString().startsWith('day-')) {
-                const newDate = overId.replace('day-', '');
-                if (task.deadline_date !== newDate) {
-                    await updateTaskDate(task, newDate);
-                }
+                newDate = overId.replace('day-', '');
             }
+        }
+
+        if (newDate && task.scheduled_date !== newDate) {
+            await updateTaskDate(task, newDate);
         }
     };
 
     const updateTaskDate = async (task, newDate) => {
         // Optimistic UI Update
         const updatedTasks = tasks.map(t =>
-            t.id === task.id ? { ...t, deadline_date: newDate } : t
+            t.id === task.id ? { ...t, scheduled_date: newDate } : t
         );
         setTasks(updatedTasks);
 
         try {
-            await api.updateTask(task.id, { deadline_date: newDate });
+            await api.updateTask(task.id, { scheduled_date: newDate });
         } catch (e) {
-            console.error("Failed to update date", e);
+            console.error("Failed to update schedule", e);
             // Revert on fail
             fetchData();
         }
@@ -360,12 +333,12 @@ const WeeklyPlanner = () => {
 // Wrapper for Droppable Column
 import { useDroppable } from '@dnd-kit/core';
 
-const DroppableDayColumn = ({ id, date, tasks }) => {
+const DroppableDayColumn = ({ id, date, tasks, onSchedule }) => {
     const { setNodeRef, isOver } = useDroppable({ id });
 
     return (
         <div ref={setNodeRef} className={`rounded-xl transition-colors ${isOver ? 'bg-indigo-50/50 dark:bg-indigo-900/10' : ''}`}>
-            <DayColumn date={date} tasks={tasks} />
+            <DayColumn date={date} tasks={tasks} onSchedule={onSchedule} />
         </div>
     );
 };
