@@ -18,6 +18,14 @@ const Login = ({ onLogin }) => {
     const [hint, setHint] = useState('');
     const [error, setError] = useState('');
 
+    useEffect(() => {
+        if (showForgot && role === 'admin') {
+            setEmail('jayant.nahata@alumni.iitd.ac.in');
+        } else if (!showForgot) {
+            setEmail('');
+        }
+    }, [showForgot, role]);
+
     const navigate = useNavigate();
 
     // Dark Mode Logic

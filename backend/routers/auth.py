@@ -8,6 +8,9 @@ from jose import jwt
 from datetime import datetime, timedelta
 import secrets
 import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -118,9 +121,58 @@ def forgot_password(request: ForgotPasswordRequest, db: Session = Depends(get_db
     user.reset_token_expiry = datetime.utcnow() + timedelta(hours=1)
     db.commit()
 
-    # "Send" Email (Log to Console)
+    # Send Real Email
     reset_link = f"https://{os.getenv('RAILWAY_STATIC_URL', 'localhost:5173')}/reset-password?token={token}"
-    print(f"\n[EMAIL MOCK] To: {request.email}\nSubject: Password Reset\nBody: Click here to reset: {reset_link}\n")
+    
+    sender_email = os.getenv("SMTP_USERNAME")
+    sender_password = os.getenv("SMTP_PASSWORD")
+    smtp_server = os.getenv("SMTP_SERVER", "smtp.gmail.com")
+    smtp_port = int(os.getenv("SMTP_PORT", 587))
+
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Password Reset Request"
+    message["From"] = sender_email
+    message["To"] = request.email
+
+    text = f"""\
+    Hi,
+    
+    You requested a password reset. Click the link below to reset your password:
+    {reset_link}
+    
+    If you did not request this, please ignore this email.
+    """
+    
+    html = f"""\
+    <html>
+      <body>
+        <p>Hi,<br>
+           You requested a password reset. Click the link below to reset your password:<br>
+           <a href="{reset_link}">{reset_link}</a>
+        </p>
+        <p>If you did not request this, please ignore this email.</p>
+      </body>
+    </html>
+    """
+
+    part1 = MIMEText(text, "plain")
+    part2 = MIMEText(html, "html")
+    message.attach(part1)
+    message.attach(part2)
+
+    try:
+        if not sender_email or not sender_password:
+             print(f"⚠️ SMTP Credentials missing. Printing link: {reset_link}")
+        else:
+            with smtplib.SMTP(smtp_server, smtp_port) as server:
+                server.starttls()
+                server.login(sender_email, sender_password)
+                server.sendmail(sender_email, request.email, message.as_string())
+            print(f"✅ Email sent to {request.email}")
+    except Exception as e:
+        print(f"❌ Failed to send email: {e}")
+        # Only for debugging if email fails, easier to see link in logs
+        print(f"Fallback Link: {reset_link}")
 
     return {"message": "If this email is registered, a reset link has been sent."}
 
