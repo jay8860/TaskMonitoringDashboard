@@ -8,7 +8,7 @@ import { api } from '../services/api';
 const Login = ({ onLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('viewer'); // viewer or admin
+    const [role, setRole] = useState('admin'); // viewer or admin
     const [darkMode, setDarkMode] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -157,16 +157,16 @@ const Login = ({ onLogin }) => {
                     {!showForgot && (
                         <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl mb-8">
                             <button
-                                onClick={() => setRole('viewer')}
-                                className={`flex-1 py-3 rounded-lg text-sm font-semibold transition-all shadow-sm ${role === 'viewer' ? 'bg-white dark:bg-indigo-600 text-indigo-600 dark:text-white shadow' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}
-                            >
-                                Agency View
-                            </button>
-                            <button
                                 onClick={() => setRole('admin')}
                                 className={`flex-1 py-3 rounded-lg text-sm font-semibold transition-all shadow-sm ${role === 'admin' ? 'bg-white dark:bg-indigo-600 text-indigo-600 dark:text-white shadow' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}
                             >
                                 Admin View
+                            </button>
+                            <button
+                                onClick={() => setRole('viewer')}
+                                className={`flex-1 py-3 rounded-lg text-sm font-semibold transition-all shadow-sm ${role === 'viewer' ? 'bg-white dark:bg-indigo-600 text-indigo-600 dark:text-white shadow' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}
+                            >
+                                Agency View
                             </button>
                         </div>
                     )}
