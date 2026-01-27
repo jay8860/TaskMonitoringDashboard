@@ -56,6 +56,12 @@ export const api = {
         return response.data;
     },
 
+    bulkUpdateTasks: async (updates) => {
+        // updates: [{id: 1, ...}, {id: 2, ...}]
+        const response = await axios.put(`${API_URL}/bulk/update`, { updates });
+        return response.data;
+    },
+
     deleteTask: async (taskId) => {
         const response = await axios.delete(`${API_URL}/${taskId}`);
         return response.data;

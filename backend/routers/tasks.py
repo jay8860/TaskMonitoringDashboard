@@ -40,6 +40,26 @@ class TaskUpdate(BaseModel):
     is_pinned: Optional[bool] = None
     scheduled_date: Optional[date] = None
 
+class TaskBulkUpdateItem(BaseModel):
+    id: int
+    task_number: Optional[str] = None
+    description: Optional[str] = None
+    assigned_agency: Optional[str] = None
+    priority: Optional[str] = None
+    allocated_date: Optional[date] = None
+    deadline_date: Optional[date] = None
+    status: Optional[str] = None
+    remarks: Optional[str] = None
+    deadline_due_in: Optional[str] = None
+    time_given: Optional[str] = None
+    is_pinned: Optional[bool] = None
+    scheduled_date: Optional[date] = None
+    scheduled_time: Optional[str] = None
+    completion_date: Optional[str] = None
+
+class TaskBulkUpdateList(BaseModel):
+    updates: List[TaskBulkUpdateItem]
+
 # --- Routes ---
 
 @router.post("/sync")
@@ -156,6 +176,43 @@ def update_task(task_id: int, update: TaskUpdate, background_tasks: BackgroundTa
     background_tasks.add_task(ingester.update_sheet_task, original_task_number, update_data)
     
     return task
+
+@router.put("/bulk/update")
+def bulk_update_tasks(bulk_data: TaskBulkUpdateList, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    updated_count = 0
+    
+    for update_item in bulk_data.updates:
+        task = db.query(models.Task).filter(models.Task.id == update_item.id).first()
+        if not task:
+            continue
+            
+        original_task_number = task.task_number
+        update_data_dict = update_item.dict(exclude_unset=True)
+        update_data_dict.pop('id', None) # Remove ID from update data
+        
+        if not update_data_dict:
+            continue
+
+        for key, value in update_data_dict.items():
+            setattr(task, key, value)
+            
+        # Auto-update status logic (Same as single update)
+        if "completion_date" in update_data_dict:
+            c_date = update_data_dict["completion_date"]
+            if c_date and str(c_date).strip():
+                task.status = "Completed"
+            else:
+                 if task.deadline_date and task.deadline_date < date.today():
+                    task.status = "Overdue"
+                 else:
+                    task.status = "Pending"
+
+        # Trigger Sync
+        background_tasks.add_task(ingester.update_sheet_task, original_task_number, update_data_dict)
+        updated_count += 1
+    
+    db.commit()
+    return {"message": f"Successfully updated {updated_count} tasks"}
 
 @router.delete("/{task_id}")
 def delete_task(task_id: int, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):

@@ -7,7 +7,7 @@ import AddTaskModal from '../components/AddTaskModal';
 import { api } from '../services/api';
 import {
     ClipboardList, CheckSquare, Clock, AlertTriangle,
-    Search, Filter, Plus, FileDown, RefreshCw, XCircle, Calendar, Pin, Sparkles, FileText
+    Search, Filter, Plus, FileDown, RefreshCw, XCircle, Calendar, Pin, Sparkles, FileText, Edit2
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import MultiSelect from '../components/MultiSelect';
@@ -23,6 +23,10 @@ const Dashboard = () => {
     const [summary, setSummary] = useState('');
     const [summaryLoading, setSummaryLoading] = useState(false);
     const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
+
+    // Bulk Edit State
+    const [isBulkEditMode, setIsBulkEditMode] = useState(false);
+    const [bulkEdits, setBulkEdits] = useState({}); // { 1: { description: '...' }, 2: { ... } }
 
     // Filters
     const location = useLocation();
@@ -132,6 +136,37 @@ const Dashboard = () => {
         }
     };
 
+    const handleBulkSave = async () => {
+        if (Object.keys(bulkEdits).length === 0) {
+            setIsBulkEditMode(false);
+            return;
+        }
+
+        setLoading(true);
+        try {
+            // Convert Object to Array
+            const updatesArray = Object.keys(bulkEdits).map(id => ({
+                id: parseInt(id),
+                ...bulkEdits[id]
+            }));
+
+            await api.bulkUpdateTasks(updatesArray);
+            setBulkEdits({});
+            setIsBulkEditMode(false);
+            await fetchData();
+            alert(`Successfully updated ${updatesArray.length} tasks!`);
+        } catch (e) {
+            alert("Bulk update failed: " + e.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const cancelBulkEdit = () => {
+        setBulkEdits({});
+        setIsBulkEditMode(false);
+    };
+
 
     const agencies = stats.by_agency ? stats.by_agency.map(a => a.name) : [];
 
@@ -208,13 +243,42 @@ const Dashboard = () => {
                     </button>
 
                     {user.role === 'admin' && (
-                        <button
-                            onClick={() => setIsAddModalOpen(true)}
-                            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30"
-                        >
-                            <Plus size={18} />
-                            Add Task
-                        </button>
+                        <>
+                            {!isBulkEditMode ? (
+                                <>
+                                    <button
+                                        onClick={() => setIsBulkEditMode(true)}
+                                        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-dark-card border border-indigo-200 dark:border-indigo-900 text-indigo-600 dark:text-indigo-400 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
+                                    >
+                                        <Edit2 size={18} />
+                                        Bulk Edit
+                                    </button>
+                                    <button
+                                        onClick={() => setIsAddModalOpen(true)}
+                                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30"
+                                    >
+                                        <Plus size={18} />
+                                        Add Task
+                                    </button>
+                                </>
+                            ) : (
+                                <div className="flex gap-2 animate-in fade-in slide-in-from-right-4 duration-300">
+                                    <button
+                                        onClick={cancelBulkEdit}
+                                        className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        onClick={handleBulkSave}
+                                        className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors shadow-lg shadow-green-500/30 font-bold"
+                                    >
+                                        <CheckSquare size={18} />
+                                        Save Changes ({Object.keys(bulkEdits).length})
+                                    </button>
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             </div>
@@ -305,6 +369,9 @@ const Dashboard = () => {
                 agencies={allEmployees.length > 0 ? allEmployees : agencies} // Use full list for editing dropdowns too
                 user={user}
                 onEdit={(task) => console.log("Edit", task)}
+                isBulkEditMode={isBulkEditMode}
+                bulkEdits={bulkEdits}
+                setBulkEdits={setBulkEdits}
             />
 
             <AddTaskModal

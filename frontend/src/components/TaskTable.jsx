@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 import { api } from '../services/api';
 import { useRef } from 'react';
 
-const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
+const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEditMode, bulkEdits, setBulkEdits }) => {
     const [editingId, setEditingId] = useState(null);
     const [editForm, setEditForm] = useState({});
     const [sortConfig, setSortConfig] = useState({ key: 'deadline_due_in', direction: 'asc' });
@@ -20,17 +20,14 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
         completion_date: 120,
         task_number: 350,
         description: 600,
-        assigned_agency: 120,
+        assigned_agency: 140,
         priority: 90,
         allocated_date: 110,
         time_given: 90,
-        deadline_date: 110,
-        allocated_date: 110,
-        time_given: 90,
-        deadline_date: 110,
+        deadline_date: 130,
         action: 130
     });
-    const [resizing, setResizing] = useState(null); // { key: 'task_number', startX: 100, startWidth: 200 }
+    const [resizing, setResizing] = useState(null);
 
     const startResize = (e, key) => {
         e.preventDefault();
@@ -111,7 +108,6 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
                     }
                 }
 
-                // TIE-BREAKER: If primary values are equal, show newest (Highest ID) first
                 return b.id - a.id;
             });
         }
@@ -149,7 +145,6 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
         const now = new Date();
         const deadline = new Date(task.deadline_date);
 
-        // Handle bad dates
         if (deadline.getFullYear() < 2000) return "text-slate-500";
 
         now.setHours(0, 0, 0, 0);
@@ -158,7 +153,6 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
         const diffTime = deadline - now;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-        // Sanity Check: If > 5 years overdue, treat as invalid
         if (diffDays < -2000) return "text-slate-500";
 
         if (diffDays < 0) return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 font-bold";
@@ -168,30 +162,19 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
 
     const formatDeadlineDisplay = (task) => {
         if (task.completion_date) return 'Completed';
-
-        // FORCE DYNAMIC CALCULATION (Ignore stale DB 'deadline_due_in')
         if (task.deadline_date) {
             const d = new Date(task.deadline_date);
             if (d.toString() === 'Invalid Date' || d.getFullYear() < 2000) return '-';
-
-            // Reset times to compare dates only
             const now = new Date();
             now.setHours(0, 0, 0, 0);
             d.setHours(0, 0, 0, 0);
-
-            // Diff in days
             const diff = Math.ceil((d - now) / (1000 * 60 * 60 * 24));
-
-            // Sanity check for extremely old dates
             if (diff < -2000) return '-';
-
             if (diff === 0) return 'Today';
             if (diff === 1) return 'Tomorrow';
             if (diff === -1) return 'Yesterday';
-
             return diff > 0 ? `${diff} days` : `${diff} days`;
         }
-
         return '-';
     };
 
@@ -199,7 +182,7 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
         setEditingId(task.id);
         setEditForm({
             task_number: task.task_number,
-            description: task.description, // Task Name/Desc
+            description: task.description,
             assigned_agency: task.assigned_agency,
             allocated_date: task.allocated_date,
             time_given: task.time_given,
@@ -217,7 +200,7 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
         try {
             await api.updateTask(taskId, editForm);
             setEditingId(null);
-            fetchData(); // Refresh parent
+            fetchData();
         } catch (e) {
             alert("Failed to update task: " + e.message);
         }
@@ -234,11 +217,10 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
         }
     };
 
+    // Single Edit Time Change
     const handleTimeChange = (e, task) => {
         const newTime = e.target.value;
         const updates = { ...editForm, time_given: newTime };
-
-        // Try to parse days and update deadline
         const daysMatch = newTime.match(/(\d+)/);
         if (daysMatch && task.allocated_date) {
             const days = parseInt(daysMatch[1]);
@@ -253,10 +235,10 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
     };
 
     const handleDelete = async (task) => {
-        if (window.confirm(`Are you sure you want to delete Task "${task.task_number}"? This will also remove it from the Google Sheet.`)) {
+        if (window.confirm(`Are you sure you want to delete Task "${task.task_number}"?`)) {
             try {
                 await api.deleteTask(task.id);
-                fetchData(); // Refresh list
+                fetchData();
             } catch (e) {
                 alert("Failed to delete task: " + e.message);
             }
@@ -264,17 +246,23 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
     };
 
     const handlePin = async (task) => {
-        try {
-            // Optimistic Update (optional, but good for UI)
-            await api.updateTask(task.id, { is_pinned: !task.is_pinned });
-            fetchData();
-        } catch (e) {
-            console.error("Failed to toggle pin", e);
-        }
+        try { await api.updateTask(task.id, { is_pinned: !task.is_pinned }); fetchData(); } catch (e) { console.error(e); }
+    };
+
+    // Bulk Edit Handlers
+    const handleBulkChange = (id, field, value) => {
+        setBulkEdits(prev => ({
+            ...prev,
+            [id]: {
+                ...prev[id],
+                [field]: value
+            }
+        }));
     };
 
     // Helper: Any row editing?
-    const isAnyRowEditing = editingId !== null;
+    const isSingleEditing = editingId !== null;
+    const isAnyRowEditing = isSingleEditing || isBulkEditMode;
 
     return (
         <div className="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
@@ -282,111 +270,51 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
                 <table className="min-w-full text-left border-collapse table-fixed">
                     <thead>
                         <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
-                            <th className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider tracking-wider relative group whitespace-nowrap" style={{ width: columnWidths.sno }}>
-                                S.No
-                                <Resizer colKey="sno" />
+                            <th className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider relative group whitespace-nowrap" style={{ width: columnWidths.sno }}>
+                                S.No <Resizer colKey="sno" />
                             </th>
-
-                            <th
-                                onClick={() => handleSort('deadline_due_in')}
-                                className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group whitespace-nowrap"
-                                style={{ width: columnWidths.deadline_due_in }}
-                            >
-                                <div className="flex items-center gap-1">Due In {sortConfig.key === 'deadline_due_in' && <ArrowUpDown size={14} />}</div>
-                                <Resizer colKey="deadline_due_in" />
+                            <th onClick={() => handleSort('deadline_due_in')} className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group whitespace-nowrap" style={{ width: columnWidths.deadline_due_in }}>
+                                <div className="flex items-center gap-1">Due In {sortConfig.key === 'deadline_due_in' && <ArrowUpDown size={14} />}</div> <Resizer colKey="deadline_due_in" />
                             </th>
-
-                            {/* Conditionally Render Completion Date Header */}
                             {isAnyRowEditing && (
-                                <th
-                                    onClick={() => handleSort('completion_date')}
-                                    className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group whitespace-nowrap"
-                                    style={{ width: columnWidths.completion_date }}
-                                >
-                                    <div className="flex items-center gap-1">Completion Date {sortConfig.key === 'completion_date' && <ArrowUpDown size={14} />}</div>
-                                    <Resizer colKey="completion_date" />
+                                <th onClick={() => handleSort('completion_date')} className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group whitespace-nowrap" style={{ width: columnWidths.completion_date }}>
+                                    <div className="flex items-center gap-1">Completion {sortConfig.key === 'completion_date' && <ArrowUpDown size={14} />}</div> <Resizer colKey="completion_date" />
                                 </th>
                             )}
-
-                            <th
-                                onClick={() => handleSort('task_number')}
-                                className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group whitespace-nowrap"
-                                style={{ width: columnWidths.task_number }}
-                            >
-                                <div className="flex items-center gap-1">Task/File No {sortConfig.key === 'task_number' && <ArrowUpDown size={14} />}</div>
-                                <Resizer colKey="task_number" />
+                            <th onClick={() => handleSort('task_number')} className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group whitespace-nowrap" style={{ width: columnWidths.task_number }}>
+                                <div className="flex items-center gap-1">Task/File No {sortConfig.key === 'task_number' && <ArrowUpDown size={14} />}</div> <Resizer colKey="task_number" />
                             </th>
-
-                            <th
-                                onClick={() => handleSort('description')}
-                                className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group"
-                                style={{ width: columnWidths.description }}
-                            >
-                                <div className="flex items-center gap-1">Notes/Comments by Steno {sortConfig.key === 'description' && <ArrowUpDown size={14} />}</div>
-                                <Resizer colKey="description" />
+                            <th onClick={() => handleSort('description')} className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.description }}>
+                                <div className="flex items-center gap-1">Notes {sortConfig.key === 'description' && <ArrowUpDown size={14} />}</div> <Resizer colKey="description" />
                             </th>
-
-                            <th
-                                onClick={() => handleSort('assigned_agency')}
-                                className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group"
-                                style={{ width: columnWidths.assigned_agency }}
-                            >
-                                <div className="flex items-center gap-1">Assigned To {sortConfig.key === 'assigned_agency' && <ArrowUpDown size={14} />}</div>
-                                <Resizer colKey="assigned_agency" />
+                            <th onClick={() => handleSort('assigned_agency')} className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.assigned_agency }}>
+                                <div className="flex items-center gap-1">Assigned To {sortConfig.key === 'assigned_agency' && <ArrowUpDown size={14} />}</div> <Resizer colKey="assigned_agency" />
                             </th>
-
-                            <th
-                                onClick={() => handleSort('priority')}
-                                className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group"
-                                style={{ width: columnWidths.priority }}
-                            >
-                                <div className="flex items-center gap-1">Priority {sortConfig.key === 'priority' && <ArrowUpDown size={14} />}</div>
-                                <Resizer colKey="priority" />
+                            <th onClick={() => handleSort('priority')} className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.priority }}>
+                                <div className="flex items-center gap-1">Priority {sortConfig.key === 'priority' && <ArrowUpDown size={14} />}</div> <Resizer colKey="priority" />
                             </th>
-
-                            <th
-                                onClick={() => handleSort('allocated_date')}
-                                className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group"
-                                style={{ width: columnWidths.allocated_date }}
-                            >
-                                <div className="flex items-center gap-1">Allocated Date {sortConfig.key === 'allocated_date' && <ArrowUpDown size={14} />}</div>
-                                <Resizer colKey="allocated_date" />
+                            <th onClick={() => handleSort('allocated_date')} className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.allocated_date }}>
+                                <div className="flex items-center gap-1">Allocated {sortConfig.key === 'allocated_date' && <ArrowUpDown size={14} />}</div> <Resizer colKey="allocated_date" />
                             </th>
-
-                            <th
-                                onClick={() => handleSort('time_given')}
-                                className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group"
-                                style={{ width: columnWidths.time_given }}
-                            >
-                                <div className="flex items-center gap-1">Time Given {sortConfig.key === 'time_given' && <ArrowUpDown size={14} />}</div>
-                                <Resizer colKey="time_given" />
+                            <th onClick={() => handleSort('time_given')} className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.time_given }}>
+                                <div className="flex items-center gap-1">Time Given {sortConfig.key === 'time_given' && <ArrowUpDown size={14} />}</div> <Resizer colKey="time_given" />
                             </th>
-
-                            <th
-                                onClick={() => handleSort('deadline_date')}
-                                className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group"
-                                style={{ width: columnWidths.deadline_date }}
-                            >
-                                <div className="flex items-center gap-1">Deadline {sortConfig.key === 'deadline_date' && <ArrowUpDown size={14} />}</div>
-                                <Resizer colKey="deadline_date" />
+                            <th onClick={() => handleSort('deadline_date')} className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.deadline_date }}>
+                                <div className="flex items-center gap-1">Deadline {sortConfig.key === 'deadline_date' && <ArrowUpDown size={14} />}</div> <Resizer colKey="deadline_date" />
                             </th>
-
                             <th className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider relative group" style={{ width: columnWidths.action }}>
-                                Action
-                                <Resizer colKey="action" />
+                                Action <Resizer colKey="action" />
                             </th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                         {tasks.length === 0 ? (
-                            <tr>
-                                <td colSpan={isAnyRowEditing ? "11" : "10"} className="px-6 py-12 text-center text-slate-400">
-                                    {loading ? 'Loading tasks...' : 'No tasks found matching filters.'}
-                                </td>
-                            </tr>
+                            <tr><td colSpan={isAnyRowEditing ? "11" : "10"} className="px-6 py-12 text-center text-slate-400">No tasks found.</td></tr>
                         ) : (
                             sortedTasks.map((task, index) => {
                                 const isEditing = editingId === task.id;
+                                const isBulk = isBulkEditMode;
+                                const bulkVal = (field) => bulkEdits[task.id]?.[field] ?? task[field] ?? '';
 
                                 return (
                                     <motion.tr
@@ -394,203 +322,117 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user }) => {
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: index * 0.05 }}
-                                        className={`transition-colors group ${isEditing ? 'bg-indigo-50 dark:bg-indigo-900/10' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}
+                                        className={`transition-colors group ${isEditing || isBulk ? 'bg-indigo-50 dark:bg-indigo-900/10' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}
                                     >
-                                        {/* Serial Number */}
                                         <td className="px-6 py-4 text-[17px] font-medium text-slate-600 dark:text-slate-300 text-center" style={{ width: columnWidths.sno }}>
                                             {index + 1}
                                         </td>
 
-                                        {/* Deadline due in */}
                                         <td className="px-6 py-4 text-[17px] font-medium" style={{ width: columnWidths.deadline_due_in }}>
-                                            <span className={`px-2 py-1 rounded text-sm font-medium ${getDeadlineStyle(task)}`}>
-                                                {formatDeadlineDisplay(task)}
-                                            </span>
+                                            <span className={`px-2 py-1 rounded text-sm font-medium ${getDeadlineStyle(task)}`}>{formatDeadlineDisplay(task)}</span>
                                         </td>
 
-                                        {/* Conditionally Render Task Completion Date */}
                                         {isAnyRowEditing && (
-                                            <td className="px-6 py-4 text-[17px] font-medium text-slate-700 dark:text-slate-200" style={{ width: columnWidths.completion_date }}>
+                                            <td className="px-6 py-4 text-[17px] font-medium" style={{ width: columnWidths.completion_date }}>
                                                 {isEditing ? (
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Date/Remark"
-                                                        value={editForm.completion_date || ''}
-                                                        onChange={(e) => setEditForm({ ...editForm, completion_date: e.target.value })}
-                                                        className="w-full p-2 rounded border border-indigo-300 focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-600 text-sm"
-                                                    />
+                                                    <input type="text" value={editForm.completion_date || ''} onChange={(e) => setEditForm({ ...editForm, completion_date: e.target.value })} className="w-full p-2 rounded border border-indigo-300 text-sm" />
+                                                ) : isBulk ? (
+                                                    <input type="text" value={bulkVal('completion_date')} onChange={(e) => handleBulkChange(task.id, 'completion_date', e.target.value)} className="w-full p-2 rounded border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-indigo-500" />
                                                 ) : (
-                                                    <div className="truncate" title={task.completion_date}>
-                                                        {task.completion_date || '-'}
-                                                    </div>
+                                                    <div className="truncate" title={task.completion_date}>{task.completion_date || '-'}</div>
                                                 )}
                                             </td>
                                         )}
 
-                                        {/* Task Number (Editable) */}
-                                        <td className="px-6 py-4 text-[17px] font-medium text-slate-900 dark:text-white whitespace-normal break-words leading-relaxed" style={{ width: columnWidths.task_number }}>
+                                        <td className="px-6 py-4 text-[17px] font-medium text-slate-900 dark:text-white whitespace-normal break-words" style={{ width: columnWidths.task_number }}>
                                             {isEditing ? (
-                                                <textarea
-                                                    value={editForm.task_number}
-                                                    onChange={(e) => setEditForm({ ...editForm, task_number: e.target.value })}
-                                                    className="w-full p-2 rounded border border-indigo-300 focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-600 text-[15px]"
-                                                    rows={2}
-                                                />
+                                                <textarea value={editForm.task_number} onChange={(e) => setEditForm({ ...editForm, task_number: e.target.value })} className="w-full p-2 rounded border border-indigo-300 text-[15px]" rows={2} />
+                                            ) : isBulk ? (
+                                                <textarea value={bulkVal('task_number')} onChange={(e) => handleBulkChange(task.id, 'task_number', e.target.value)} className="w-full p-2 rounded border border-slate-200 dark:border-slate-600 text-[15px] focus:ring-2 focus:ring-indigo-500" rows={2} />
                                             ) : (
                                                 <span>{task.task_number}</span>
                                             )}
                                         </td>
 
-                                        {/* Description (Editable) */}
-                                        <td className="px-6 py-4 text-[17px] font-medium text-slate-700 dark:text-slate-200 leading-relaxed" style={{ width: columnWidths.description }}>
+                                        <td className="px-6 py-4 text-[17px] font-medium text-slate-700 dark:text-slate-200" style={{ width: columnWidths.description }}>
                                             {isEditing ? (
-                                                <textarea
-                                                    value={editForm.description}
-                                                    onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                                                    className="w-full p-2 rounded border border-indigo-300 focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-600 text-sm"
-                                                    rows={3}
-                                                />
+                                                <textarea value={editForm.description} onChange={(e) => setEditForm({ ...editForm, description: e.target.value })} className="w-full p-2 rounded border border-indigo-300 text-sm" rows={3} />
+                                            ) : isBulk ? (
+                                                <textarea value={bulkVal('description')} onChange={(e) => handleBulkChange(task.id, 'description', e.target.value)} className="w-full p-2 rounded border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-indigo-500" rows={3} />
                                             ) : (
-                                                <div className="whitespace-pre-wrap break-words" title={task.description}>
-                                                    {task.description || '-'}
-                                                </div>
+                                                <div className="whitespace-pre-wrap break-words" title={task.description}>{task.description || '-'}</div>
                                             )}
                                         </td>
 
-                                        {/* Assigned Agency (Editable dropdown) */}
-                                        <td className="px-6 py-4 text-[17px] font-medium text-slate-700 dark:text-slate-200 leading-relaxed" style={{ width: columnWidths.assigned_agency }}>
+                                        <td className="px-6 py-4 text-[17px] font-medium" style={{ width: columnWidths.assigned_agency }}>
                                             {isEditing ? (
-                                                <select
-                                                    value={editForm.assigned_agency}
-                                                    onChange={(e) => setEditForm({ ...editForm, assigned_agency: e.target.value })}
-                                                    className="w-full p-2 rounded border border-indigo-300 focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-600 text-sm"
-                                                >
-                                                    {agencies.map(a => <option key={a} value={a}>{a}</option>)}
-                                                    <option value={task.assigned_agency} hidden>{task.assigned_agency}</option>
+                                                <select value={editForm.assigned_agency} onChange={(e) => setEditForm({ ...editForm, assigned_agency: e.target.value })} className="w-full p-2 rounded border border-indigo-300 text-sm">
+                                                    {agencies.map(a => <option key={a} value={a}>{a}</option>)} <option value={task.assigned_agency} hidden>{task.assigned_agency}</option>
+                                                </select>
+                                            ) : isBulk ? (
+                                                <select value={bulkVal('assigned_agency')} onChange={(e) => handleBulkChange(task.id, 'assigned_agency', e.target.value)} className="w-full p-2 rounded border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-indigo-500">
+                                                    {agencies.map(a => <option key={a} value={a}>{a}</option>)} <option value={task.assigned_agency} hidden>{task.assigned_agency}</option>
                                                 </select>
                                             ) : (
-                                                <span className="whitespace-pre-wrap break-words">{task.assigned_agency || 'Unassigned'}</span>
+                                                <span>{task.assigned_agency || 'Unassigned'}</span>
                                             )}
                                         </td>
 
-                                        {/* Priority (Read-only for now) - user probably wants this editable eventually but limiting scope */}
                                         <td className="px-6 py-4" style={{ width: columnWidths.priority }}>
-                                            <span className={`text-sm px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 uppercase font-bold`}>
-                                                {task.priority || 'Normal'}
-                                            </span>
+                                            <span className="text-sm px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 font-bold">{task.priority || 'Normal'}</span>
                                         </td>
 
-                                        {/* Task Allocated Date */}
-                                        <td className="px-6 py-4 text-[17px] font-medium text-slate-700 dark:text-slate-200 whitespace-nowrap" style={{ width: columnWidths.allocated_date }}>
+                                        <td className="px-6 py-4 text-[17px] font-medium whitespace-nowrap" style={{ width: columnWidths.allocated_date }}>
                                             {task.allocated_date ? format(new Date(task.allocated_date), 'MMM dd, yyyy') : '-'}
                                         </td>
 
-                                        {/* Time given for task (Editable) */}
-                                        <td className="px-6 py-4 text-[17px] font-medium text-slate-700 dark:text-slate-200" style={{ width: columnWidths.time_given }}>
+                                        <td className="px-6 py-4 text-[17px] font-medium" style={{ width: columnWidths.time_given }}>
                                             {isEditing ? (
-                                                <input
-                                                    type="text"
-                                                    value={editForm.time_given || ''}
-                                                    onChange={(e) => handleTimeChange(e, task)}
-                                                    className="w-full p-2 rounded border border-indigo-300 focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-600 text-sm"
-                                                />
+                                                <input type="text" value={editForm.time_given || ''} onChange={(e) => handleTimeChange(e, task)} className="w-full p-2 rounded border border-indigo-300 text-sm" />
+                                            ) : isBulk ? (
+                                                <input type="text" value={bulkVal('time_given')} onChange={(e) => handleBulkChange(task.id, 'time_given', e.target.value)} className="w-full p-2 rounded border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-indigo-500" />
                                             ) : (
                                                 <span>{task.time_given || '7 days'}</span>
                                             )}
                                         </td>
 
-                                        {/* Deadline (Editable Date) */}
-                                        <td className="px-6 py-4 text-[17px] font-medium text-slate-700 dark:text-slate-200 whitespace-nowrap" style={{ width: columnWidths.deadline_date }}>
+                                        <td className="px-6 py-4 text-[17px] font-medium whitespace-nowrap" style={{ width: columnWidths.deadline_date }}>
                                             {isEditing ? (
-                                                <input
-                                                    type="date"
-                                                    value={editForm.deadline_date || ''}
-                                                    onChange={(e) => setEditForm({ ...editForm, deadline_date: e.target.value })}
-                                                    className="w-full p-2 rounded border border-indigo-300 focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-600 text-sm"
-                                                />
+                                                <input type="date" value={editForm.deadline_date || ''} onChange={(e) => setEditForm({ ...editForm, deadline_date: e.target.value })} className="w-full p-2 rounded border border-indigo-300 text-sm" />
+                                            ) : isBulk ? (
+                                                <input type="date" value={bulkVal('deadline_date')} onChange={(e) => handleBulkChange(task.id, 'deadline_date', e.target.value)} className="w-full p-2 rounded border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-indigo-500" />
                                             ) : (
                                                 <span>{task.deadline_date ? format(new Date(task.deadline_date), 'MMM dd, yyyy') : '-'}</span>
                                             )}
                                         </td>
 
-                                        {/* Actions */}
                                         <td className="px-6 py-4" style={{ width: columnWidths.action }}>
-                                            {isEditing ? (
+                                            {isEditing && !isBulk ? (
                                                 <div className="flex gap-2">
-                                                    <button onClick={() => saveEdit(task.id)} className="p-1.5 bg-green-100 text-green-600 rounded hover:bg-green-200"><Check size={16} /></button>
-                                                    <button onClick={cancelEdit} className="p-1.5 bg-red-100 text-red-600 rounded hover:bg-red-200"><X size={16} /></button>
+                                                    <button onClick={() => saveEdit(task.id)} className="p-1.5 bg-green-100 text-green-600 rounded"><Check size={16} /></button>
+                                                    <button onClick={cancelEdit} className="p-1.5 bg-red-100 text-red-600 rounded"><X size={16} /></button>
                                                 </div>
-                                            ) : (
+                                            ) : !isBulk && (
                                                 <div className="flex gap-2">
                                                     {user?.role === 'admin' && (
                                                         <>
-                                                            <button
-                                                                onClick={() => startEdit(task)}
-                                                                title="Edit Task"
-                                                                className="p-2 rounded-lg hover:bg-indigo-50 dark:hover:bg-slate-700 text-slate-400 hover:text-indigo-600 transition-colors"
-                                                            >
-                                                                <Edit2 size={16} />
-                                                            </button>
-
-                                                            {/* Schedule Button */}
+                                                            <button onClick={() => startEdit(task)} className="p-2 rounded-lg hover:bg-indigo-50 text-slate-400 hover:text-indigo-600"><Edit2 size={16} /></button>
                                                             <div className="relative">
-                                                                <button
-                                                                    onClick={() => document.getElementById(`date-picker-${task.id}`).showPicker()}
-                                                                    title="Schedule to Date"
-                                                                    className="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-slate-400 hover:text-blue-600 transition-colors"
-                                                                >
-                                                                    <Calendar size={16} />
-                                                                </button>
-                                                                <input
-                                                                    id={`date-picker-${task.id}`}
-                                                                    type="datetime-local"
-                                                                    className="absolute top-0 left-0 opacity-0 w-0 h-0"
-                                                                    defaultValue={
-                                                                        task.scheduled_date
-                                                                            ? `${task.scheduled_date}T${task.scheduled_time || '09:00'}`
-                                                                            : ''
-                                                                    }
+                                                                <button onClick={() => document.getElementById(`date-picker-${task.id}`).showPicker()} className="p-2 rounded-lg hover:bg-blue-50 text-slate-400 hover:text-blue-600"><Calendar size={16} /></button>
+                                                                <input id={`date-picker-${task.id}`} type="datetime-local" className="absolute top-0 left-0 opacity-0 w-0 h-0" defaultValue={task.scheduled_date ? `${task.scheduled_date}T${task.scheduled_time || '09:00'}` : ''}
                                                                     onChange={async (e) => {
                                                                         try {
-                                                                            const val = e.target.value; // "YYYY-MM-DDTHH:MM"
-                                                                            if (!val) return;
-
+                                                                            const val = e.target.value; if (!val) return;
                                                                             const [date, time] = val.split('T');
-
-                                                                            await api.updateTask(task.id, {
-                                                                                scheduled_date: date,
-                                                                                scheduled_time: time
-                                                                            });
-                                                                            fetchData();
-                                                                            alert(`Scheduled for ${date} at ${time}`);
-                                                                        } catch (err) {
-                                                                            alert("Failed to schedule: " + err.message);
-                                                                        }
+                                                                            await api.updateTask(task.id, { scheduled_date: date, scheduled_time: time });
+                                                                            fetchData(); alert(`Scheduled for ${date} at ${time}`);
+                                                                        } catch (err) { alert("Failed to schedule: " + err.message); }
                                                                     }}
                                                                 />
                                                             </div>
-
-                                                            <button
-                                                                onClick={() => handleQuickComplete(task)}
-                                                                title="Mark as Completed"
-                                                                className="p-2 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-slate-400 hover:text-emerald-600 transition-colors"
-                                                            >
-                                                                <CheckSquare size={16} />
-                                                            </button>
-                                                            <button
-                                                                onClick={() => handlePin(task)}
-                                                                title={task.is_pinned ? "Remove from Today's Tasks" : "Mark for Today"}
-                                                                className={`p-2 rounded-lg transition-colors ${task.is_pinned ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400' : 'hover:bg-indigo-50 dark:hover:bg-slate-700 text-slate-400 hover:text-indigo-600'}`}
-                                                            >
-                                                                <Pin size={16} className={task.is_pinned ? "fill-indigo-600 dark:fill-indigo-400" : ""} />
-                                                            </button>
-                                                            <button
-                                                                onClick={() => handleDelete(task)}
-                                                                title="Delete Task"
-                                                                className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-400 hover:text-red-500 transition-colors"
-                                                            >
-                                                                <Trash2 size={16} />
-                                                            </button>
+                                                            <button onClick={() => handleQuickComplete(task)} className="p-2 rounded-lg hover:bg-emerald-50 text-slate-400 hover:text-emerald-600"><CheckSquare size={16} /></button>
+                                                            <button onClick={() => handlePin(task)} className={`p-2 rounded-lg ${task.is_pinned ? 'bg-indigo-50 text-indigo-600' : 'hover:bg-indigo-50 text-slate-400 hover:text-indigo-600'}`}><Pin size={16} className={task.is_pinned ? "fill-indigo-600" : ""} /></button>
+                                                            <button onClick={() => handleDelete(task)} className="p-2 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500"><Trash2 size={16} /></button>
                                                         </>
                                                     )}
                                                 </div>
