@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 import { api } from '../services/api';
 import { useRef } from 'react';
 
-const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEditMode, bulkEdits, setBulkEdits }) => {
+const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEditMode, bulkEdits, setBulkEdits, selectedTasks, toggleSelection, selectAll }) => {
     const [editingId, setEditingId] = useState(null);
     const [editForm, setEditForm] = useState({});
     const [sortConfig, setSortConfig] = useState({ key: 'deadline_due_in', direction: 'asc' });
@@ -264,12 +264,26 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEd
     const isSingleEditing = editingId !== null;
     const isAnyRowEditing = isSingleEditing || isBulkEditMode;
 
+    // Selection Helpers
+    const allTaskIds = tasks.map(t => t.id);
+    const isAllSelected = tasks.length > 0 && selectedTasks?.length === tasks.length;
+    const Checkbox = ({ checked, onChange }) => (
+        <div onClick={onChange} className={`w-5 h-5 rounded border flex items-center justify-center cursor-pointer transition-colors ${checked ? 'bg-indigo-600 border-indigo-600' : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600'}`}>
+            {checked && <Check size={14} className="text-white" />}
+        </div>
+    );
+
     return (
         <div className="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
             <div className="overflow-x-auto">
                 <table className="min-w-full text-left border-collapse table-fixed">
                     <thead>
                         <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+                            {isBulkEditMode && (
+                                <th className="px-4 py-4 w-[50px]">
+                                    <Checkbox checked={isAllSelected} onChange={() => selectAll(allTaskIds)} />
+                                </th>
+                            )}
                             <th className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider relative group whitespace-nowrap" style={{ width: columnWidths.sno }}>
                                 S.No <Resizer colKey="sno" />
                             </th>
@@ -282,10 +296,10 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEd
                                 </th>
                             )}
                             <th onClick={() => handleSort('task_number')} className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group whitespace-nowrap" style={{ width: columnWidths.task_number }}>
-                                <div className="flex items-center gap-1">Task/File No {sortConfig.key === 'task_number' && <ArrowUpDown size={14} />}</div> <Resizer colKey="task_number" />
+                                <div className="flex items-center gap-1">Task Name {sortConfig.key === 'task_number' && <ArrowUpDown size={14} />}</div> <Resizer colKey="task_number" />
                             </th>
                             <th onClick={() => handleSort('description')} className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.description }}>
-                                <div className="flex items-center gap-1">Notes {sortConfig.key === 'description' && <ArrowUpDown size={14} />}</div> <Resizer colKey="description" />
+                                <div className="flex items-center gap-1">Comments by Steno {sortConfig.key === 'description' && <ArrowUpDown size={14} />}</div> <Resizer colKey="description" />
                             </th>
                             <th onClick={() => handleSort('assigned_agency')} className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.assigned_agency }}>
                                 <div className="flex items-center gap-1">Assigned To {sortConfig.key === 'assigned_agency' && <ArrowUpDown size={14} />}</div> <Resizer colKey="assigned_agency" />
@@ -309,11 +323,12 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEd
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                         {tasks.length === 0 ? (
-                            <tr><td colSpan={isAnyRowEditing ? "11" : "10"} className="px-6 py-12 text-center text-slate-400">No tasks found.</td></tr>
+                            <tr><td colSpan={isBulkEditMode ? "12" : "11"} className="px-6 py-12 text-center text-slate-400">No tasks found.</td></tr>
                         ) : (
                             sortedTasks.map((task, index) => {
                                 const isEditing = editingId === task.id;
                                 const isBulk = isBulkEditMode;
+                                const isSelected = selectedTasks?.includes(task.id);
                                 const bulkVal = (field) => bulkEdits[task.id]?.[field] ?? task[field] ?? '';
 
                                 return (
@@ -322,8 +337,14 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEd
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: index * 0.05 }}
-                                        className={`transition-colors group ${isEditing || isBulk ? 'bg-indigo-50 dark:bg-indigo-900/10' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}
+                                        className={`transition-colors group ${isEditing || (isBulk && isSelected) ? 'bg-indigo-50 dark:bg-indigo-900/10' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}
+                                        onClick={() => isBulk && toggleSelection(task.id)}
                                     >
+                                        {isBulkEditMode && (
+                                            <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
+                                                <Checkbox checked={isSelected} onChange={() => toggleSelection(task.id)} />
+                                            </td>
+                                        )}
                                         <td className="px-6 py-4 text-[17px] font-medium text-slate-600 dark:text-slate-300 text-center" style={{ width: columnWidths.sno }}>
                                             {index + 1}
                                         </td>

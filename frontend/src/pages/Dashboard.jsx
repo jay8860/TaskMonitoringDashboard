@@ -7,7 +7,7 @@ import AddTaskModal from '../components/AddTaskModal';
 import { api } from '../services/api';
 import {
     ClipboardList, CheckSquare, Clock, AlertTriangle,
-    Search, Filter, Plus, FileDown, RefreshCw, XCircle, Calendar, Pin, Sparkles, FileText, Edit2
+    Search, Filter, Plus, FileDown, RefreshCw, XCircle, Calendar, Pin, Sparkles, FileText, Edit2, Trash2
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import MultiSelect from '../components/MultiSelect';
@@ -24,9 +24,71 @@ const Dashboard = () => {
     const [summaryLoading, setSummaryLoading] = useState(false);
     const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
 
-    // Bulk Edit State
+    // Bulk Edit & Selection State
     const [isBulkEditMode, setIsBulkEditMode] = useState(false);
-    const [bulkEdits, setBulkEdits] = useState({}); // { 1: { description: '...' }, 2: { ... } }
+    const [bulkEdits, setBulkEdits] = useState({});
+    const [selectedTasks, setSelectedTasks] = useState([]);
+
+    const toggleSelection = (taskId) => {
+        setSelectedTasks(prev =>
+            prev.includes(taskId) ? prev.filter(id => id !== taskId) : [...prev, taskId]
+        );
+    };
+
+    const selectAll = (allTaskIds) => {
+        if (selectedTasks.length === allTaskIds.length) {
+            setSelectedTasks([]);
+        } else {
+            setSelectedTasks(allTaskIds);
+        }
+    };
+
+    const handleBulkDelete = async () => {
+        if (!window.confirm(`Delete ${selectedTasks.length} tasks?`)) return;
+        setLoading(true);
+        try {
+            await Promise.all(selectedTasks.map(id => api.deleteTask(id)));
+            setSelectedTasks([]);
+            await fetchData();
+            alert("Tasks deleted!");
+        } catch (e) {
+            alert("Bulk delete failed: " + e.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleBulkReschedule = async () => {
+        const days = prompt("Enter days to extend deadline by (e.g., 7):");
+        if (!days) return;
+        const numDays = parseInt(days);
+        if (isNaN(numDays)) return alert("Invalid number");
+
+        setLoading(true);
+        try {
+            const updates = selectedTasks.map(id => {
+                const task = tasks.find(t => t.id === id);
+                if (!task) return null;
+                const currentDeadline = new Date(task.deadline_date || new Date());
+                const newDeadline = new Date(currentDeadline);
+                newDeadline.setDate(newDeadline.getDate() + numDays);
+                return {
+                    id,
+                    deadline_date: newDeadline.toISOString().split('T')[0],
+                    time_given: String(numDays) // Or update logic
+                };
+            }).filter(Boolean);
+
+            await api.bulkUpdateTasks(updates);
+            setSelectedTasks([]);
+            await fetchData();
+            alert("Tasks rescheduled!");
+        } catch (e) {
+            alert("Bulk reschedule failed: " + e.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Filters
     const location = useLocation();
@@ -251,7 +313,7 @@ const Dashboard = () => {
                                         className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-dark-card border border-indigo-200 dark:border-indigo-900 text-indigo-600 dark:text-indigo-400 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
                                     >
                                         <Edit2 size={18} />
-                                        Bulk Edit
+                                        Bulk Actions
                                     </button>
                                     <button
                                         onClick={() => setIsAddModalOpen(true)}
@@ -262,19 +324,30 @@ const Dashboard = () => {
                                     </button>
                                 </>
                             ) : (
-                                <div className="flex gap-2 animate-in fade-in slide-in-from-right-4 duration-300">
+                                <div className="flex gap-2 animate-in fade-in slide-in-from-right-4 duration-300 items-center">
+                                    <span className="text-sm text-slate-500 mr-2">{selectedTasks.length} selected</span>
+
+                                    {selectedTasks.length > 0 && (
+                                        <>
+                                            <button onClick={handleBulkDelete} className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors" title="Delete Selected"><Trash2 size={18} /></button>
+                                            <button onClick={handleBulkReschedule} className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" title="Extend Deadline"><Calendar size={18} /></button>
+                                        </>
+                                    )}
+
+                                    <div className="h-6 w-px bg-slate-300 mx-2"></div>
+
                                     <button
                                         onClick={cancelBulkEdit}
                                         className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
                                     >
-                                        Cancel
+                                        Exit
                                     </button>
                                     <button
                                         onClick={handleBulkSave}
                                         className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors shadow-lg shadow-green-500/30 font-bold"
                                     >
                                         <CheckSquare size={18} />
-                                        Save Changes ({Object.keys(bulkEdits).length})
+                                        Save Edits
                                     </button>
                                 </div>
                             )}
@@ -366,12 +439,15 @@ const Dashboard = () => {
                 tasks={activeTab === 'today' ? tasks.filter(t => t.is_pinned) : tasks}
                 loading={loading}
                 fetchData={fetchData}
-                agencies={allEmployees.length > 0 ? allEmployees : agencies} // Use full list for editing dropdowns too
+                agencies={allEmployees.length > 0 ? allEmployees : agencies}
                 user={user}
                 onEdit={(task) => console.log("Edit", task)}
                 isBulkEditMode={isBulkEditMode}
                 bulkEdits={bulkEdits}
                 setBulkEdits={setBulkEdits}
+                selectedTasks={selectedTasks}
+                toggleSelection={toggleSelection}
+                selectAll={selectAll}
             />
 
             <AddTaskModal
