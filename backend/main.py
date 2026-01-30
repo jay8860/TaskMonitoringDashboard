@@ -53,6 +53,14 @@ def run_migrations():
                 print("✅ Migration: 'scheduled_time' column added.")
             else:
                 print("✅ Migration: 'scheduled_time' column already exists.")
+            
+            if "attachment_data" not in columns:
+                print("🔄 Migration: Adding 'attachment_data' column to tasks table...")
+                connection.execute(text("ALTER TABLE tasks ADD COLUMN attachment_data TEXT"))
+                connection.commit()
+                print("✅ Migration: 'attachment_data' column added.")
+            else:
+                print("✅ Migration: 'attachment_data' column already exists.")
     except Exception as e:
         print(f"❌ Migration Error: {e}")
 
