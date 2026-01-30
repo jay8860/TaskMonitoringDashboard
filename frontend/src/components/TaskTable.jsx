@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
     MoreVertical, FileText, CheckCircle, Clock, AlertCircle,
-    Search, Filter, Download, Edit2, Check, X, Trash2, ArrowUpDown, CheckSquare, Pin, Calendar
+    Search, Filter, Download, Edit2, Check, X, Trash2, ArrowUpDown, CheckSquare, Pin, Calendar, Image
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { api } from '../services/api';
@@ -11,6 +11,7 @@ import { useRef } from 'react';
 const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEditMode, bulkEdits, setBulkEdits, selectedTasks, toggleSelection, selectAll }) => {
     const [editingId, setEditingId] = useState(null);
     const [editForm, setEditForm] = useState({});
+    const [viewImage, setViewImage] = useState(null); // Base64 string
     const [sortConfig, setSortConfig] = useState({ key: 'deadline_due_in', direction: 'asc' });
 
     // Column Resizing Logic
@@ -456,6 +457,11 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEd
                                                             <button onClick={() => handleDelete(task)} className="p-2 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500"><Trash2 size={16} /></button>
                                                         </>
                                                     )}
+                                                    {task.attachment_data && (
+                                                        <button onClick={() => setViewImage(task.attachment_data)} className="p-2 rounded-lg hover:bg-purple-50 text-slate-400 hover:text-purple-600" title="View Attachment">
+                                                            <Image size={16} />
+                                                        </button>
+                                                    )}
                                                 </div>
                                             )}
                                         </td>
@@ -466,6 +472,18 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEd
                     </tbody>
                 </table>
             </div >
+
+            {/* Image Preview Modal */}
+            {viewImage && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={() => setViewImage(null)}>
+                    <div className="bg-white p-2 rounded-lg max-w-3xl max-h-[90vh] overflow-hidden relative shadow-2xl" onClick={e => e.stopPropagation()}>
+                        <button onClick={() => setViewImage(null)} className="absolute top-2 right-2 p-2 bg-white/80 rounded-full hover:bg-white text-black font-bold">
+                            <X size={20} />
+                        </button>
+                        <img src={viewImage} alt="Attachment" className="max-w-full max-h-[85vh] object-contain rounded" />
+                    </div>
+                </div>
+            )}
         </div >
     );
 };

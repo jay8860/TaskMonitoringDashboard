@@ -37,6 +37,7 @@ class Task(Base):
 
     status = Column(String, index=True, default="Pending") # Derived or Explicit
     remarks = Column(Text, nullable=True)
+    attachment_data = Column(Text, nullable=True) # Base64 encoded image data
     
     source = Column(String, default="Sheet") # Sheet, Manual
     created_at = Column(DateTime, default=datetime.datetime.utcnow)

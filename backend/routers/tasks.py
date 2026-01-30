@@ -26,6 +26,7 @@ class TaskCreate(BaseModel):
     time_given: Optional[str] = None
     is_pinned: Optional[bool] = False
     scheduled_date: Optional[date] = None
+    attachment_data: Optional[str] = None
 
 class TaskUpdate(BaseModel):
     task_number: Optional[str] = None
