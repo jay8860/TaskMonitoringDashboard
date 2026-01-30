@@ -2,28 +2,40 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from database import SessionLocal, engine, Base
 import models
-from routers.auth import get_password_hash
+from utils import get_password_hash
 
 # Ensure tables exist
 Base.metadata.create_all(bind=engine)
 
 def migrate_db(db: Session):
     """
-    Manually add columns that might be missing if the table was created before the model update.
-    Checking for PostgreSQL syntax mostly, but generic SQL attempts.
+    Manually add columns that might be missing using SQLite-compatible checks.
     """
     try:
-        # Try adding columns. Fails if they exist (without IF NOT EXISTS on older SQL versions), so we wrap in try/except individually or use IF NOT EXISTS
-        # Railway uses Postgres, so IF NOT EXISTS is safe.
         with engine.connect() as connection:
-            with connection.begin():
-                connection.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR;"))
-                connection.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hint VARCHAR;"))
-                connection.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token VARCHAR;"))
-                connection.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token_expiry TIMESTAMP;"))
+            # Check existing columns
+            result = connection.execute(text("PRAGMA table_info(users)"))
+            columns = [row[1] for row in result.fetchall()]
+            
+            # Helper to add column if missing
+            def add_column(col_name, col_type):
+                if col_name not in columns:
+                    print(f"🔄 Migration: Adding '{col_name}' column to users table...")
+                    try:
+                        connection.execute(text(f"ALTER TABLE users ADD COLUMN {col_name} {col_type}"))
+                        connection.commit()
+                        print(f"✅ Users Migration: '{col_name}' added.")
+                    except Exception as e:
+                        print(f"⚠️ Failed to add {col_name}: {e}")
+
+            add_column("email", "VARCHAR")
+            add_column("password_hint", "VARCHAR")
+            add_column("reset_token", "VARCHAR")
+            add_column("reset_token_expiry", "TIMESTAMP")
+
         print("Database migration checks completed.")
     except Exception as e:
-        print(f"Migration step error (ignorable if columns exist): {e}")
+        print(f"Migration step error: {e}")
 
 def seed_admin():
     db = SessionLocal()

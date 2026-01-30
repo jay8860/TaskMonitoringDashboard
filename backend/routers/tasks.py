@@ -14,7 +14,7 @@ router = APIRouter()
 
 # --- Schemas ---
 class TaskCreate(BaseModel):
-    task_number: str
+    task_number: Optional[str] = None
     description: Optional[str] = None
     assigned_agency: Optional[str] = None
     priority: Optional[str] = None
@@ -130,6 +130,21 @@ def get_stats(db: Session = Depends(get_db)):
 
 @router.post("/")
 def create_task(task: TaskCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    # Auto-generate Task Number if missing
+    if not task.task_number:
+        existing_tasks = db.query(models.Task.task_number).all()
+        max_num = 0
+        for t in existing_tasks:
+            t_num = t.task_number
+            if t_num and t_num.startswith("Task "):
+                try:
+                    num = int(t_num.replace("Task ", ""))
+                    if num > max_num:
+                        max_num = num
+                except:
+                    pass
+        task.task_number = f"Task {max_num + 1}"
+
     db_task = models.Task(**task.dict(), source="Manual")
     try:
         db.add(db_task)

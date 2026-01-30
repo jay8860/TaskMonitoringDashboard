@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 import models
 from pydantic import BaseModel
-from passlib.context import CryptContext
+
 from jose import jwt
 from datetime import datetime, timedelta
 import secrets
@@ -19,7 +19,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "super-secret-key-change-me")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 # 1 day
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 # --- Schemas ---
 class LoginRequest(BaseModel):
@@ -36,12 +36,7 @@ class ResetPasswordRequest(BaseModel):
 class HintResponse(BaseModel):
     hint: str
 
-# --- Helpers ---
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
+from utils import verify_password, get_password_hash
 
 def create_access_token(data: dict):
     to_encode = data.copy()
@@ -162,17 +157,27 @@ def forgot_password(request: ForgotPasswordRequest, db: Session = Depends(get_db
 
     try:
         if not sender_email or not sender_password:
-             print(f"⚠️ SMTP Credentials missing. Printing link: {reset_link}")
+             msg = f"⚠️ SMTP Credentials missing. Printing link: {reset_link}"
+             print(msg)
+             with open("email_debug.txt", "a") as f:
+                 f.write(f"{datetime.utcnow()} - {msg}\n")
         else:
             with smtplib.SMTP(smtp_server, smtp_port) as server:
                 server.starttls()
                 server.login(sender_email, sender_password)
                 server.sendmail(sender_email, request.email, message.as_string())
-            print(f"✅ Email sent to {request.email}")
+            msg = f"✅ Email sent to {request.email}"
+            print(msg)
+            with open("email_debug.txt", "a") as f:
+                 f.write(f"{datetime.utcnow()} - {msg}\n")
     except Exception as e:
-        print(f"❌ Failed to send email: {e}")
+        msg = f"❌ Failed to send email: {e}"
+        print(msg)
         # Only for debugging if email fails, easier to see link in logs
         print(f"Fallback Link: {reset_link}")
+        with open("email_debug.txt", "a") as f:
+             f.write(f"{datetime.utcnow()} - {msg}\n")
+             f.write(f"{datetime.utcnow()} - Fallback Link: {reset_link}\n")
 
     return {"message": "If this email is registered, a reset link has been sent."}
 
