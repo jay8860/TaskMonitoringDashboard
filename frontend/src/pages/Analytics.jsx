@@ -9,6 +9,7 @@ import { differenceInDays } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
 const Analytics = () => {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || { role: 'viewer' });
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [avgDuration, setAvgDuration] = useState([]);
@@ -120,7 +121,7 @@ const Analytics = () => {
     };
 
     if (loading) return (
-        <Layout user={{ role: 'viewer' }}>
+        <Layout user={user}>
             <div className="flex items-center justify-center h-full">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
             </div>
@@ -128,7 +129,7 @@ const Analytics = () => {
     );
 
     return (
-        <Layout user={{ role: 'viewer' }} >
+        <Layout user={user} >
             <h1 className="text-3xl font-bold text-slate-800 dark:text-white mb-6">Command Center</h1>
 
             {/* Grid Layout */}

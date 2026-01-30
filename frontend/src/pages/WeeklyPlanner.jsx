@@ -154,9 +154,7 @@ const WeeklyPlanner = () => {
         setLoading(true);
         try {
             const data = await api.getTasks();
-            // Filter out completed tasks if needed, or keep them to show history
-            // For planner, usually we want to see what's planned.
-            setTasks(data);
+            setTasks(data.filter(t => t.status !== 'Completed' && !t.completion_date));
         } catch (error) {
             console.error(error);
         } finally {
