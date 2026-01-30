@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
     MoreVertical, FileText, CheckCircle, Clock, AlertCircle,
-    Search, Filter, Download, Edit2, Check, X, Trash2, ArrowUpDown, CheckSquare, Pin, Calendar, Image
+    Search, Filter, Download, Edit2, Check, X, Trash2, ArrowUpDown, CheckSquare, Pin, Calendar, Image, Link
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { api } from '../services/api';
@@ -20,7 +20,9 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEd
         deadline_due_in: 110,
         completion_date: 120,
         task_number: 350,
+        task_number: 350,
         description: 600,
+        attachment: 100,
         assigned_agency: 140,
         priority: 90,
         allocated_date: 110,
@@ -302,6 +304,9 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEd
                             <th onClick={() => handleSort('description')} className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.description }}>
                                 <div className="flex items-center gap-1">Comments by Steno {sortConfig.key === 'description' && <ArrowUpDown size={14} />}</div> <Resizer colKey="description" />
                             </th>
+                            <th className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider relative group" style={{ width: columnWidths.attachment }}>
+                                Files <Resizer colKey="attachment" />
+                            </th>
                             <th onClick={() => handleSort('assigned_agency')} className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.assigned_agency }}>
                                 <div className="flex items-center gap-1">Assigned To {sortConfig.key === 'assigned_agency' && <ArrowUpDown size={14} />}</div> <Resizer colKey="assigned_agency" />
                             </th>
@@ -386,6 +391,20 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEd
                                             )}
                                         </td>
 
+                                        <td className="px-6 py-4 text-center" style={{ width: columnWidths.attachment }}>
+                                            {!task.attachment_data ? (
+                                                <span className="text-slate-400">-</span>
+                                            ) : task.attachment_data.startsWith('http') ? (
+                                                <a href={task.attachment_data} target="_blank" rel="noopener noreferrer" className="inline-flex p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors" title="Open Link">
+                                                    <Link size={18} />
+                                                </a>
+                                            ) : (
+                                                <button onClick={() => setViewImage(task.attachment_data)} className="inline-flex p-2 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors" title="View Image">
+                                                    <Image size={18} />
+                                                </button>
+                                            )}
+                                        </td>
+
                                         <td className="px-6 py-4 text-[17px] font-medium" style={{ width: columnWidths.assigned_agency }}>
                                             {isEditing ? (
                                                 <select value={editForm.assigned_agency} onChange={(e) => setEditForm({ ...editForm, assigned_agency: e.target.value })} className="w-full p-2 rounded border border-indigo-300 text-sm">
@@ -456,11 +475,6 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEd
                                                             <button onClick={() => handlePin(task)} className={`p-2 rounded-lg ${task.is_pinned ? 'bg-indigo-50 text-indigo-600' : 'hover:bg-indigo-50 text-slate-400 hover:text-indigo-600'}`}><Pin size={16} className={task.is_pinned ? "fill-indigo-600" : ""} /></button>
                                                             <button onClick={() => handleDelete(task)} className="p-2 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500"><Trash2 size={16} /></button>
                                                         </>
-                                                    )}
-                                                    {task.attachment_data && (
-                                                        <button onClick={() => setViewImage(task.attachment_data)} className="p-2 rounded-lg hover:bg-purple-50 text-slate-400 hover:text-purple-600" title="View Attachment">
-                                                            <Image size={16} />
-                                                        </button>
                                                     )}
                                                 </div>
                                             )}
