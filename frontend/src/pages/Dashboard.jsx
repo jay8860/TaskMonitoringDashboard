@@ -271,6 +271,13 @@ const Dashboard = () => {
                                 <Pin size={14} className={activeTab === 'today' ? 'fill-indigo-600 dark:fill-indigo-400' : ''} />
                                 Today's Tasks
                             </button>
+                            <button
+                                onClick={() => setActiveTab('important')}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'important' ? 'bg-white dark:bg-dark-card shadow text-red-600 dark:text-red-400' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}`}
+                            >
+                                <AlertTriangle size={14} className={activeTab === 'important' ? 'fill-red-600 dark:fill-red-400' : ''} />
+                                Important
+                            </button>
                         </div>
                     )}
 
@@ -436,7 +443,11 @@ const Dashboard = () => {
 
             {/* Tasks Table */}
             <TaskTable
-                tasks={activeTab === 'today' ? tasks.filter(t => t.is_pinned) : tasks}
+                tasks={
+                    activeTab === 'today' ? tasks.filter(t => t.is_pinned) :
+                        activeTab === 'important' ? tasks.filter(t => t.priority === 'High') :
+                            tasks
+                }
                 loading={loading}
                 fetchData={fetchData}
                 agencies={allEmployees.length > 0 ? allEmployees : agencies}

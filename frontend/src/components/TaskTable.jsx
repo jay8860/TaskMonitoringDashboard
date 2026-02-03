@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
     MoreVertical, FileText, CheckCircle, Clock, AlertCircle,
-    Search, Filter, Download, Edit2, Check, X, Trash2, ArrowUpDown, CheckSquare, Pin, Calendar, Image, Link
+    Search, Filter, Download, Edit2, Check, X, Trash2, ArrowUpDown, CheckSquare, Pin, Calendar, Image, Link, AlertTriangle
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { api } from '../services/api';
@@ -19,7 +19,6 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEd
         sno: 60,
         deadline_due_in: 110,
         completion_date: 120,
-        task_number: 350,
         task_number: 350,
         description: 600,
         attachment: 100,
@@ -248,9 +247,17 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEd
         }
     };
 
-    const handlePin = async (task) => {
-        try { await api.updateTask(task.id, { is_pinned: !task.is_pinned }); fetchData(); } catch (e) { console.error(e); }
+    const handlePriorityToggle = async (task) => {
+        try {
+            const newPriority = task.priority === 'High' ? 'Medium' : 'High';
+            await api.updateTask(task.id, { priority: newPriority });
+            fetchData();
+        } catch (e) {
+            console.error("Failed to update priority:", e);
+        }
     };
+
+
 
     // Bulk Edit Handlers
     const handleBulkChange = (id, field, value) => {
@@ -473,6 +480,7 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEd
                                                             </div>
                                                             <button onClick={() => handleQuickComplete(task)} className="p-2 rounded-lg hover:bg-emerald-50 text-slate-400 hover:text-emerald-600"><CheckSquare size={16} /></button>
                                                             <button onClick={() => handlePin(task)} className={`p-2 rounded-lg ${task.is_pinned ? 'bg-indigo-50 text-indigo-600' : 'hover:bg-indigo-50 text-slate-400 hover:text-indigo-600'}`}><Pin size={16} className={task.is_pinned ? "fill-indigo-600" : ""} /></button>
+                                                            <button onClick={() => handlePriorityToggle(task)} className={`p-2 rounded-lg ${task.priority === 'High' ? 'bg-red-50 text-red-600' : 'hover:bg-red-50 text-slate-400 hover:text-red-600'}`} title="Mark Urgent"><AlertTriangle size={16} className={task.priority === 'High' ? "fill-red-600" : ""} /></button>
                                                             <button onClick={() => handleDelete(task)} className="p-2 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500"><Trash2 size={16} /></button>
                                                         </>
                                                     )}
