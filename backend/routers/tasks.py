@@ -40,6 +40,7 @@ class TaskUpdate(BaseModel):
     deadline_date: Optional[date] = None
     is_pinned: Optional[bool] = None
     scheduled_date: Optional[date] = None
+    priority: Optional[str] = None
 
 class TaskBulkUpdateItem(BaseModel):
     id: int
