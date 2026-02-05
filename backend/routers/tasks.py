@@ -161,6 +161,21 @@ def create_task(task: TaskCreate, background_tasks: BackgroundTasks, db: Session
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Error creating task: {str(e)}")
 
+@router.get("/duplicates")
+def get_duplicate_tasks(db: Session = Depends(get_db)):
+    all_tasks = db.query(models.Task).filter(models.Task.status != "Deleted").all()
+    groups = {}
+    for task in all_tasks:
+        if not task.description: continue
+        # Normalize: strip whitespace and lowercase
+        key = task.description.strip().lower()
+        if key not in groups: groups[key] = []
+        groups[key].append(task)
+    
+    # Filter groups with > 1 task
+    duplicates = [tasks for k, tasks in groups.items() if len(tasks) > 1]
+    return duplicates
+
 @router.put("/{task_id}")
 def update_task(task_id: int, update: TaskUpdate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     task = db.query(models.Task).filter(models.Task.id == task_id).first()

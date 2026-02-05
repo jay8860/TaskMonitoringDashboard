@@ -77,6 +77,11 @@ export const api = {
         return response.data;
     },
 
+    getDuplicates: async () => {
+        const response = await axios.get(`${API_URL}/duplicates`);
+        return response.data;
+    },
+
     // --- Employees ---
     getEmployees: async () => {
         const response = await axios.get(`${EMP_URL}/`);

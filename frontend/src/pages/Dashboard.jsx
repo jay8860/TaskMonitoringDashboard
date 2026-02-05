@@ -4,6 +4,7 @@ import Layout from '../components/Layout';
 import StatCard from '../components/StatCard';
 import TaskTable from '../components/TaskTable';
 import AddTaskModal from '../components/AddTaskModal';
+import DuplicatesModal from '../components/DuplicatesModal';
 import { api } from '../services/api';
 import {
     ClipboardList, CheckSquare, Clock, AlertTriangle,
@@ -23,6 +24,7 @@ const Dashboard = () => {
     const [summary, setSummary] = useState('');
     const [summaryLoading, setSummaryLoading] = useState(false);
     const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
+    const [isDuplicatesModalOpen, setIsDuplicatesModalOpen] = useState(false);
 
     // Bulk Edit & Selection State
     const [isBulkEditMode, setIsBulkEditMode] = useState(false);
@@ -323,6 +325,13 @@ const Dashboard = () => {
                                         Bulk Actions
                                     </button>
                                     <button
+                                        onClick={() => setIsDuplicatesModalOpen(true)}
+                                        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-dark-card border border-orange-200 dark:border-orange-900 text-orange-600 dark:text-orange-400 rounded-xl hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors"
+                                    >
+                                        <AlertTriangle size={18} />
+                                        Find Duplicates
+                                    </button>
+                                    <button
                                         onClick={() => setIsAddModalOpen(true)}
                                         className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30"
                                     >
@@ -466,6 +475,12 @@ const Dashboard = () => {
                 onClose={() => setIsAddModalOpen(false)}
                 onAdd={handleAddTask}
                 agencies={allEmployees.length > 0 ? allEmployees : agencies}
+            />
+
+            <DuplicatesModal
+                isOpen={isDuplicatesModalOpen}
+                onClose={() => setIsDuplicatesModalOpen(false)}
+                onResolve={() => fetchData()}
             />
 
             {/* AI Summary Modal */}
