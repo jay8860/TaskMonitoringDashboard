@@ -17,9 +17,11 @@ const Layout = ({ children, user, onLogout }) => {
         { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
         ...(user.role === 'admin' ? [
             { icon: CalendarIcon, label: 'Weekly Planner', path: '/planner' },
-            { icon: Users, label: 'Employees', path: '/employees' }
         ] : []),
         { icon: BarChart3, label: 'Analytics', path: '/analytics' },
+        ...(user.role === 'admin' ? [
+            { icon: Users, label: 'Employees', path: '/employees' }
+        ] : []),
     ];
 
     return (

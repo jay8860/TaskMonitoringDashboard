@@ -8,7 +8,7 @@ import DuplicatesModal from '../components/DuplicatesModal';
 import { api } from '../services/api';
 import {
     ClipboardList, CheckSquare, Clock, AlertTriangle,
-    Search, Filter, Plus, FileDown, RefreshCw, XCircle, Calendar, Pin, Sparkles, FileText, Edit2, Trash2
+    Search, Filter, Plus, FileDown, RefreshCw, XCircle, Calendar, Pin, Sparkles, FileText, Edit2, Trash2, ChevronDown
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import MultiSelect from '../components/MultiSelect';
@@ -25,6 +25,7 @@ const Dashboard = () => {
     const [summaryLoading, setSummaryLoading] = useState(false);
     const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
     const [isDuplicatesModalOpen, setIsDuplicatesModalOpen] = useState(false);
+    const [isActionsDropdownOpen, setIsActionsDropdownOpen] = useState(false);
 
     // Bulk Edit & Selection State
     const [isBulkEditMode, setIsBulkEditMode] = useState(false);
@@ -283,92 +284,113 @@ const Dashboard = () => {
                         </div>
                     )}
 
-                    {user.role === 'admin' && (
+                    {/* Actions Dropdown */}
+                    <div className="relative z-20">
                         <button
-                            onClick={handleGenerateSummary}
-                            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all shadow-lg shadow-indigo-500/20"
+                            onClick={() => setIsActionsDropdownOpen(!isActionsDropdownOpen)}
+                            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-dark-card border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
                         >
-                            <Sparkles size={18} className={summaryLoading ? 'animate-pulse' : ''} />
-                            AI Summary
+                            Actions
+                            <ChevronDown size={16} />
+                        </button>
+
+                        {isActionsDropdownOpen && (
+                            <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-dark-card rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col p-1 animate-in fade-in slide-in-from-top-2 duration-200">
+                                {user.role === 'admin' && (
+                                    <button
+                                        onClick={() => { handleGenerateSummary(); setIsActionsDropdownOpen(false); }}
+                                        className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors text-left"
+                                    >
+                                        <Sparkles size={16} className={summaryLoading ? 'animate-pulse text-indigo-500' : 'text-indigo-500'} />
+                                        AI Summary
+                                    </button>
+                                )}
+
+                                {user.role === 'admin' && (
+                                    <button
+                                        onClick={() => { handleSync(); setIsActionsDropdownOpen(false); }}
+                                        disabled={loading}
+                                        className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors text-left"
+                                    >
+                                        <RefreshCw size={16} className={loading ? 'animate-spin text-blue-500' : 'text-blue-500'} />
+                                        Sync Sheet
+                                    </button>
+                                )}
+
+                                <button
+                                    onClick={() => { handleExportExcel(); setIsActionsDropdownOpen(false); }}
+                                    className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors text-left"
+                                >
+                                    <FileDown size={16} className="text-green-500" />
+                                    Export Excel
+                                </button>
+
+                                {user.role === 'admin' && (
+                                    <>
+                                        <div className="h-px bg-slate-100 dark:bg-slate-800 my-1"></div>
+                                        <button
+                                            onClick={() => { setIsDuplicatesModalOpen(true); setIsActionsDropdownOpen(false); }}
+                                            className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors text-left"
+                                        >
+                                            <AlertTriangle size={16} className="text-orange-500" />
+                                            Find Duplicates
+                                        </button>
+
+                                        {!isBulkEditMode && (
+                                            <button
+                                                onClick={() => { setIsBulkEditMode(true); setIsActionsDropdownOpen(false); }}
+                                                className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors text-left"
+                                            >
+                                                <Edit2 size={16} className="text-purple-500" />
+                                                Bulk Actions
+                                            </button>
+                                        )}
+                                    </>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Add Task Button (Primary) */}
+                    {user.role === 'admin' && !isBulkEditMode && (
+                        <button
+                            onClick={() => setIsAddModalOpen(true)}
+                            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30"
+                        >
+                            <Plus size={18} />
+                            Add Task
                         </button>
                     )}
 
-                    {/* Only Admin can Sync */}
-                    {user.role === 'admin' && (
-                        <button
-                            onClick={handleSync}
-                            disabled={loading}
-                            className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-xl hover:bg-slate-700 transition-colors shadow-lg shadow-slate-500/20"
-                        >
-                            <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
-                            Sync
-                        </button>
-                    )}
-
-                    <button
-                        onClick={handleExportExcel}
-                        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-dark-card border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-                    >
-                        <FileDown size={18} />
-                        Export
-                    </button>
-
-                    {user.role === 'admin' && (
-                        <>
-                            {!isBulkEditMode ? (
+                    {/* Bulk Edit Controls - Replaces Normal Buttons when Active */}
+                    {isBulkEditMode && (
+                        <div className="flex gap-2 items-center animate-in fade-in slide-in-from-right-4 duration-300">
+                            <span className="text-sm text-slate-500 mr-2 border-l border-slate-300 pl-3">{selectedTasks.length} selected</span>
+                            {selectedTasks.length > 0 && (
                                 <>
-                                    <button
-                                        onClick={() => setIsBulkEditMode(true)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-dark-card border border-indigo-200 dark:border-indigo-900 text-indigo-600 dark:text-indigo-400 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
-                                    >
-                                        <Edit2 size={18} />
-                                        Bulk Actions
-                                    </button>
-                                    <button
-                                        onClick={() => setIsDuplicatesModalOpen(true)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-dark-card border border-orange-200 dark:border-orange-900 text-orange-600 dark:text-orange-400 rounded-xl hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors"
-                                    >
-                                        <AlertTriangle size={18} />
-                                        Find Duplicates
-                                    </button>
-                                    <button
-                                        onClick={() => setIsAddModalOpen(true)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30"
-                                    >
-                                        <Plus size={18} />
-                                        Add Task
-                                    </button>
+                                    <button onClick={handleBulkDelete} className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors" title="Delete Selected"><Trash2 size={18} /></button>
+                                    <button onClick={handleBulkReschedule} className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" title="Extend Deadline"><Calendar size={18} /></button>
                                 </>
-                            ) : (
-                                <div className="flex gap-2 animate-in fade-in slide-in-from-right-4 duration-300 items-center">
-                                    <span className="text-sm text-slate-500 mr-2">{selectedTasks.length} selected</span>
-
-                                    {selectedTasks.length > 0 && (
-                                        <>
-                                            <button onClick={handleBulkDelete} className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors" title="Delete Selected"><Trash2 size={18} /></button>
-                                            <button onClick={handleBulkReschedule} className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" title="Extend Deadline"><Calendar size={18} /></button>
-                                        </>
-                                    )}
-
-                                    <div className="h-6 w-px bg-slate-300 mx-2"></div>
-
-                                    <button
-                                        onClick={cancelBulkEdit}
-                                        className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
-                                    >
-                                        Exit
-                                    </button>
-                                    <button
-                                        onClick={handleBulkSave}
-                                        className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors shadow-lg shadow-green-500/30 font-bold"
-                                    >
-                                        <CheckSquare size={18} />
-                                        Save Edits
-                                    </button>
-                                </div>
                             )}
-                        </>
+
+                            <div className="h-6 w-px bg-slate-300 mx-2"></div>
+
+                            <button
+                                onClick={cancelBulkEdit}
+                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                            >
+                                Exit
+                            </button>
+                            <button
+                                onClick={handleBulkSave}
+                                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors shadow-lg shadow-green-500/30 font-bold"
+                            >
+                                <CheckSquare size={18} />
+                                Save Edits
+                            </button>
+                        </div>
                     )}
+
                 </div>
             </div>
 
@@ -484,90 +506,92 @@ const Dashboard = () => {
             />
 
             {/* AI Summary Modal */}
-            {isSummaryModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-                    <div className="bg-white dark:bg-dark-card w-full max-w-3xl max-h-[80vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-slate-200 dark:border-slate-700">
-                        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl text-indigo-600 dark:text-indigo-400">
-                                    <Sparkles size={24} />
+            {
+                isSummaryModalOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+                        <div className="bg-white dark:bg-dark-card w-full max-w-3xl max-h-[80vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-slate-200 dark:border-slate-700">
+                            <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl text-indigo-600 dark:text-indigo-400">
+                                        <Sparkles size={24} />
+                                    </div>
+                                    <h3 className="text-xl font-bold dark:text-white">Executive AI Summary</h3>
                                 </div>
-                                <h3 className="text-xl font-bold dark:text-white">Executive AI Summary</h3>
+                                <button onClick={() => setIsSummaryModalOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                                    <XCircle size={24} />
+                                </button>
                             </div>
-                            <button onClick={() => setIsSummaryModalOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                                <XCircle size={24} />
-                            </button>
-                        </div>
 
-                        <div className="flex-1 overflow-y-auto p-8">
-                            {summaryLoading ? (
-                                <div className="space-y-4 animate-pulse">
-                                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4"></div>
-                                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
-                                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-5/6"></div>
-                                    <div className="pt-8 h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2"></div>
-                                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
-                                </div>
-                            ) : (
-                                <div className="prose dark:prose-invert max-w-none">
-                                    <div className="whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed font-sans text-lg">
-                                        {summary.split('\n').map((line, i) => {
-                                            const trimmedLine = line.trim();
+                            <div className="flex-1 overflow-y-auto p-8">
+                                {summaryLoading ? (
+                                    <div className="space-y-4 animate-pulse">
+                                        <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4"></div>
+                                        <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
+                                        <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-5/6"></div>
+                                        <div className="pt-8 h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2"></div>
+                                        <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
+                                    </div>
+                                ) : (
+                                    <div className="prose dark:prose-invert max-w-none">
+                                        <div className="whitespace-pre-wrap text-slate-700 dark:text-slate-300 leading-relaxed font-sans text-lg">
+                                            {summary.split('\n').map((line, i) => {
+                                                const trimmedLine = line.trim();
 
-                                            // 1. Detect Standard Headers (### HEADER ###)
-                                            if (trimmedLine.startsWith('###') && trimmedLine.endsWith('###')) {
-                                                const headerText = trimmedLine.replace(/###/g, '').trim();
+                                                // 1. Detect Standard Headers (### HEADER ###)
+                                                if (trimmedLine.startsWith('###') && trimmedLine.endsWith('###')) {
+                                                    const headerText = trimmedLine.replace(/###/g, '').trim();
+                                                    return (
+                                                        <div key={i} className="text-center my-8 py-3 border-y border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 rounded-lg">
+                                                            <h4 className="text-xl font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">
+                                                                {headerText}
+                                                            </h4>
+                                                        </div>
+                                                    );
+                                                }
+
+                                                // 2. Highlight Task Names (Simple bolding)
+                                                let parts = line.split(/(\*\*.*?\*\*)/g);
+                                                let renderedLine = parts.map((part, index) => {
+                                                    if (part.startsWith('**') && part.endsWith('**')) {
+                                                        return <strong key={index} className="text-slate-900 dark:text-white font-bold">{part.slice(2, -2)}</strong>;
+                                                    }
+                                                    return part;
+                                                });
+
+                                                // 3. Highlight [OVERDUE] tag in Red
                                                 return (
-                                                    <div key={i} className="text-center my-8 py-3 border-y border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 rounded-lg">
-                                                        <h4 className="text-xl font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-[0.2em]">
-                                                            {headerText}
-                                                        </h4>
+                                                    <div key={i} className="mb-2">
+                                                        {renderedLine.map((p, j) => {
+                                                            if (typeof p === 'string' && p.includes('[OVERDUE]')) {
+                                                                const subParts = p.split(/(\[OVERDUE\])/g);
+                                                                return subParts.map((sp, k) =>
+                                                                    sp === '[OVERDUE]' ?
+                                                                        <span key={k} className="text-red-500 font-bold bg-red-50 dark:bg-red-900/20 px-1.5 py-0.5 rounded-md border border-red-200 dark:border-red-800 ml-1 text-sm animate-pulse">OVERDUE</span> :
+                                                                        sp
+                                                                );
+                                                            }
+                                                            return p;
+                                                        })}
                                                     </div>
                                                 );
-                                            }
-
-                                            // 2. Highlight Task Names (Simple bolding)
-                                            let parts = line.split(/(\*\*.*?\*\*)/g);
-                                            let renderedLine = parts.map((part, index) => {
-                                                if (part.startsWith('**') && part.endsWith('**')) {
-                                                    return <strong key={index} className="text-slate-900 dark:text-white font-bold">{part.slice(2, -2)}</strong>;
-                                                }
-                                                return part;
-                                            });
-
-                                            // 3. Highlight [OVERDUE] tag in Red
-                                            return (
-                                                <div key={i} className="mb-2">
-                                                    {renderedLine.map((p, j) => {
-                                                        if (typeof p === 'string' && p.includes('[OVERDUE]')) {
-                                                            const subParts = p.split(/(\[OVERDUE\])/g);
-                                                            return subParts.map((sp, k) =>
-                                                                sp === '[OVERDUE]' ?
-                                                                    <span key={k} className="text-red-500 font-bold bg-red-50 dark:bg-red-900/20 px-1.5 py-0.5 rounded-md border border-red-200 dark:border-red-800 ml-1 text-sm animate-pulse">OVERDUE</span> :
-                                                                    sp
-                                                            );
-                                                        }
-                                                        return p;
-                                                    })}
-                                                </div>
-                                            );
-                                        })}
+                                            })}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
-                        </div>
+                                )}
+                            </div>
 
-                        <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
-                            <button
-                                onClick={() => setIsSummaryModalOpen(false)}
-                                className="px-6 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors font-medium"
-                            >
-                                Close
-                            </button>
+                            <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                                <button
+                                    onClick={() => setIsSummaryModalOpen(false)}
+                                    className="px-6 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors font-medium"
+                                >
+                                    Close
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
 
         </Layout >
     );

@@ -311,9 +311,7 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEd
                             <th onClick={() => handleSort('description')} className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.description }}>
                                 <div className="flex items-center gap-1">Comments by Steno {sortConfig.key === 'description' && <ArrowUpDown size={14} />}</div> <Resizer colKey="description" />
                             </th>
-                            <th className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider relative group" style={{ width: columnWidths.attachment }}>
-                                Files <Resizer colKey="attachment" />
-                            </th>
+
                             <th onClick={() => handleSort('assigned_agency')} className="px-6 py-4 text-base font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.assigned_agency }}>
                                 <div className="flex items-center gap-1">Assigned To {sortConfig.key === 'assigned_agency' && <ArrowUpDown size={14} />}</div> <Resizer colKey="assigned_agency" />
                             </th>
@@ -398,19 +396,7 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEd
                                             )}
                                         </td>
 
-                                        <td className="px-6 py-4 text-center" style={{ width: columnWidths.attachment }}>
-                                            {!task.attachment_data ? (
-                                                <span className="text-slate-400">-</span>
-                                            ) : task.attachment_data.startsWith('http') ? (
-                                                <a href={task.attachment_data} target="_blank" rel="noopener noreferrer" className="inline-flex p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors" title="Open Link">
-                                                    <Link size={18} />
-                                                </a>
-                                            ) : (
-                                                <button onClick={() => setViewImage(task.attachment_data)} className="inline-flex p-2 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors" title="View Image">
-                                                    <Image size={18} />
-                                                </button>
-                                            )}
-                                        </td>
+
 
                                         <td className="px-6 py-4 text-[17px] font-medium" style={{ width: columnWidths.assigned_agency }}>
                                             {isEditing ? (
