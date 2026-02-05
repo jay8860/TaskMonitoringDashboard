@@ -166,9 +166,9 @@ def get_duplicate_tasks(db: Session = Depends(get_db)):
     all_tasks = db.query(models.Task).filter(models.Task.status != "Deleted").all()
     groups = {}
     for task in all_tasks:
-        if not task.description: continue
+        if not task.task_number: continue
         # Normalize: strip whitespace and lowercase
-        key = task.description.strip().lower()
+        key = task.task_number.strip().lower()
         if key not in groups: groups[key] = []
         groups[key].append(task)
     
