@@ -344,16 +344,6 @@ const Dashboard = () => {
                             <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-dark-card rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col p-1 animate-in fade-in slide-in-from-top-2 duration-200">
                                 {user.role === 'admin' && (
                                     <button
-                                        onClick={() => { handleGenerateSummary(); setIsActionsDropdownOpen(false); }}
-                                        className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors text-left"
-                                    >
-                                        <Sparkles size={16} className={summaryLoading ? 'animate-pulse text-indigo-500' : 'text-indigo-500'} />
-                                        AI Summary
-                                    </button>
-                                )}
-
-                                {user.role === 'admin' && (
-                                    <button
                                         onClick={() => { handleSync(); setIsActionsDropdownOpen(false); }}
                                         disabled={loading}
                                         className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors text-left"
@@ -381,31 +371,40 @@ const Dashboard = () => {
                                             <AlertTriangle size={16} className="text-orange-500" />
                                             Find Duplicates
                                         </button>
-
-                                        {!isBulkEditMode && (
-                                            <button
-                                                onClick={() => { setIsBulkEditMode(true); setIsActionsDropdownOpen(false); }}
-                                                className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors text-left"
-                                            >
-                                                <Edit2 size={16} className="text-purple-500" />
-                                                Bulk Actions
-                                            </button>
-                                        )}
                                     </>
                                 )}
                             </div>
                         )}
                     </div>
 
-                    {/* Add Task Button (Primary) */}
+                    {/* Main Action Buttons */}
                     {user.role === 'admin' && !isBulkEditMode && (
-                        <button
-                            onClick={() => setIsAddModalOpen(true)}
-                            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30"
-                        >
-                            <Plus size={18} />
-                            Add Task
-                        </button>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={handleGenerateSummary}
+                                disabled={summaryLoading}
+                                className="flex items-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-xl hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors border border-indigo-100 dark:border-indigo-900/50"
+                            >
+                                <Sparkles size={18} className={summaryLoading ? 'animate-pulse' : ''} />
+                                <span className="hidden md:inline">AI Summary</span>
+                            </button>
+
+                            <button
+                                onClick={() => setIsBulkEditMode(true)}
+                                className="flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-xl hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors border border-purple-100 dark:border-purple-900/50"
+                            >
+                                <Edit2 size={18} />
+                                <span className="hidden md:inline">Bulk Actions</span>
+                            </button>
+
+                            <button
+                                onClick={() => setIsAddModalOpen(true)}
+                                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30"
+                            >
+                                <Plus size={18} />
+                                Add Task
+                            </button>
+                        </div>
                     )}
 
                     {/* Bulk Edit Controls - Replaces Normal Buttons when Active */}
