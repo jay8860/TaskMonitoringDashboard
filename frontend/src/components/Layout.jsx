@@ -57,8 +57,8 @@ const Layout = ({ children, user, onLogout }) => {
                             key={item.label}
                             onClick={() => navigate(item.path)}
                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-premium group relative ${navigate.path === item.path
-                                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
-                                    : 'text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-white/5 hover:text-indigo-600 dark:hover:text-indigo-400'
+                                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
+                                : 'text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-white/5 hover:text-indigo-600 dark:hover:text-indigo-400'
                                 }`}
                         >
                             <item.icon size={20} className="transition-transform group-hover:scale-110" />
@@ -88,7 +88,7 @@ const Layout = ({ children, user, onLogout }) => {
 
             {/* Main Content */}
             <main className={`flex-1 ${sidebarOpen ? 'md:ml-[260px]' : 'md:ml-[88px]'} transition-all duration-500 p-6 md:p-10 overflow-y-auto custom-scrollbar relative z-10`}>
-                <div className="max-w-7xl mx-auto">
+                <div className="w-full">
                     {/* Mobile Header */}
                     <div className="md:hidden flex justify-between items-center mb-10 glass-card p-4 rounded-2xl">
                         <h1 className="text-2xl font-bold premium-gradient-text">Dantewada</h1>

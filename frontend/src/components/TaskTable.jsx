@@ -16,17 +16,16 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
 
     // Column Resizing Logic
     const [columnWidths, setColumnWidths] = useState({
-        sno: 40,
-        deadline_due_in: 90,
-        completion_date: 100,
-        task_number: 180,
-        description: 220,
+        sno: 45,
+        deadline_due_in: 95,
+        completion_date: 110,
+        task_number: 280,
+        description: 400,
         attachment: 80,
-        assigned_agency: 120,
-        priority: 80,
-        allocated_date: 90,
-        time_given: 70,
-        deadline_date: 100,
+        assigned_agency: 130,
+        allocated_date: 100,
+        time_given: 75,
+        deadline_date: 110,
         action: 120
     });
     const [resizing, setResizing] = useState(null);
@@ -324,40 +323,38 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
                                     <Checkbox checked={isAllSelected} onChange={() => selectAll(allTaskIds)} />
                                 </th>
                             )}
-                            <th className="px-4 py-4 text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider relative group whitespace-nowrap" style={{ width: columnWidths.sno }}>
+                            <th className="px-4 py-4 text-sm font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider relative group whitespace-nowrap" style={{ width: columnWidths.sno }}>
                                 S.No <Resizer colKey="sno" />
                             </th>
-                            <th onClick={() => handleSort('deadline_due_in')} className="px-4 py-4 text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group whitespace-nowrap" style={{ width: columnWidths.deadline_due_in }}>
-                                <div className="flex items-center gap-1">Due In {sortConfig.key === 'deadline_due_in' && <ArrowUpDown size={12} />}</div> <Resizer colKey="deadline_due_in" />
+                            <th onClick={() => handleSort('deadline_due_in')} className="px-4 py-4 text-sm font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group whitespace-nowrap" style={{ width: columnWidths.deadline_due_in }}>
+                                <div className="flex items-center gap-1">Due In {sortConfig.key === 'deadline_due_in' && <ArrowUpDown size={14} />}</div> <Resizer colKey="deadline_due_in" />
                             </th>
                             {isAnyRowEditing && (
-                                <th onClick={() => handleSort('completion_date')} className="px-4 py-4 text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group whitespace-nowrap" style={{ width: columnWidths.completion_date }}>
-                                    <div className="flex items-center gap-1">Comp. {sortConfig.key === 'completion_date' && <ArrowUpDown size={12} />}</div> <Resizer colKey="completion_date" />
+                                <th onClick={() => handleSort('completion_date')} className="px-4 py-4 text-sm font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group whitespace-nowrap" style={{ width: columnWidths.completion_date }}>
+                                    <div className="flex items-center gap-1">Comp. {sortConfig.key === 'completion_date' && <ArrowUpDown size={14} />}</div> <Resizer colKey="completion_date" />
                                 </th>
                             )}
-                            <th onClick={() => handleSort('task_number')} className="px-4 py-4 text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group whitespace-nowrap" style={{ width: columnWidths.task_number }}>
-                                <div className="flex items-center gap-1">Task {sortConfig.key === 'task_number' && <ArrowUpDown size={12} />}</div> <Resizer colKey="task_number" />
+                            <th onClick={() => handleSort('task_number')} className="px-4 py-4 text-sm font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group whitespace-nowrap" style={{ width: columnWidths.task_number }}>
+                                <div className="flex items-center gap-1">Task {sortConfig.key === 'task_number' && <ArrowUpDown size={14} />}</div> <Resizer colKey="task_number" />
                             </th>
-                            <th onClick={() => handleSort('description')} className="px-4 py-4 text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.description }}>
-                                <div className="flex items-center gap-1">Comments {sortConfig.key === 'description' && <ArrowUpDown size={12} />}</div> <Resizer colKey="description" />
+                            <th onClick={() => handleSort('description')} className="px-4 py-4 text-sm font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.description }}>
+                                <div className="flex items-center gap-1">Comments {sortConfig.key === 'description' && <ArrowUpDown size={14} />}</div> <Resizer colKey="description" />
                             </th>
 
-                            <th onClick={() => handleSort('assigned_agency')} className="px-4 py-4 text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.assigned_agency }}>
-                                <div className="flex items-center gap-1">Assigned {sortConfig.key === 'assigned_agency' && <ArrowUpDown size={12} />}</div> <Resizer colKey="assigned_agency" />
+                            <th onClick={() => handleSort('assigned_agency')} className="px-4 py-4 text-sm font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.assigned_agency }}>
+                                <div className="flex items-center gap-1">Assigned {sortConfig.key === 'assigned_agency' && <ArrowUpDown size={14} />}</div> <Resizer colKey="assigned_agency" />
                             </th>
-                            <th onClick={() => handleSort('priority')} className="px-4 py-4 text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.priority }}>
-                                <div className="flex items-center gap-1">Pri {sortConfig.key === 'priority' && <ArrowUpDown size={12} />}</div> <Resizer colKey="priority" />
+
+                            <th onClick={() => handleSort('allocated_date')} className="px-4 py-4 text-sm font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.allocated_date }}>
+                                <div className="flex items-center gap-1">Alloc. {sortConfig.key === 'allocated_date' && <ArrowUpDown size={14} />}</div> <Resizer colKey="allocated_date" />
                             </th>
-                            <th onClick={() => handleSort('allocated_date')} className="px-4 py-4 text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.allocated_date }}>
-                                <div className="flex items-center gap-1">Alloc. {sortConfig.key === 'allocated_date' && <ArrowUpDown size={12} />}</div> <Resizer colKey="allocated_date" />
+                            <th onClick={() => handleSort('time_given')} className="px-4 py-4 text-sm font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.time_given }}>
+                                <div className="flex items-center gap-1">Time {sortConfig.key === 'time_given' && <ArrowUpDown size={14} />}</div> <Resizer colKey="time_given" />
                             </th>
-                            <th onClick={() => handleSort('time_given')} className="px-4 py-4 text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.time_given }}>
-                                <div className="flex items-center gap-1">Time {sortConfig.key === 'time_given' && <ArrowUpDown size={12} />}</div> <Resizer colKey="time_given" />
+                            <th onClick={() => handleSort('deadline_date')} className="px-4 py-4 text-sm font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.deadline_date }}>
+                                <div className="flex items-center gap-1">Deadline {sortConfig.key === 'deadline_date' && <ArrowUpDown size={14} />}</div> <Resizer colKey="deadline_date" />
                             </th>
-                            <th onClick={() => handleSort('deadline_date')} className="px-4 py-4 text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none relative group" style={{ width: columnWidths.deadline_date }}>
-                                <div className="flex items-center gap-1">Deadline {sortConfig.key === 'deadline_date' && <ArrowUpDown size={12} />}</div> <Resizer colKey="deadline_date" />
-                            </th>
-                            <th className="px-4 py-4 text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider relative group" style={{ width: columnWidths.action }}>
+                            <th className="px-4 py-4 text-sm font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider relative group" style={{ width: columnWidths.action }}>
                                 Action <Resizer colKey="action" />
                             </th>
                         </tr>
@@ -386,85 +383,79 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
                                                 <Checkbox checked={isSelected} onChange={() => toggleSelection(task.id)} />
                                             </td>
                                         )}
-                                        <td className="px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 text-center" style={{ width: columnWidths.sno }}>
+                                        <td className="px-4 py-3.5 text-[15px] font-medium text-slate-600 dark:text-slate-300 text-center" style={{ width: columnWidths.sno }}>
                                             {index + 1}
                                         </td>
 
-                                        <td className="px-4 py-3 text-sm font-medium" style={{ width: columnWidths.deadline_due_in }}>
-                                            <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${getDeadlineStyle(task)}`}>{formatDeadlineDisplay(task)}</span>
+                                        <td className="px-4 py-3.5 text-[15px] font-medium" style={{ width: columnWidths.deadline_due_in }}>
+                                            <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${getDeadlineStyle(task)}`}>{formatDeadlineDisplay(task)}</span>
                                         </td>
 
                                         {isAnyRowEditing && (
-                                            <td className="px-4 py-3 text-sm font-medium" style={{ width: columnWidths.completion_date }}>
+                                            <td className="px-4 py-3.5 text-[15px] font-medium" style={{ width: columnWidths.completion_date }}>
                                                 {isEditing ? (
-                                                    <input type="text" value={editForm.completion_date || ''} onChange={(e) => setEditForm({ ...editForm, completion_date: e.target.value })} className="w-full p-1.5 rounded border border-indigo-300 text-xs" />
+                                                    <input type="text" value={editForm.completion_date || ''} onChange={(e) => setEditForm({ ...editForm, completion_date: e.target.value })} className="w-full p-2 rounded border border-indigo-300 text-sm" />
                                                 ) : isBulk ? (
-                                                    <input type="text" value={bulkVal('completion_date')} onChange={(e) => handleBulkChange(task.id, 'completion_date', e.target.value)} className="w-full p-1.5 rounded border border-slate-200 dark:border-slate-600 text-xs focus:ring-2 focus:ring-indigo-500" />
+                                                    <input type="text" value={bulkVal('completion_date')} onChange={(e) => handleBulkChange(task.id, 'completion_date', e.target.value)} className="w-full p-2 rounded border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-indigo-500" />
                                                 ) : (
-                                                    <div className="truncate text-xs" title={task.completion_date}>{task.completion_date || '-'}</div>
+                                                    <div className="truncate text-sm" title={task.completion_date}>{task.completion_date || '-'}</div>
                                                 )}
                                             </td>
                                         )}
 
-                                        <td className="px-4 py-3 text-sm font-medium text-slate-900 dark:text-white" style={{ width: columnWidths.task_number }}>
+                                        <td className="px-4 py-3.5 text-[15px] font-medium text-slate-900 dark:text-white" style={{ width: columnWidths.task_number }}>
                                             {isEditing ? (
-                                                <textarea value={editForm.task_number} onChange={(e) => setEditForm({ ...editForm, task_number: e.target.value })} className="w-full p-1.5 rounded border border-indigo-300 text-xs" rows={2} />
+                                                <textarea value={editForm.task_number} onChange={(e) => setEditForm({ ...editForm, task_number: e.target.value })} className="w-full p-2 rounded border border-indigo-300 text-sm" rows={2} />
                                             ) : isBulk ? (
-                                                <textarea value={bulkVal('task_number')} onChange={(e) => handleBulkChange(task.id, 'task_number', e.target.value)} className="w-full p-1.5 rounded border border-slate-200 dark:border-slate-600 text-xs focus:ring-2 focus:ring-indigo-500" rows={2} />
+                                                <textarea value={bulkVal('task_number')} onChange={(e) => handleBulkChange(task.id, 'task_number', e.target.value)} className="w-full p-2 rounded border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-indigo-500" rows={2} />
                                             ) : (
-                                                <span className="line-clamp-2 leading-snug">{task.task_number}</span>
+                                                <span className="leading-snug block">{task.task_number}</span>
                                             )}
                                         </td>
 
-                                        <td className="px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-200" style={{ width: columnWidths.description }}>
+                                        <td className="px-4 py-3.5 text-[15px] font-medium text-slate-700 dark:text-slate-200" style={{ width: columnWidths.description }}>
                                             {isEditing ? (
-                                                <textarea value={editForm.description} onChange={(e) => setEditForm({ ...editForm, description: e.target.value })} className="w-full p-1.5 rounded border border-indigo-300 text-xs" rows={3} />
+                                                <textarea value={editForm.description} onChange={(e) => setEditForm({ ...editForm, description: e.target.value })} className="w-full p-2 rounded border border-indigo-300 text-sm" rows={3} />
                                             ) : isBulk ? (
-                                                <textarea value={bulkVal('description')} onChange={(e) => handleBulkChange(task.id, 'description', e.target.value)} className="w-full p-1.5 rounded border border-slate-200 dark:border-slate-600 text-xs focus:ring-2 focus:ring-indigo-500" rows={3} />
+                                                <textarea value={bulkVal('description')} onChange={(e) => handleBulkChange(task.id, 'description', e.target.value)} className="w-full p-2 rounded border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-indigo-500" rows={3} />
                                             ) : (
-                                                <div className="line-clamp-2 leading-relaxed text-xs opacity-80" title={task.description}>{task.description || '-'}</div>
+                                                <div className="leading-relaxed opacity-90 text-sm whitespace-pre-wrap" title={task.description}>{task.description || '-'}</div>
                                             )}
                                         </td>
 
-                                        <td className="px-4 py-3 text-sm font-medium" style={{ width: columnWidths.assigned_agency }}>
+                                        <td className="px-4 py-3.5 text-[15px] font-medium" style={{ width: columnWidths.assigned_agency }}>
                                             {isEditing ? (
-                                                <select value={editForm.assigned_agency} onChange={(e) => setEditForm({ ...editForm, assigned_agency: e.target.value })} className="w-full p-1.5 rounded border border-indigo-300 text-xs">
+                                                <select value={editForm.assigned_agency} onChange={(e) => setEditForm({ ...editForm, assigned_agency: e.target.value })} className="w-full p-2 rounded border border-indigo-300 text-sm">
                                                     {agencies.map(a => <option key={a} value={a}>{a}</option>)} <option value={task.assigned_agency} hidden>{task.assigned_agency}</option>
                                                 </select>
                                             ) : isBulk ? (
-                                                <select value={bulkVal('assigned_agency')} onChange={(e) => handleBulkChange(task.id, 'assigned_agency', e.target.value)} className="w-full p-1.5 rounded border border-slate-200 dark:border-slate-600 text-xs focus:ring-2 focus:ring-indigo-500">
+                                                <select value={bulkVal('assigned_agency')} onChange={(e) => handleBulkChange(task.id, 'assigned_agency', e.target.value)} className="w-full p-2 rounded border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-indigo-500">
                                                     {agencies.map(a => <option key={a} value={a}>{a}</option>)} <option value={task.assigned_agency} hidden>{task.assigned_agency}</option>
                                                 </select>
                                             ) : (
-                                                <span className="truncate block text-xs opacity-90">{task.assigned_agency || 'Unassigned'}</span>
+                                                <span className="truncate block opacity-90">{task.assigned_agency || 'Unassigned'}</span>
                                             )}
                                         </td>
 
-                                        <td className="px-4 py-3" style={{ width: columnWidths.priority }}>
-                                            <span className={`text-[9px] px-2 py-0.5 rounded-lg font-black uppercase tracking-widest border transition-premium ${task.priority === 'High' ? 'bg-rose-500/10 text-rose-600 border-rose-500/20 shadow-[0_0_8px_rgba(244,63,94,0.1)]' : 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-white/5 dark:border-white/10 dark:text-dark-muted'}`}>
-                                                {task.priority || 'Normal'}
-                                            </span>
-                                        </td>
-
-                                        <td className="px-4 py-3 text-xs font-semibold text-slate-500 dark:text-dark-muted whitespace-nowrap" style={{ width: columnWidths.allocated_date }}>
+                                        <td className="px-4 py-3.5 text-sm font-semibold text-slate-500 dark:text-dark-muted whitespace-nowrap" style={{ width: columnWidths.allocated_date }}>
                                             {task.allocated_date ? format(new Date(task.allocated_date), 'MMM dd, yy') : '-'}
                                         </td>
 
-                                        <td className="px-4 py-3 text-xs font-medium" style={{ width: columnWidths.time_given }}>
+                                        <td className="px-4 py-3.5 text-sm font-medium" style={{ width: columnWidths.time_given }}>
                                             {isEditing ? (
-                                                <input type="text" value={editForm.time_given || ''} onChange={(e) => handleTimeChange(e, task)} className="w-full p-1.5 rounded border border-indigo-300 text-xs" />
+                                                <input type="text" value={editForm.time_given || ''} onChange={(e) => handleTimeChange(e, task)} className="w-full p-2 rounded border border-indigo-300 text-sm" />
                                             ) : isBulk ? (
-                                                <input type="text" value={bulkVal('time_given')} onChange={(e) => handleBulkChange(task.id, 'time_given', e.target.value)} className="w-full p-1.5 rounded border border-slate-200 dark:border-slate-600 text-xs focus:ring-2 focus:ring-indigo-500" />
+                                                <input type="text" value={bulkVal('time_given')} onChange={(e) => handleBulkChange(task.id, 'time_given', e.target.value)} className="w-full p-2 rounded border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-indigo-500" />
                                             ) : (
                                                 <span className="opacity-80">{task.time_given || '7 days'}</span>
                                             )}
                                         </td>
 
-                                        <td className="px-4 py-3 text-xs font-semibold whitespace-nowrap" style={{ width: columnWidths.deadline_date }}>
+                                        <td className="px-4 py-3.5 text-sm font-semibold whitespace-nowrap" style={{ width: columnWidths.deadline_date }}>
                                             {isEditing ? (
-                                                <input type="date" value={editForm.deadline_date || ''} onChange={(e) => setEditForm({ ...editForm, deadline_date: e.target.value })} className="w-full p-1.5 rounded border border-indigo-300 text-xs" />
+                                                <input type="date" value={editForm.deadline_date || ''} onChange={(e) => setEditForm({ ...editForm, deadline_date: e.target.value })} className="w-full p-2 rounded border border-indigo-300 text-sm" />
                                             ) : isBulk ? (
-                                                <input type="date" value={bulkVal('deadline_date')} onChange={(e) => handleBulkChange(task.id, 'deadline_date', e.target.value)} className="w-full p-1.5 rounded border border-slate-200 dark:border-slate-600 text-xs focus:ring-2 focus:ring-indigo-500" />
+                                                <input type="date" value={bulkVal('deadline_date')} onChange={(e) => handleBulkChange(task.id, 'deadline_date', e.target.value)} className="w-full p-2 rounded border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-indigo-500" />
                                             ) : (
                                                 <span className="dark:text-white opacity-90">{task.deadline_date ? format(new Date(task.deadline_date), 'MMM dd, yy') : '-'}</span>
                                             )}
