@@ -21,6 +21,7 @@ const Dashboard = () => {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('all'); // 'all' | 'today'
     const [allEmployees, setAllEmployees] = useState([]); // Full list for dropdowns
+    const [employeeObjects, setEmployeeObjects] = useState([]); // Full employee data for WhatsApp lookup
     const [summary, setSummary] = useState('');
     const [summaryLoading, setSummaryLoading] = useState(false);
     const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
@@ -123,6 +124,7 @@ const Dashboard = () => {
 
             setTasks(tasksData);
             setStats(statsData);
+            setEmployeeObjects(employeesData);
             setAllEmployees(employeesData.map(e => e.display_name).sort());
         } catch (error) {
             console.error("Failed to fetch data:", error);
@@ -497,6 +499,7 @@ const Dashboard = () => {
                 onClose={() => setIsAddModalOpen(false)}
                 onAdd={handleAddTask}
                 agencies={allEmployees.length > 0 ? allEmployees : agencies}
+                employees={employeeObjects}
             />
 
             <DuplicatesModal

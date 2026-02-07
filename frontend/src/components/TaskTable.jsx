@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
     MoreVertical, FileText, CheckCircle, Clock, AlertCircle,
-    Search, Filter, Download, Edit2, Check, X, Trash2, ArrowUpDown, CheckSquare, Pin, Calendar, Image, Link, AlertTriangle
+    Search, Filter, Download, Edit2, Check, X, Trash2, ArrowUpDown, CheckSquare, Pin, Calendar, Image, Link, AlertTriangle, MessageCircle
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { api } from '../services/api';
 import { useRef } from 'react';
 
-const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEditMode, bulkEdits, setBulkEdits, selectedTasks, toggleSelection, selectAll }) => {
+const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, user, isBulkEditMode, bulkEdits, setBulkEdits, selectedTasks, toggleSelection, selectAll }) => {
     const [editingId, setEditingId] = useState(null);
     const [editForm, setEditForm] = useState({});
     const [viewImage, setViewImage] = useState(null); // Base64 string
@@ -247,6 +247,31 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEd
         }
     };
 
+    const handleWhatsAppFollowup = (task) => {
+        if (!task.assigned_agency) return alert("Task has no assigned person/agency.");
+
+        // Find employee phone
+        const employee = (employees || []).find(e => e.display_name === task.assigned_agency);
+        if (!employee || !employee.mobile) {
+            return alert(`Phone number not found for "${task.assigned_agency}". Please update it in the Employees section.`);
+        }
+
+        // Normalize phone number (digits only)
+        let phone = employee.mobile.replace(/\D/g, '');
+        if (phone.length === 10) {
+            phone = '91' + phone;
+        }
+
+        const taskName = task.task_number || 'Unnamed Task';
+        const comments = task.description || '';
+        const message = `What's the status of this task?\n\n*Task*: ${taskName}\n*Comments*: ${comments}`;
+
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
+
+        window.open(whatsappUrl, '_blank');
+    };
+
     const handlePriorityToggle = async (task) => {
         try {
             const newPriority = task.priority === 'High' ? 'Medium' : 'High';
@@ -450,6 +475,7 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, user, isBulkEd
                                                 <div className="flex gap-2">
                                                     {user?.role === 'admin' && (
                                                         <>
+                                                            <button onClick={() => handleWhatsAppFollowup(task)} className="p-2 rounded-lg hover:bg-green-50 text-slate-400 hover:text-green-600" title="WhatsApp Follow-up"><MessageCircle size={16} /></button>
                                                             <button onClick={() => startEdit(task)} className="p-2 rounded-lg hover:bg-indigo-50 text-slate-400 hover:text-indigo-600"><Edit2 size={16} /></button>
                                                             <div className="relative">
                                                                 <button onClick={() => document.getElementById(`date-picker-${task.id}`).showPicker()} className="p-2 rounded-lg hover:bg-blue-50 text-slate-400 hover:text-blue-600"><Calendar size={16} /></button>
