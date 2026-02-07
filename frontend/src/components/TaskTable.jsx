@@ -118,23 +118,24 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
 
     // Status Badge Helper
     const getStatusBadge = (status) => {
-        let styles = "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300";
-        let icon = Clock;
+        const styles = {
+            'Completed': 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 shadow-[0_0_12px_rgba(16,185,129,0.1)]',
+            'Overdue': 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20 shadow-[0_0_12px_rgba(244,63,94,0.1)]',
+            'Pending': 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 shadow-[0_0_12px_rgba(245,158,11,0.1)]',
+        };
 
-        if (status === 'Completed') {
-            styles = "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
-            icon = CheckCircle;
-        } else if (status === 'Overdue') {
-            styles = "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
-            icon = AlertCircle;
-        } else if (status === 'Pending') {
-            styles = "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400";
-        }
+        const icons = {
+            'Completed': CheckCircle,
+            'Overdue': AlertCircle,
+            'Pending': Clock,
+        };
 
-        const Icon = icon;
+        const Icon = icons[status] || Clock;
+        const styleClass = styles[status] || 'bg-slate-100 text-slate-600 border-slate-200';
+
         return (
-            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border border-transparent ${styles}`}>
-                <Icon size={12} />
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider border transition-premium ${styleClass}`}>
+                <Icon size={12} className="shrink-0" />
                 {status}
             </span>
         );
@@ -313,13 +314,13 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
     );
 
     return (
-        <div className="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-            <div className="overflow-x-auto">
+        <div className="glass-card rounded-[2.5rem] border premium-border overflow-hidden shadow-premium-lg">
+            <div className="overflow-x-auto custom-scrollbar">
                 <table className="min-w-full text-left border-collapse table-fixed">
                     <thead>
-                        <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+                        <tr className="bg-slate-50/50 dark:bg-white/5 border-b premium-border backdrop-blur-sm">
                             {isBulkEditMode && (
-                                <th className="px-4 py-4 w-[50px]">
+                                <th className="px-6 py-5 w-[60px]">
                                     <Checkbox checked={isAllSelected} onChange={() => selectAll(allTaskIds)} />
                                 </th>
                             )}
@@ -441,8 +442,10 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
                                             )}
                                         </td>
 
-                                        <td className="px-6 py-4" style={{ width: columnWidths.priority }}>
-                                            <span className="text-sm px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 font-bold">{task.priority || 'Normal'}</span>
+                                        <td className="px-6 py-5" style={{ width: columnWidths.priority }}>
+                                            <span className={`text-[10px] px-2.5 py-1 rounded-lg font-black uppercase tracking-widest border transition-premium ${task.priority === 'High' ? 'bg-rose-500/10 text-rose-600 border-rose-500/20 shadow-[0_0_8px_rgba(244,63,94,0.1)]' : 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-white/5 dark:border-white/10 dark:text-dark-muted'}`}>
+                                                {task.priority || 'Normal'}
+                                            </span>
                                         </td>
 
                                         <td className="px-6 py-4 text-[17px] font-medium whitespace-nowrap" style={{ width: columnWidths.allocated_date }}>
@@ -469,20 +472,20 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
                                             )}
                                         </td>
 
-                                        <td className="px-6 py-4" style={{ width: columnWidths.action }}>
+                                        <td className="px-6 py-5" style={{ width: columnWidths.action }}>
                                             {isEditing && !isBulk ? (
-                                                <div className="flex gap-2">
-                                                    <button onClick={() => saveEdit(task.id)} className="p-1.5 bg-green-100 text-green-600 rounded"><Check size={16} /></button>
-                                                    <button onClick={cancelEdit} className="p-1.5 bg-red-100 text-red-600 rounded"><X size={16} /></button>
+                                                <div className="flex gap-2.5">
+                                                    <button onClick={() => saveEdit(task.id)} className="p-2 bg-emerald-100 text-emerald-600 rounded-xl hover:bg-emerald-200 transition-premium shadow-sm"><Check size={18} /></button>
+                                                    <button onClick={cancelEdit} className="p-2 bg-rose-100 text-rose-600 rounded-xl hover:bg-rose-200 transition-premium shadow-sm"><X size={18} /></button>
                                                 </div>
                                             ) : !isBulk && (
-                                                <div className="flex gap-2">
+                                                <div className="flex gap-1.5">
                                                     {user?.role === 'admin' && (
                                                         <>
-                                                            <button onClick={() => handleWhatsAppFollowup(task)} className="p-2 rounded-lg hover:bg-green-50 text-slate-400 hover:text-green-600" title="WhatsApp Follow-up"><MessageCircle size={16} /></button>
-                                                            <button onClick={() => startEdit(task)} className="p-2 rounded-lg hover:bg-indigo-50 text-slate-400 hover:text-indigo-600"><Edit2 size={16} /></button>
+                                                            <button onClick={() => handleWhatsAppFollowup(task)} className="p-2.5 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-500/10 text-slate-400 hover:text-emerald-600 transition-premium" title="WhatsApp Follow-up"><MessageCircle size={18} /></button>
+                                                            <button onClick={() => startEdit(task)} className="p-2.5 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-500/10 text-slate-400 hover:text-indigo-600 transition-premium"><Edit2 size={18} /></button>
                                                             <div className="relative">
-                                                                <button onClick={() => document.getElementById(`date-picker-${task.id}`).showPicker()} className="p-2 rounded-lg hover:bg-blue-50 text-slate-400 hover:text-blue-600"><Calendar size={16} /></button>
+                                                                <button onClick={() => document.getElementById(`date-picker-${task.id}`).showPicker()} className="p-2.5 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-500/10 text-slate-400 hover:text-blue-600 transition-premium"><Calendar size={18} /></button>
                                                                 <input id={`date-picker-${task.id}`} type="datetime-local" className="absolute top-0 left-0 opacity-0 w-0 h-0" defaultValue={task.scheduled_date ? `${task.scheduled_date}T${task.scheduled_time || '09:00'}` : ''}
                                                                     onChange={async (e) => {
                                                                         try {
@@ -494,10 +497,9 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
                                                                     }}
                                                                 />
                                                             </div>
-                                                            <button onClick={() => handleQuickComplete(task)} className="p-2 rounded-lg hover:bg-emerald-50 text-slate-400 hover:text-emerald-600"><CheckSquare size={16} /></button>
-                                                            <button onClick={() => handlePin(task)} className={`p-2 rounded-lg ${task.is_pinned ? 'bg-indigo-50 text-indigo-600' : 'hover:bg-indigo-50 text-slate-400 hover:text-indigo-600'}`}><Pin size={16} className={task.is_pinned ? "fill-indigo-600" : ""} /></button>
-                                                            <button onClick={() => handlePriorityToggle(task)} className={`p-2 rounded-lg ${task.priority === 'High' ? 'bg-red-50 text-red-600' : 'hover:bg-red-50 text-slate-400 hover:text-red-600'}`} title="Mark Urgent"><AlertTriangle size={16} className={task.priority === 'High' ? "fill-red-600" : ""} /></button>
-                                                            <button onClick={() => handleDelete(task)} className="p-2 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500"><Trash2 size={16} /></button>
+                                                            <button onClick={() => handleQuickComplete(task)} className="p-2.5 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-500/10 text-slate-400 hover:text-emerald-600 transition-premium"><CheckSquare size={18} /></button>
+                                                            <button onClick={() => handlePin(task)} className={`p-2.5 rounded-xl transition-premium ${task.is_pinned ? 'bg-indigo-50 dark:bg-indigo-500/20 text-indigo-600' : 'hover:bg-indigo-50 dark:hover:bg-indigo-500/10 text-slate-400 hover:text-indigo-600'}`}><Pin size={18} className={task.is_pinned ? "fill-current" : ""} /></button>
+                                                            <button onClick={() => handleDelete(task)} className="p-2.5 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-500/10 text-slate-400 hover:text-rose-500 transition-premium"><Trash2 size={18} /></button>
                                                         </>
                                                     )}
                                                 </div>

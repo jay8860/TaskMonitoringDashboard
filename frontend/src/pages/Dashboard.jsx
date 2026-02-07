@@ -297,10 +297,16 @@ const Dashboard = () => {
 
     return (
         <Layout user={user} onLogout={handleLogout}>
-            <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-800 dark:text-white mb-2">Dashboard</h1>
-                    <p className="text-slate-500 dark:text-slate-400">Welcome back, {user.username || 'Officer'}</p>
+                    <h2 className="text-4xl font-black tracking-tight dark:text-white mb-2">
+                        Good Morning, <span className="premium-gradient-text">{user.display_name?.split(' ')[0] || 'Admin'}</span>
+                    </h2>
+                    <p className="text-slate-500 dark:text-dark-muted font-medium flex items-center gap-2">
+                        <Calendar size={16} className="text-indigo-500" />
+                        Today is {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+                    </p>
                 </div>
 
                 <div className="flex gap-2">
@@ -440,23 +446,15 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {/* Stats Summary Section */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                 <StatCard
                     title="Total Tasks"
                     value={stats.total}
                     icon={ClipboardList}
                     color="indigo"
-                    delay={0}
-                    onClick={() => handleStatClick('Total')}
-                />
-                <StatCard
-                    title="Pending"
-                    value={stats.pending}
-                    icon={Clock}
-                    color="yellow"
                     delay={1}
-                    onClick={() => handleStatClick('Pending')}
+                    onClick={() => handleStatClick('Total')}
                 />
                 <StatCard
                     title="Completed"
@@ -467,54 +465,89 @@ const Dashboard = () => {
                     onClick={() => handleStatClick('Completed')}
                 />
                 <StatCard
+                    title="Due Soon"
+                    value={stats.pending}
+                    icon={Clock}
+                    color="yellow"
+                    delay={3}
+                    onClick={() => handleStatClick('Pending')}
+                />
+                <StatCard
                     title="Overdue"
                     value={stats.overdue}
                     icon={AlertTriangle}
                     color="red"
-                    delay={3}
+                    delay={4}
                     onClick={() => handleStatClick('Overdue')}
                 />
             </div>
 
-            {/* Filter Bar */}
-            <div className="flex flex-col md:flex-row gap-4 mb-6 bg-white dark:bg-dark-card p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                <div className="flex-1 relative">
-                    <Search className="absolute left-3 top-2.5 h-5 w-5 text-slate-400" />
-                    <input
-                        type="text"
-                        placeholder="Search tasks..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-lg focus:ring-2 focus:ring-indigo-500 dark:text-white"
-                    />
-                </div>
+            {/* Filter & Search Bar */}
+            <div className="glass-card p-6 rounded-[2rem] border premium-border mb-8 shadow-premium-sm">
+                <div className="flex flex-col xl:flex-row gap-6">
+                    <div className="flex-1 relative group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={20} />
+                        <input
+                            type="text"
+                            placeholder="Search tasks, descriptions, or agencies..."
+                            className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-white/5 border premium-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:text-white transition-premium text-sm font-medium"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </div>
 
-                <div className="flex gap-2 w-full md:w-auto flex-wrap">
-                    <MultiSelect
-                        label="Status"
-                        options={['Pending', 'Completed', 'Overdue']}
-                        selected={selectedStatus}
-                        onChange={setSelectedStatus}
-                        placeholder="All Statuses"
-                    />
+                    <div className="flex flex-wrap items-center gap-4">
+                        <div className="flex items-center gap-2 bg-slate-50 dark:bg-white/5 p-1.5 rounded-2xl border premium-border">
+                            <button
+                                onClick={() => setActiveTab('all')}
+                                className={`px-5 py-2 rounded-xl text-sm font-bold transition-premium ${activeTab === 'all' ? 'bg-white dark:bg-indigo-600 text-indigo-600 dark:text-white shadow-premium-sm' : 'text-slate-500 dark:text-dark-muted hover:text-slate-700'}`}
+                            >
+                                All Tasks
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('today')}
+                                className={`px-5 py-2 rounded-xl text-sm font-bold transition-premium flex items-center gap-2 ${activeTab === 'today' ? 'bg-white dark:bg-indigo-600 text-indigo-600 dark:text-white shadow-premium-sm' : 'text-slate-500 dark:text-dark-muted hover:text-slate-700'}`}
+                            >
+                                <Pin size={14} />
+                                Today
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('important')}
+                                className={`px-5 py-2 rounded-xl text-sm font-bold transition-premium flex items-center gap-2 ${activeTab === 'important' ? 'bg-white dark:bg-red-600 text-red-600 dark:text-white shadow-premium-sm' : 'text-slate-500 dark:text-dark-muted hover:text-slate-700'}`}
+                            >
+                                <AlertTriangle size={14} />
+                                Important
+                            </button>
+                        </div>
 
-                    <MultiSelect
-                        label="Agency"
-                        options={agencies}
-                        selected={selectedAgency}
-                        onChange={setSelectedAgency}
-                        placeholder="All Agencies"
-                    />
+                        <div className="flex gap-3">
+                            <MultiSelect
+                                label="Status"
+                                options={['Pending', 'Completed', 'Overdue']}
+                                selected={selectedStatus}
+                                onChange={setSelectedStatus}
+                                placeholder="Status"
+                            />
 
-                    {(search || selectedStatus.length > 0 || selectedAgency.length > 0) && (
-                        <button
-                            onClick={resetFilters}
-                            className="flex items-center gap-2 px-3 py-2 text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors"
-                        >
-                            <XCircle size={18} />
-                            Reset Filters
-                        </button>
-                    )}
+                            <MultiSelect
+                                label="Agency"
+                                options={agencies}
+                                selected={selectedAgency}
+                                onChange={setSelectedAgency}
+                                placeholder="Agency"
+                            />
+
+                            {(search || selectedStatus.length > 0 || selectedAgency.length > 0) && (
+                                <button
+                                    onClick={resetFilters}
+                                    className="flex items-center gap-2 px-4 py-2 text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-premium font-semibold text-sm"
+                                >
+                                    <XCircle size={18} />
+                                    Clear
+                                </button>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -556,16 +589,19 @@ const Dashboard = () => {
             {/* AI Summary Modal */}
             {
                 isSummaryModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-                        <div className="bg-white dark:bg-dark-card w-full max-w-3xl max-h-[80vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-slate-200 dark:border-slate-700">
-                            <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl text-indigo-600 dark:text-indigo-400">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-300">
+                        <div className="glass-card w-full max-w-3xl max-h-[85vh] rounded-[2.5rem] shadow-premium-lg overflow-hidden flex flex-col border premium-border">
+                            <div className="p-8 border-b premium-border flex justify-between items-center bg-white/50 dark:bg-white/5">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
                                         <Sparkles size={24} />
                                     </div>
-                                    <h3 className="text-xl font-bold dark:text-white">Executive AI Summary</h3>
+                                    <div>
+                                        <h3 className="text-2xl font-black tracking-tight dark:text-white">Executive AI Summary</h3>
+                                        <p className="text-sm font-medium text-slate-500 dark:text-dark-muted">Powered by Gemini AI</p>
+                                    </div>
                                 </div>
-                                <button onClick={() => setIsSummaryModalOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                                <button onClick={() => setIsSummaryModalOpen(false)} className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 dark:text-dark-muted transition-premium">
                                     <XCircle size={24} />
                                 </button>
                             </div>
