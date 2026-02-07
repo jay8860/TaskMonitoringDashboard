@@ -8,7 +8,7 @@ import DuplicatesModal from '../components/DuplicatesModal';
 import { api } from '../services/api';
 import {
     ClipboardList, CheckSquare, Clock, AlertTriangle,
-    Search, Filter, Plus, FileDown, RefreshCw, XCircle, Calendar, Pin, Sparkles, FileText, Edit2, Trash2, ChevronDown
+    Search, Filter, Plus, FileDown, RefreshCw, XCircle, Calendar, Pin, Sparkles, FileText, Edit2, Trash2, ChevronDown, MessageCircle
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import MultiSelect from '../components/MultiSelect';
@@ -91,6 +91,50 @@ const Dashboard = () => {
             alert("Bulk reschedule failed: " + e.message);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleBulkWhatsApp = () => {
+        if (selectedTasks.length === 0) return;
+        if (!window.confirm(`Open WhatsApp chats for ${selectedTasks.length} selected tasks?`)) return;
+
+        let foundCount = 0;
+        selectedTasks.forEach((id, index) => {
+            const task = tasks.find(t => t.id === id);
+            if (!task || !task.assigned_agency) return;
+
+            // Find employee phone - Case insensitive and trimmed (matching TaskTable logic)
+            const targetName = task.assigned_agency.trim().toLowerCase();
+            const employee = employeeObjects.find(e =>
+                e.display_name.trim().toLowerCase() === targetName
+            );
+
+            if (employee && employee.mobile) {
+                // Normalize phone number (digits only)
+                let phone = employee.mobile.replace(/\D/g, '');
+                if (phone.length === 10) {
+                    phone = '91' + phone;
+                }
+
+                const taskName = task.task_number || 'Unnamed Task';
+                const comments = task.description || '';
+                const message = `What's the status of this task?\n\n*Task*: ${taskName}\n*Comments*: ${comments}`;
+
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
+
+                // Use a small delay between opens to help avoid popup blockers
+                setTimeout(() => {
+                    window.open(whatsappUrl, '_blank');
+                }, index * 400);
+                foundCount++;
+            }
+        });
+
+        if (foundCount === 0) {
+            alert("No phone numbers found for the selected tasks' assignees.");
+        } else if (foundCount < selectedTasks.length) {
+            alert(`Opened ${foundCount} WhatsApp chats. ${selectedTasks.length - foundCount} tasks had missing phone numbers.`);
         }
     };
 
@@ -370,6 +414,7 @@ const Dashboard = () => {
                             <span className="text-sm text-slate-500 mr-2 border-l border-slate-300 pl-3">{selectedTasks.length} selected</span>
                             {selectedTasks.length > 0 && (
                                 <>
+                                    <button onClick={handleBulkWhatsApp} className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors" title="WhatsApp Selected"><MessageCircle size={18} /></button>
                                     <button onClick={handleBulkDelete} className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors" title="Delete Selected"><Trash2 size={18} /></button>
                                     <button onClick={handleBulkReschedule} className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" title="Extend Deadline"><Calendar size={18} /></button>
                                 </>
