@@ -484,6 +484,7 @@ const Dashboard = () => {
                 loading={loading}
                 fetchData={fetchData}
                 agencies={allEmployees.length > 0 ? allEmployees : agencies}
+                employees={employeeObjects}
                 user={user}
                 onEdit={(task) => console.log("Edit", task)}
                 isBulkEditMode={isBulkEditMode}

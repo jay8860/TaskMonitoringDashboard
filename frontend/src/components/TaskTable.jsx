@@ -250,10 +250,14 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
     const handleWhatsAppFollowup = (task) => {
         if (!task.assigned_agency) return alert("Task has no assigned person/agency.");
 
-        // Find employee phone
-        const employee = (employees || []).find(e => e.display_name === task.assigned_agency);
+        // Find employee phone - Case insensitive and trimmed
+        const targetName = task.assigned_agency.trim().toLowerCase();
+        const employee = (employees || []).find(e =>
+            e.display_name.trim().toLowerCase() === targetName
+        );
+
         if (!employee || !employee.mobile) {
-            return alert(`Phone number not found for "${task.assigned_agency}". Please update it in the Employees section.`);
+            return alert(`Phone number not found for "${task.assigned_agency}".\n\nPlease ensure an employee with EXACT "Display Username" matching this name exists in the Employees section and has a mobile number.`);
         }
 
         // Normalize phone number (digits only)
