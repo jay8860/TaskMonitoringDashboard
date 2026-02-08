@@ -360,31 +360,7 @@ const Dashboard = () => {
                 </div>
 
                 <div className="flex gap-2">
-                    {/* Tab Switcher - Hide for Viewer */}
-                    {user.role === 'admin' && (
-                        <div className="bg-slate-100 dark:bg-slate-800 p-1 rounded-xl flex items-center mr-4">
-                            <button
-                                onClick={() => setActiveTab('all')}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'all' ? 'bg-white dark:bg-dark-card shadow text-indigo-600 dark:text-indigo-400' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}`}
-                            >
-                                All Tasks
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('today')}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'today' ? 'bg-white dark:bg-dark-card shadow text-indigo-600 dark:text-indigo-400' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}`}
-                            >
-                                <Pin size={14} className={activeTab === 'today' ? 'fill-indigo-600 dark:fill-indigo-400' : ''} />
-                                Today's Tasks
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('important')}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'important' ? 'bg-white dark:bg-dark-card shadow text-red-600 dark:text-red-400' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}`}
-                            >
-                                <AlertTriangle size={14} className={activeTab === 'important' ? 'fill-red-600 dark:fill-red-400' : ''} />
-                                Important
-                            </button>
-                        </div>
-                    )}
+
 
                     {/* Actions Dropdown */}
                     <div className="relative z-20">
