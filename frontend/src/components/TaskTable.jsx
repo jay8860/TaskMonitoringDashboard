@@ -232,10 +232,25 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
         if (daysMatch && task.allocated_date) {
             const days = parseInt(daysMatch[1]);
             const allocated = new Date(task.allocated_date);
-            if (!isNaN(allocated)) {
+            if (!isNaN(allocated.getTime())) {
                 const deadline = new Date(allocated);
                 deadline.setDate(allocated.getDate() + days);
                 updates.deadline_date = deadline.toISOString().split('T')[0];
+            }
+        }
+        setEditForm(updates);
+    };
+
+    const handleDeadlineChange = (e, task) => {
+        const newDeadline = e.target.value;
+        const updates = { ...editForm, deadline_date: newDeadline };
+        if (newDeadline && task.allocated_date) {
+            const allocated = new Date(task.allocated_date);
+            const deadline = new Date(newDeadline);
+            if (!isNaN(allocated.getTime()) && !isNaN(deadline.getTime())) {
+                const diffTime = deadline - allocated;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                updates.time_given = `${diffDays} days`;
             }
         }
         setEditForm(updates);
@@ -295,13 +310,35 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
 
     // Bulk Edit Handlers
     const handleBulkChange = (id, field, value) => {
-        setBulkEdits(prev => ({
-            ...prev,
-            [id]: {
-                ...prev[id],
-                [field]: value
+        setBulkEdits(prev => {
+            const task = tasks.find(t => t.id === id);
+            const currentEdits = prev[id] || {};
+            const newEdits = { ...currentEdits, [field]: value };
+
+            // Sync Logic for Bulk Edit
+            if (field === 'deadline_date' && value && task.allocated_date) {
+                const allocated = new Date(task.allocated_date);
+                const deadline = new Date(value);
+                if (!isNaN(allocated.getTime()) && !isNaN(deadline.getTime())) {
+                    const diffTime = deadline - allocated;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    newEdits.time_given = `${diffDays} days`;
+                }
+            } else if (field === 'time_given' && value && task.allocated_date) {
+                const daysMatch = value.match(/(\d+)/);
+                if (daysMatch) {
+                    const days = parseInt(daysMatch[1]);
+                    const allocated = new Date(task.allocated_date);
+                    if (!isNaN(allocated.getTime())) {
+                        const deadline = new Date(allocated);
+                        deadline.setDate(allocated.getDate() + days);
+                        newEdits.deadline_date = deadline.toISOString().split('T')[0];
+                    }
+                }
             }
-        }));
+
+            return { ...prev, [id]: newEdits };
+        });
     };
 
     // Helper: Any row editing?
@@ -458,7 +495,7 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
 
                                         <td className="px-4 py-3.5 text-sm font-semibold whitespace-nowrap" style={{ width: columnWidths.deadline_date }}>
                                             {isEditing ? (
-                                                <input type="date" value={editForm.deadline_date || ''} onChange={(e) => setEditForm({ ...editForm, deadline_date: e.target.value })} className="w-full p-2 rounded border border-indigo-300 text-sm" />
+                                                <input type="date" value={editForm.deadline_date || ''} onChange={(e) => handleDeadlineChange(e, task)} className="w-full p-2 rounded border border-indigo-300 text-sm" />
                                             ) : isBulk ? (
                                                 <input type="date" value={bulkVal('deadline_date')} onChange={(e) => handleBulkChange(task.id, 'deadline_date', e.target.value)} className="w-full p-2 rounded border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-indigo-500" />
                                             ) : (

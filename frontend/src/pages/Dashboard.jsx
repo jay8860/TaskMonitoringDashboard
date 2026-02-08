@@ -105,11 +105,20 @@ const Dashboard = () => {
             newDeadlineDate.setDate(today.getDate() + 7);
             const deadlineString = newDeadlineDate.toISOString().split('T')[0];
 
-            const updates = selectedTasks.map(id => ({
-                id,
-                deadline_date: deadlineString,
-                time_given: '7 days'
-            }));
+            const updates = selectedTasks.map(id => {
+                const task = tasks.find(t => t.id === id);
+                if (!task) return null;
+
+                const allocated = task.allocated_date ? new Date(task.allocated_date) : today;
+                const diffTime = Math.abs(newDeadlineDate - allocated);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                return {
+                    id,
+                    deadline_date: deadlineString,
+                    time_given: `${diffDays} days`
+                };
+            }).filter(Boolean);
 
             await api.bulkUpdateTasks(updates);
             setSelectedTasks([]);

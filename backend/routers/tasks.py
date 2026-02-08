@@ -62,6 +62,16 @@ class TaskBulkUpdateItem(BaseModel):
 class TaskBulkUpdateList(BaseModel):
     updates: List[TaskBulkUpdateItem]
 
+# --- Helper ---
+def sync_task_status(task):
+    if task.completion_date and str(task.completion_date).strip():
+        task.status = "Completed"
+    else:
+        if task.deadline_date and task.deadline_date < date.today():
+            task.status = "Overdue"
+        else:
+            task.status = "Pending"
+
 # --- Routes ---
 
 @router.post("/sync")
@@ -189,17 +199,8 @@ def update_task(task_id: int, update: TaskUpdate, background_tasks: BackgroundTa
     for key, value in update_data.items():
         setattr(task, key, value)
     
-    # Auto-update status based on completion_date
-    if "completion_date" in update_data:
-        c_date = update_data["completion_date"]
-        if c_date and str(c_date).strip():
-            task.status = "Completed"
-        else:
-            # Reverting from Completed. Check if Overdue or Pending.
-            if task.deadline_date and task.deadline_date < date.today():
-                task.status = "Overdue"
-            else:
-                task.status = "Pending"
+    # Recalculate status
+    sync_task_status(task)
                 
     db.commit()
     
@@ -228,16 +229,8 @@ def bulk_update_tasks(bulk_data: TaskBulkUpdateList, background_tasks: Backgroun
         for key, value in update_data_dict.items():
             setattr(task, key, value)
             
-        # Auto-update status logic (Same as single update)
-        if "completion_date" in update_data_dict:
-            c_date = update_data_dict["completion_date"]
-            if c_date and str(c_date).strip():
-                task.status = "Completed"
-            else:
-                 if task.deadline_date and task.deadline_date < date.today():
-                    task.status = "Overdue"
-                 else:
-                    task.status = "Pending"
+        # Recalculate status
+        sync_task_status(task)
 
         # Trigger Sync
         background_tasks.add_task(ingester.update_sheet_task, original_task_number, update_data_dict)
