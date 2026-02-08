@@ -94,6 +94,47 @@ const Dashboard = () => {
         }
     };
 
+    const handleBulkDelaySevenDays = async () => {
+        if (!selectedTasks.length) return;
+        if (!window.confirm(`Set deadline for ${selectedTasks.length} tasks to 7 days from today?`)) return;
+
+        setLoading(true);
+        try {
+            const today = new Date();
+            const newDeadlineDate = new Date(today);
+            newDeadlineDate.setDate(today.getDate() + 7);
+            const deadlineString = newDeadlineDate.toISOString().split('T')[0];
+
+            const updates = selectedTasks.map(id => ({
+                id,
+                deadline_date: deadlineString,
+                time_given: '7 days'
+            }));
+
+            await api.bulkUpdateTasks(updates);
+            setSelectedTasks([]);
+            await fetchData();
+            alert("Tasks updated to 7 days from today!");
+        } catch (e) {
+            alert("Bulk update failed: " + e.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const selectOverdue = () => {
+        const overdueIds = tasks.filter(t => {
+            if (t.status === 'Completed' || t.completion_date) return false;
+            if (!t.deadline_date) return false;
+            const now = new Date();
+            const deadline = new Date(t.deadline_date);
+            now.setHours(0, 0, 0, 0);
+            deadline.setHours(0, 0, 0, 0);
+            return deadline < now;
+        }).map(t => t.id);
+        setSelectedTasks(overdueIds);
+    };
+
     const handleBulkWhatsApp = () => {
         if (selectedTasks.length === 0) return;
         if (!window.confirm(`Open WhatsApp chats for ${selectedTasks.length} selected tasks?`)) return;
@@ -421,11 +462,22 @@ const Dashboard = () => {
                                 <>
                                     <button onClick={handleBulkWhatsApp} className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors" title="WhatsApp Selected"><MessageCircle size={18} /></button>
                                     <button onClick={handleBulkDelete} className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors" title="Delete Selected"><Trash2 size={18} /></button>
-                                    <button onClick={handleBulkReschedule} className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" title="Extend Deadline"><Calendar size={18} /></button>
+                                    <button onClick={handleBulkReschedule} className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" title="Extend Deadline (from current)"><Calendar size={18} /></button>
+                                    <button onClick={handleBulkDelaySevenDays} className="p-2 bg-amber-100 text-amber-600 rounded-lg hover:bg-amber-200 transition-colors flex items-center gap-1.5 px-3" title="Add 7 Days (from today)">
+                                        <Clock size={18} />
+                                        <span className="text-xs font-bold whitespace-nowrap">+7 Days from Today</span>
+                                    </button>
                                 </>
                             )}
 
                             <div className="h-6 w-px bg-slate-300 mx-2"></div>
+
+                            <button
+                                onClick={selectOverdue}
+                                className="px-3 py-1.5 text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                            >
+                                Select All Overdue
+                            </button>
 
                             <button
                                 onClick={cancelBulkEdit}
