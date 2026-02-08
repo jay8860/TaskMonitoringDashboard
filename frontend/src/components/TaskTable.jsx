@@ -84,16 +84,22 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
 
                 // Numeric sorting for Deadline Due In
                 if (sortConfig.key === 'deadline_due_in') {
-                    const parseDeadline = (val) => {
-                        if (!val && val !== 0) return 999999;
-                        const strVal = String(val).toLowerCase();
-                        if (strVal.includes('completed')) return 999999;
-                        const match = strVal.match(/-?\d+/);
-                        return match ? parseInt(match[0], 10) : 999999;
+                    const getDaysRemaining = (task) => {
+                        if (task.status === 'Completed' || task.completion_date) return 999999;
+                        if (!task.deadline_date) return 999998;
+                        const now = new Date();
+                        const deadline = new Date(task.deadline_date);
+                        now.setHours(0, 0, 0, 0);
+                        deadline.setHours(0, 0, 0, 0);
+                        return (deadline - now) / (1000 * 60 * 60 * 24);
                     };
-                    const numA = parseDeadline(aVal);
-                    const numB = parseDeadline(bVal);
-                    if (numA !== numB) return sortConfig.direction === 'asc' ? numA - numB : numB - numA;
+
+                    const daysA = getDaysRemaining(a);
+                    const daysB = getDaysRemaining(b);
+
+                    if (daysA !== daysB) {
+                        return sortConfig.direction === 'asc' ? daysA - daysB : daysB - daysA;
+                    }
                 } else if (sortConfig.key.includes('date')) {
                     const dateA = aVal ? new Date(aVal) : new Date(8640000000000000);
                     const dateB = bVal ? new Date(bVal) : new Date(8640000000000000);
@@ -104,12 +110,11 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
                     aVal = (aVal || '').toString().toLowerCase();
                     bVal = (bVal || '').toString().toLowerCase();
                     if (aVal !== bVal) {
-                        if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
-                        if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+                        return sortConfig.direction === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
                     }
                 }
 
-                return b.id - a.id;
+                return 0;
             });
         }
         return sortableTasks;
