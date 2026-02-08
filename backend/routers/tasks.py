@@ -72,6 +72,15 @@ def sync_task_status(task):
         else:
             task.status = "Pending"
 
+def refresh_all_task_statuses(db: Session):
+    """Updates status for all non-completed tasks based on today's date."""
+    today = date.today()
+    tasks_to_refresh = db.query(models.Task).filter(models.Task.status.in_(["Pending", "Overdue"])).all()
+    for task in tasks_to_refresh:
+        old_status = task.status
+        sync_task_status(task)
+        # We don't need to commit every time, get_tasks/get_stats will commit once
+
 # --- Routes ---
 
 @router.post("/sync")
@@ -96,6 +105,8 @@ def get_tasks(
     sort_by: Optional[str] = "deadline_date",
     db: Session = Depends(get_db)
 ):
+    refresh_all_task_statuses(db)
+    db.commit() # Save refreshed statuses
     query = db.query(models.Task)
     
     if agency:
@@ -122,6 +133,8 @@ def get_tasks(
 
 @router.get("/stats")
 def get_stats(db: Session = Depends(get_db)):
+    refresh_all_task_statuses(db)
+    db.commit()
     total = db.query(models.Task).count()
     completed = db.query(models.Task).filter(models.Task.status == "Completed").count()
     overdue = db.query(models.Task).filter(models.Task.status == "Overdue").count()
