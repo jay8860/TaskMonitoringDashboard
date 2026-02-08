@@ -516,15 +516,43 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
                                                             <button onClick={() => handleWhatsAppFollowup(task)} className="p-1.5 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-500/10 text-slate-400 hover:text-emerald-600 transition-premium" title="WhatsApp Follow-up"><MessageCircle size={16} /></button>
                                                             <button onClick={() => startEdit(task)} className="p-1.5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-500/10 text-slate-400 hover:text-indigo-600 transition-premium"><Edit2 size={16} /></button>
                                                             <div className="relative">
-                                                                <button onClick={() => document.getElementById(`date-picker-${task.id}`).showPicker()} className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-500/10 text-slate-400 hover:text-blue-600 transition-premium"><Calendar size={16} /></button>
-                                                                <input id={`date-picker-${task.id}`} type="datetime-local" className="absolute top-0 left-0 opacity-0 w-0 h-0" defaultValue={task.scheduled_date ? `${task.scheduled_date}T${task.scheduled_time || '09:00'}` : ''}
+                                                                <button
+                                                                    onClick={() => document.getElementById(`deadline-picker-quick-${task.id}`).showPicker()}
+                                                                    className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-500/10 text-slate-400 hover:text-blue-600 transition-premium"
+                                                                    title="Set Deadline"
+                                                                >
+                                                                    <Calendar size={16} />
+                                                                </button>
+                                                                <input
+                                                                    id={`deadline-picker-quick-${task.id}`}
+                                                                    type="date"
+                                                                    className="absolute top-0 left-0 opacity-0 w-0 h-0"
+                                                                    value={task.deadline_date || ''}
                                                                     onChange={async (e) => {
+                                                                        const newDeadline = e.target.value;
+                                                                        if (!newDeadline) return;
+
                                                                         try {
-                                                                            const val = e.target.value; if (!val) return;
-                                                                            const [date, time] = val.split('T');
-                                                                            await api.updateTask(task.id, { scheduled_date: date, scheduled_time: time });
-                                                                            fetchData(); alert(`Scheduled for ${date} at ${time}`);
-                                                                        } catch (err) { alert("Failed to schedule: " + err.message); }
+                                                                            // Calculate time_given automatically for consistency
+                                                                            let timeGiven = task.time_given;
+                                                                            if (task.allocated_date) {
+                                                                                const allocated = new Date(task.allocated_date);
+                                                                                const deadline = new Date(newDeadline);
+                                                                                if (!isNaN(allocated.getTime()) && !isNaN(deadline.getTime())) {
+                                                                                    const diffTime = deadline - allocated;
+                                                                                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                                                                    timeGiven = `${diffDays} days`;
+                                                                                }
+                                                                            }
+
+                                                                            await api.updateTask(task.id, {
+                                                                                deadline_date: newDeadline,
+                                                                                time_given: timeGiven
+                                                                            });
+                                                                            fetchData();
+                                                                        } catch (err) {
+                                                                            alert("Failed to update deadline: " + err.message);
+                                                                        }
                                                                     }}
                                                                 />
                                                             </div>
