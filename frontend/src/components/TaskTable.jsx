@@ -306,6 +306,16 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
         }
     };
 
+    const handlePin = async (task) => {
+        try {
+            const newPin = task.is_pinned ? 0 : 1;
+            await api.updateTask(task.id, { is_pinned: newPin });
+            fetchData();
+        } catch (e) {
+            console.error("Failed to pin task:", e);
+        }
+    };
+
 
 
     // Bulk Edit Handlers
@@ -556,8 +566,9 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
                                                                     }}
                                                                 />
                                                             </div>
-                                                            <button onClick={() => handleQuickComplete(task)} className="p-1.5 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-500/10 text-slate-400 hover:text-emerald-600 transition-premium"><CheckSquare size={16} /></button>
-                                                            <button onClick={() => handlePin(task)} className={`p-1.5 rounded-lg transition-premium ${task.is_pinned ? 'bg-indigo-50 dark:bg-indigo-500/20 text-indigo-600' : 'hover:bg-indigo-50 dark:hover:bg-indigo-500/10 text-slate-400 hover:text-indigo-600'}`}><Pin size={16} className={task.is_pinned ? "fill-current" : ""} /></button>
+                                                            <button onClick={() => handleQuickComplete(task)} className="p-1.5 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-500/10 text-slate-400 hover:text-emerald-600 transition-premium" title="Mark Completed"><CheckSquare size={16} /></button>
+                                                            <button onClick={() => handlePriorityToggle(task)} className={`p-1.5 rounded-lg transition-premium ${task.priority === 'High' ? 'bg-red-50 dark:bg-red-500/20 text-red-600' : 'hover:bg-red-50 dark:hover:bg-red-500/10 text-slate-400 hover:text-red-600'}`} title="Toggle Important"><AlertTriangle size={16} className={task.priority === 'High' ? "fill-current" : ""} /></button>
+                                                            <button onClick={() => handlePin(task)} className={`p-1.5 rounded-lg transition-premium ${task.is_pinned ? 'bg-indigo-50 dark:bg-indigo-500/20 text-indigo-600' : 'hover:bg-indigo-50 dark:hover:bg-indigo-500/10 text-slate-400 hover:text-indigo-600'}`} title="Pin to Today"><Pin size={16} className={task.is_pinned ? "fill-current" : ""} /></button>
                                                             <button onClick={() => handleDelete(task)} className="p-1.5 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10 text-slate-400 hover:text-rose-500 transition-premium"><Trash2 size={16} /></button>
                                                         </>
                                                     )}
