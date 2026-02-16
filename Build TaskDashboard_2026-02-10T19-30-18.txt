@@ -1,0 +1,625 @@
+
+Showing Recent Issues
+
+Build target TaskDashboard of project TaskDashboard with configuration Debug
+
+SwiftCompile normal arm64 Compiling\ TaskListViewModel.swift,\ ContentView.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Views/ContentView.swift (in target 'TaskDashboard' from project 'TaskDashboard')
+
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Views/TaskListView.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Models/LoginResponse.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Models/User.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Services/APIService.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Views/TaskRowView.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskDetailViewModel.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Views/LoginView.swift -primary-file /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift -primary-file /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Views/ContentView.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Models/Task.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Views/TaskDetailView.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/TaskDashboardApp.swift /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/DerivedSources/GeneratedAssetSymbols.swift -emit-dependencies-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/TaskListViewModel.d -emit-const-values-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/TaskListViewModel.swiftconstvalues -emit-reference-dependencies-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/TaskListViewModel.swiftdeps -serialize-diagnostics-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/TaskListViewModel.dia -emit-dependencies-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/ContentView.d -emit-const-values-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/ContentView.swiftconstvalues -emit-reference-dependencies-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/ContentView.swiftdeps -serialize-diagnostics-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/ContentView.dia -emit-localized-strings -emit-localized-strings-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64 -target arm64-apple-ios18.6 -module-can-import-version DeveloperToolsSupport 23.0.4 23.0.4 -module-can-import-version SwiftUI 7.2.5.1 7.2.5 -module-can-import-version UIKit 9126.2.4.1 9126.2.4 -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libFoundationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#FoundationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libObservationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#ObservationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libPreviewsMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#PreviewsMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftUIMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftUIMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/TaskDashboard-dependencies-2.json -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.2.sdk -I /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Products/Debug-iphoneos -F /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Products/Debug-iphoneos -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=5 -module-cache-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -swift-version 5 -enforce-exclusivity\=checked -Onone -D DEBUG -serialize-debugging-options -const-gather-protocols-file /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/TaskDashboard_const_extract_protocols.json -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -default-isolation\=MainActor -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file /Users/jayantnahata/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard -enable-anonymous-context-mangled-names -file-compilation-dir /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -ivfsstatcache -Xcc /Users/jayantnahata/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphoneos26.2-23C53-3794476bd08197c3e2abd9bb477ef7f7.sdkstatcache -Xcc -I/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/swift-overrides.hmap -Xcc -iquote -Xcc /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/TaskDashboard-generated-files.hmap -Xcc -I/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/TaskDashboard-own-target-headers.hmap -Xcc -I/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/TaskDashboard-all-target-headers.hmap -Xcc -iquote -Xcc /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/TaskDashboard-project-headers.hmap -Xcc -I/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Products/Debug-iphoneos/include -Xcc -I/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/DerivedSources-normal/arm64 -Xcc -I/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/DerivedSources/arm64 -Xcc -I/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/DerivedSources -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name TaskDashboard -frontend-parseable-output -disable-clang-spi -target-sdk-version 26.2 -target-sdk-name iphoneos26.2 -clang-target arm64-apple-ios26.2 -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -o /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/TaskListViewModel.o -o /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/ContentView.o -index-unit-output-path /TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/TaskListViewModel.o -index-unit-output-path /TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/ContentView.o -index-store-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Index.noindex/DataStore -index-system-modules
+
+SwiftCompile normal arm64 /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift (in target 'TaskDashboard' from project 'TaskDashboard')
+    cd /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard
+    
+
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:5:7: error: type 'TaskListViewModel' does not conform to protocol 'ObservableObject'
+class TaskListViewModel: ObservableObject {
+      ^
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:5:7: note: add stubs for conformance
+class TaskListViewModel: ObservableObject {
+      ^
+Combine.ObservableObject.objectWillChange:2:5: note: protocol requires property 'objectWillChange' with type 'Self.ObjectWillChangePublisher'
+var objectWillChange: Self.ObjectWillChangePublisher { get }}
+    ^
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:6:6: error: initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+    @Published var tasks: [Task] = []
+     ^
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:7:6: error: initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+    @Published var isLoading = false
+     ^
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:8:6: error: initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+    @Published var errorMessage: String?
+     ^
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:5:7: Type 'TaskListViewModel' does not conform to protocol 'ObservableObject'
+
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:6:6: Initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:7:6: Initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:8:6: Initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+SwiftCompile normal arm64 /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Views/ContentView.swift (in target 'TaskDashboard' from project 'TaskDashboard')
+    cd /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard
+    
+
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/Views/ContentView.swift:4:25: error: type 'APIService' does not conform to protocol 'ObservableObject'
+    @ObservedObject var apiService = APIService.shared
+                        ^
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/Views/ContentView.swift:4:25: Type 'APIService' does not conform to protocol 'ObservableObject'
+
+SwiftCompile normal arm64 Compiling\ LoginViewModel.swift,\ User.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Models/User.swift (in target 'TaskDashboard' from project 'TaskDashboard')
+
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Views/TaskListView.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Models/LoginResponse.swift -primary-file /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift -primary-file /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Models/User.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Services/APIService.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Views/TaskRowView.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskDetailViewModel.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Views/LoginView.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/TaskListViewModel.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Views/ContentView.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Models/Task.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Views/TaskDetailView.swift /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/TaskDashboardApp.swift /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/DerivedSources/GeneratedAssetSymbols.swift -emit-dependencies-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/LoginViewModel.d -emit-const-values-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/LoginViewModel.swiftconstvalues -emit-reference-dependencies-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/LoginViewModel.swiftdeps -serialize-diagnostics-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/LoginViewModel.dia -emit-dependencies-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/User.d -emit-const-values-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/User.swiftconstvalues -emit-reference-dependencies-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/User.swiftdeps -serialize-diagnostics-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/User.dia -emit-localized-strings -emit-localized-strings-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64 -target arm64-apple-ios18.6 -module-can-import-version DeveloperToolsSupport 23.0.4 23.0.4 -module-can-import-version SwiftUI 7.2.5.1 7.2.5 -module-can-import-version UIKit 9126.2.4.1 9126.2.4 -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libFoundationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#FoundationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libObservationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#ObservationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libPreviewsMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#PreviewsMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftUIMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftUIMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/TaskDashboard-dependencies-2.json -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.2.sdk -I /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Products/Debug-iphoneos -F /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Products/Debug-iphoneos -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=5 -module-cache-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -swift-version 5 -enforce-exclusivity\=checked -Onone -D DEBUG -serialize-debugging-options -const-gather-protocols-file /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/TaskDashboard_const_extract_protocols.json -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -default-isolation\=MainActor -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file /Users/jayantnahata/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard -enable-anonymous-context-mangled-names -file-compilation-dir /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -ivfsstatcache -Xcc /Users/jayantnahata/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphoneos26.2-23C53-3794476bd08197c3e2abd9bb477ef7f7.sdkstatcache -Xcc -I/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/swift-overrides.hmap -Xcc -iquote -Xcc /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/TaskDashboard-generated-files.hmap -Xcc -I/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/TaskDashboard-own-target-headers.hmap -Xcc -I/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/TaskDashboard-all-target-headers.hmap -Xcc -iquote -Xcc /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/TaskDashboard-project-headers.hmap -Xcc -I/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Products/Debug-iphoneos/include -Xcc -I/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/DerivedSources-normal/arm64 -Xcc -I/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/DerivedSources/arm64 -Xcc -I/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/DerivedSources -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name TaskDashboard -frontend-parseable-output -disable-clang-spi -target-sdk-version 26.2 -target-sdk-name iphoneos26.2 -clang-target arm64-apple-ios26.2 -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -o /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/LoginViewModel.o -o /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Intermediates.noindex/TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/User.o -index-unit-output-path /TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/LoginViewModel.o -index-unit-output-path /TaskDashboard.build/Debug-iphoneos/TaskDashboard.build/Objects-normal/arm64/User.o -index-store-path /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Index.noindex/DataStore -index-system-modules
+
+SwiftCompile normal arm64 /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift (in target 'TaskDashboard' from project 'TaskDashboard')
+    cd /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard
+    
+
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:5:7: error: type 'LoginViewModel' does not conform to protocol 'ObservableObject'
+class LoginViewModel: ObservableObject {
+      ^
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:5:7: note: add stubs for conformance
+class LoginViewModel: ObservableObject {
+      ^
+Combine.ObservableObject.objectWillChange:2:5: note: protocol requires property 'objectWillChange' with type 'Self.ObjectWillChangePublisher'
+var objectWillChange: Self.ObjectWillChangePublisher { get }}
+    ^
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:6:6: error: initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+    @Published var username = ""
+     ^
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:7:6: error: initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+    @Published var password = ""
+     ^
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:8:6: error: initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+    @Published var isLoading = false
+     ^
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:9:6: error: initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+    @Published var errorMessage: String?
+     ^
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:5:7: Type 'LoginViewModel' does not conform to protocol 'ObservableObject'
+
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:6:6: Initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:7:6: Initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:8:6: Initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:9:6: Initializer 'init(wrappedValue:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+SwiftCompile normal arm64 /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard/TaskDashboard/Models/User.swift (in target 'TaskDashboard' from project 'TaskDashboard')
+    cd /Users/jayantnahata/Desktop/Gemini\ Anti\ Gravity/task_dashboard/TaskDashboard
+    
+
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+<unknown>:0: error: static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/ViewModels/LoginViewModel.swift:3:1: note: add import of module 'Combine'
+
+^
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+Static subscript 'subscript(_enclosingInstance:wrapped:storage:)' is not available due to missing import of defining module 'Combine'
+
+
+
+Build failed    10/02/26, 7:30 PM    1.8 seconds

@@ -148,43 +148,69 @@ const Dashboard = () => {
         if (selectedTasks.length === 0) return;
         if (!window.confirm(`Open WhatsApp chats for ${selectedTasks.length} selected tasks?`)) return;
 
-        let foundCount = 0;
-        selectedTasks.forEach((id, index) => {
+        let totalOpens = 0;
+
+        selectedTasks.forEach((id, taskIndex) => {
             const task = tasks.find(t => t.id === id);
             if (!task || !task.assigned_agency) return;
 
-            // Find employee phone - Case insensitive and trimmed (matching TaskTable logic)
-            const targetName = task.assigned_agency.trim().toLowerCase();
+            const targetName = task.assigned_agency.trim();
+
+            // Special Case: "All CEOs"
+            if (targetName === "All CEOs") {
+                const ceoNames = [
+                    "CEO JP Dantewada",
+                    "CEO JP Geedam",
+                    "CEO JP Kuakonda",
+                    "CEO JP Katekalyan"
+                ];
+
+                ceoNames.forEach((name) => {
+                    const employee = employeeObjects.find(e =>
+                        e.display_name.trim().toLowerCase() === name.toLowerCase()
+                    );
+
+                    if (employee && employee.mobile) {
+                        let phone = employee.mobile.replace(/\D/g, '');
+                        if (phone.length === 10) phone = '91' + phone;
+
+                        const taskName = task.task_number || 'Unnamed Task';
+                        const comments = task.description || '';
+                        const message = `What's the status of this task?\n\n*Task*: ${taskName}\n*Comments*: ${comments}`;
+                        const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+                        setTimeout(() => {
+                            window.open(whatsappUrl, '_blank');
+                        }, totalOpens * 800);
+                        totalOpens++;
+                    }
+                });
+                return; // formatted, go to next task
+            }
+
+            // Normal Case
             const employee = employeeObjects.find(e =>
-                e.display_name.trim().toLowerCase() === targetName
+                e.display_name.trim().toLowerCase() === targetName.toLowerCase()
             );
 
             if (employee && employee.mobile) {
-                // Normalize phone number (digits only)
                 let phone = employee.mobile.replace(/\D/g, '');
-                if (phone.length === 10) {
-                    phone = '91' + phone;
-                }
+                if (phone.length === 10) phone = '91' + phone;
 
                 const taskName = task.task_number || 'Unnamed Task';
                 const comments = task.description || '';
                 const message = `What's the status of this task?\n\n*Task*: ${taskName}\n*Comments*: ${comments}`;
+                const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
-                const encodedMessage = encodeURIComponent(message);
-                const whatsappUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
-
-                // Use a small delay between opens to help avoid popup blockers
                 setTimeout(() => {
                     window.open(whatsappUrl, '_blank');
-                }, index * 400);
-                foundCount++;
+                }, totalOpens * 800);
+                totalOpens++;
             }
         });
 
-        if (foundCount === 0) {
+        if (totalOpens === 0) {
             alert("No phone numbers found for the selected tasks' assignees.");
-        } else if (foundCount < selectedTasks.length) {
-            alert(`Opened ${foundCount} WhatsApp chats. ${selectedTasks.length - foundCount} tasks had missing phone numbers.`);
         }
     };
 
@@ -520,7 +546,7 @@ const Dashboard = () => {
             </div>
 
             {/* Filter & Search Bar */}
-            <div className="glass-card p-6 rounded-[2rem] border premium-border mb-8 shadow-premium-sm">
+            <div className="glass-card p-6 rounded-[2rem] border premium-border mb-8 shadow-premium-sm relative z-30">
                 <div className="flex flex-col xl:flex-row gap-6">
                     <div className="flex-1 relative group">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={20} />

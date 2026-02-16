@@ -1,0 +1,24 @@
+
+Showing Recent Issues
+
+Prepare build
+error: Multiple commands produce '/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Products/Debug-iphoneos/TaskDashboard.app/Info.plist'
+    note: Target 'TaskDashboard' (project 'TaskDashboard') has copy command from '/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/Info.plist' to '/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Products/Debug-iphoneos/TaskDashboard.app/Info.plist'
+    note: Target 'TaskDashboard' (project 'TaskDashboard') has process command with output '/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Products/Debug-iphoneos/TaskDashboard.app/Info.plist'
+
+
+Multiple commands produce '/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Products/Debug-iphoneos/TaskDashboard.app/Info.plist'
+
+
+Build target TaskDashboard of project TaskDashboard with configuration Debug
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard.xcodeproj: warning: The Copy Bundle Resources build phase contains this target's Info.plist file '/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/Info.plist'. (in target 'TaskDashboard' from project 'TaskDashboard')
+warning: duplicate output file '/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Products/Debug-iphoneos/TaskDashboard.app/Info.plist' on task: ProcessInfoPlistFile /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Products/Debug-iphoneos/TaskDashboard.app/Info.plist /Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/Info.plist (in target 'TaskDashboard' from project 'TaskDashboard')
+
+
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard.xcodeproj: The Copy Bundle Resources build phase contains this target's Info.plist file '/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/Info.plist'.
+
+duplicate output file '/Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Products/Debug-iphoneos/TaskDashboard.app/Info.plist' on task: ProcessInfoPlistFile /Users/jayantnahata/Library/Developer/Xcode/DerivedData/TaskDashboard-ehaletldbmvsjlafltayczjpkuur/Build/Products/Debug-iphoneos/TaskDashboard.app/Info.plist /Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/Info.plist
+
+
+
+Build failed    10/02/26, 7:55 PM    0.5 seconds

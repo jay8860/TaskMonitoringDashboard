@@ -270,10 +270,53 @@ const TaskTable = ({ tasks, onEdit, loading, fetchData, agencies, employees, use
     const handleWhatsAppFollowup = (task) => {
         if (!task.assigned_agency) return alert("Task has no assigned person/agency.");
 
-        // Find employee phone - Case insensitive and trimmed
-        const targetName = task.assigned_agency.trim().toLowerCase();
+        const targetName = task.assigned_agency.trim();
+
+        // Special Case: "All CEOs"
+        if (targetName === "All CEOs") {
+            const ceoNames = [
+                "CEO JP Dantewada",
+                "CEO JP Geedam",
+                "CEO JP Kuakonda",
+                "CEO JP Katekalyan" // Note: Check spelling in employees list if needed (e.g. Kataekelian vs Katekalyan)
+            ];
+
+            let foundCount = 0;
+            ceoNames.forEach((name, index) => {
+                const employee = (employees || []).find(e =>
+                    e.display_name.trim().toLowerCase() === name.toLowerCase()
+                );
+
+                if (employee && employee.mobile) {
+                    let phone = employee.mobile.replace(/\D/g, '');
+                    if (phone.length === 10) phone = '91' + phone;
+
+                    const taskName = task.task_number || 'Unnamed Task';
+                    const comments = task.description || '';
+                    const message = `What's the status of this task?\n\n*Task*: ${taskName}\n*Comments*: ${comments}`;
+
+                    const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+                    // Stagger opens to avoid popup blockers
+                    setTimeout(() => {
+                        window.open(whatsappUrl, '_blank');
+                    }, index * 800);
+                    foundCount++;
+                }
+            });
+
+            if (foundCount === 0) {
+                alert("Could not find contact details for any of the 4 CEOs.");
+            } else if (foundCount < 4) {
+                // Optional: warn if some are missing
+                console.warn(`Only found ${foundCount}/4 CEOs for broadcast.`);
+            }
+            return;
+        }
+
+        // Normal Single Assignment Logic
         const employee = (employees || []).find(e =>
-            e.display_name.trim().toLowerCase() === targetName
+            e.display_name.trim().toLowerCase() === targetName.toLowerCase()
         );
 
         if (!employee || !employee.mobile) {

@@ -1,0 +1,12 @@
+
+Showing Recent Issues
+
+Build target TaskDashboard of project TaskDashboard with configuration Debug
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard.xcodeproj: warning: The Copy Bundle Resources build phase contains this target's Info.plist file '/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/TaskDashboard-Info.plist'. (in target 'TaskDashboard' from project 'TaskDashboard')
+
+
+/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard.xcodeproj: The Copy Bundle Resources build phase contains this target's Info.plist file '/Users/jayantnahata/Desktop/Gemini Anti Gravity/task_dashboard/TaskDashboard/TaskDashboard/TaskDashboard-Info.plist'.
+
+
+
+Build succeeded    10/02/26, 7:58 PM    0.3 seconds
